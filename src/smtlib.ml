@@ -158,9 +158,12 @@ module Symbol (S : SORT) : SYMBOL with type sort = S.t = struct
         "define-fun"; "define-fun-rec"; "define-sort"; "exit"; "get-assertions";
         "get-assignment"; "get-info"; "get-option"; "get-proof"; "get-unsat-core";
         "get-value"; "pop"; "push"; "set-info"; "set-logic"; "set-option";
+        (* CVC4 *)
         "distinct"; "map"; "abs"; "Set"; "union"; "intersection"; "setminus";
         "member"; "subset"; "emptyset"; "singleton"; "card"; "insert"; "complement";
         "univset"; "extract";
+        (* VeriT *)
+        "none";
       ]
 
   (* We escape "@" using "_" as escape symbol. In SMTLib, names

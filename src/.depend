@@ -6,8 +6,8 @@ simplex.cmo : linux/Stopwatch.cmi simplex.cmi
 simplex.cmx : linux/Stopwatch.cmx simplex.cmi
 proverapi.cmo :
 proverapi.cmx :
-redux.cmo : linux/Stopwatch.cmi simplex.cmi proverapi.cmx linux/Perf.cmx
-redux.cmx : linux/Stopwatch.cmx simplex.cmx proverapi.cmx linux/Perf.cmx
+z3v4dot5prover.cmo : proverapi.cmx linux/Perf.cmx
+z3v4dot5prover.cmx : proverapi.cmx linux/Perf.cmx
 Fonts_mac.cmo :
 Fonts_mac.cmx :
 z3v4prover.cmo : proverapi.cmx linux/Perf.cmx
@@ -36,8 +36,6 @@ tabhunter.cmo :
 tabhunter.cmx :
 smtlibprover.cmo : util.cmx smtlib.cmx proverapi.cmx
 smtlibprover.cmx : util.cmx smtlib.cmx proverapi.cmx
-stopwatch_test.cmo : linux/Stopwatch.cmi
-stopwatch_test.cmx : linux/Stopwatch.cmx
 branchleft_png.cmo :
 branchleft_png.cmx :
 DynType.cmo : DynType.cmi
@@ -54,6 +52,8 @@ smtlib.cmo : util.cmx
 smtlib.cmx : util.cmx
 mysh.cmo : vfconfig.cmx Fonts.cmx
 mysh.cmx : vfconfig.cmx Fonts.cmx
+vfconfig.cmo :
+vfconfig.cmx :
 vfide.cmo : vfversion.cmi verifast0.cmx verifast.cmx util.cmx \
     shape_analysis/shape_analysis_frontend.cmx Printexc_proxy.cmx parser.cmx \
     lexer.cmx java_frontend/java_frontend_bridge.cmx Fonts.cmx \
@@ -64,6 +64,8 @@ vfide.cmx : vfversion.cmx verifast0.cmx verifast.cmx util.cmx \
     branchright_png.cmx branchleft_png.cmx ast.cmx
 Printexc_proxy.cmo :
 Printexc_proxy.cmx :
+stopwatch_test.cmo : linux/Stopwatch.cmi
+stopwatch_test.cmx : linux/Stopwatch.cmx
 SExpressionEmitter.cmo : util.cmx SExpressions.cmi ast.cmx \
     SExpressionEmitter.cmi
 SExpressionEmitter.cmx : util.cmx SExpressions.cmx ast.cmx \
@@ -72,14 +74,10 @@ verifastPluginRedux.cmo : verifast.cmx redux.cmx proverapi.cmx
 verifastPluginRedux.cmx : verifast.cmx redux.cmx proverapi.cmx
 java_card_applet.cmo :
 java_card_applet.cmx :
-mynum.cmo :
-mynum.cmx :
 verifastPluginReduxZ3v4dot5.cmo : z3v4dot5prover.cmx verifast.cmx redux.cmx \
     proverapi.cmx combineprovers.cmx
 verifastPluginReduxZ3v4dot5.cmx : z3v4dot5prover.cmx verifast.cmx redux.cmx \
     proverapi.cmx combineprovers.cmx
-z3v2prover.cmo : proverapi.cmx linux/Perf.cmx
-z3v2prover.cmx : proverapi.cmx linux/Perf.cmx
 plugins2.cmo : plugins_private.cmx plugins2.cmi
 plugins2.cmx : plugins_private.cmx plugins2.cmi
 verifast1.cmo : verifast0.cmx util.cmx stats.cmx proverapi.cmx \
@@ -90,30 +88,22 @@ verifast1.cmx : verifast0.cmx util.cmx stats.cmx proverapi.cmx \
     java_frontend/java_frontend_bridge.cmx ast.cmx
 lexer.cmo : util.cmx stats.cmx linux/Perf.cmx ast.cmx
 lexer.cmx : util.cmx stats.cmx linux/Perf.cmx ast.cmx
-verifastPluginZ3.cmo : z3prover.cmx verifast.cmx proverapi.cmx
-verifastPluginZ3.cmx : z3prover.cmx verifast.cmx proverapi.cmx
 ast.cmo : util.cmx
 ast.cmx : util.cmx
 verifastPluginZ3v4dot5Smtlib.cmo : z3v4dot5prover.cmx verifast.cmx \
     smtlibprover.cmx smtlib.cmx proverapi.cmx combineprovers.cmx
 verifastPluginZ3v4dot5Smtlib.cmx : z3v4dot5prover.cmx verifast.cmx \
     smtlibprover.cmx smtlib.cmx proverapi.cmx combineprovers.cmx
+Fonts.cmo :
+Fonts.cmx :
 z3prover.cmo : proverapi.cmx linux/Perf.cmx
 z3prover.cmx : proverapi.cmx linux/Perf.cmx
-verifastPluginReduxSmtlib.cmo : verifast.cmx smtlibprover.cmx smtlib.cmx \
-    redux.cmx proverapi.cmx combineprovers.cmx
-verifastPluginReduxSmtlib.cmx : verifast.cmx smtlibprover.cmx smtlib.cmx \
-    redux.cmx proverapi.cmx combineprovers.cmx
 vfstrip.cmo :
 vfstrip.cmx :
 Fonts_default.cmo :
 Fonts_default.cmx :
 verifast0.cmo : util.cmx ast.cmx
 verifast0.cmx : util.cmx ast.cmx
-z3v4dot5prover.cmo : proverapi.cmx linux/Perf.cmx
-z3v4dot5prover.cmx : proverapi.cmx linux/Perf.cmx
-stats.cmo : util.cmx linux/Stopwatch.cmi linux/Perf.cmx ast.cmx
-stats.cmx : util.cmx linux/Stopwatch.cmx linux/Perf.cmx ast.cmx
 vfconsole.cmo : verifast0.cmx verifast.cmx util.cmx SExpressionEmitter.cmi \
     linux/Perf.cmx parser.cmx lexer.cmx \
     java_frontend/java_frontend_bridge.cmx ast.cmx
@@ -130,24 +120,40 @@ verifast.cmx : vfversion.cmx verify_expr.cmx verifast1.cmx verifast0.cmx \
     assertions.cmx
 verifastPluginZ3v2.cmo : z3v2prover.cmx verifast.cmx proverapi.cmx
 verifastPluginZ3v2.cmx : z3v2prover.cmx verifast.cmx proverapi.cmx
+vfversion.cmo : vfversion.cmi
+vfversion.cmx : vfversion.cmi
+stats.cmo : util.cmx linux/Stopwatch.cmi linux/Perf.cmx ast.cmx
+stats.cmx : util.cmx linux/Stopwatch.cmx linux/Perf.cmx ast.cmx
 plugins.cmo : DynType.cmi plugins.cmi
 plugins.cmx : DynType.cmx plugins.cmi
 verifastPluginZ3v4.cmo : z3v4prover.cmx verifast.cmx proverapi.cmx
 verifastPluginZ3v4.cmx : z3v4prover.cmx verifast.cmx proverapi.cmx
+z3v2prover.cmo : proverapi.cmx linux/Perf.cmx
+z3v2prover.cmx : proverapi.cmx linux/Perf.cmx
 record_backtrace.cmo :
 record_backtrace.cmx :
 SExpressions.cmo : SExpressions.cmi
 SExpressions.cmx : SExpressions.cmi
 dlsymtool.cmo :
 dlsymtool.cmx :
+redux.cmo : linux/Stopwatch.cmi simplex.cmi proverapi.cmx linux/Perf.cmx
+redux.cmx : linux/Stopwatch.cmx simplex.cmx proverapi.cmx linux/Perf.cmx
+verifastPluginReduxSmtlib.cmo : verifast.cmx smtlibprover.cmx smtlib.cmx \
+    redux.cmx proverapi.cmx combineprovers.cmx
+verifastPluginReduxSmtlib.cmx : verifast.cmx smtlibprover.cmx smtlib.cmx \
+    redux.cmx proverapi.cmx combineprovers.cmx
+verifastPluginZ3.cmo : z3prover.cmx verifast.cmx proverapi.cmx
+verifastPluginZ3.cmx : z3prover.cmx verifast.cmx proverapi.cmx
 branchright_png.cmo :
 branchright_png.cmx :
+mynum.cmo :
+mynum.cmx :
 verifastPluginZ3v4dot5.cmo : z3v4dot5prover.cmx verifast.cmx proverapi.cmx
 verifastPluginZ3v4dot5.cmx : z3v4dot5prover.cmx verifast.cmx proverapi.cmx
-DynType.cmi :
-plugins2.cmi : plugins.cmi
 SExpressionEmitter.cmi : SExpressions.cmi ast.cmx
+plugins2.cmi : plugins.cmi
 plugins.cmi : DynType.cmi
+DynType.cmi :
 SExpressions.cmi :
 simplex.cmi :
 vfversion.cmi :

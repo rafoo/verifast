@@ -1884,7 +1884,9 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
             | PureFuncType (t1, t2) ->
                check_type true t1; check_type negative t2
             | StructArray(t1,t2) ->
-               check_type false t1; check_type false t2
+               begin match t1 with
+               | TypeParam _ -> check_type false t2
+               | _ -> check_type true t1; check_type false t2 end
             | t -> static_error l (Printf.sprintf "Type '%s' is not supported as an inductive constructor parameter type." (string_of_type t)) None
           in
           let (_, parameter_types) = List.split parameter_names_and_types in

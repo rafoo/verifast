@@ -1,0 +1,22 @@
+#include "vfarray.gh"
+
+inductive nat = O | S (nat);
+
+inductive multiset<t> = mk_multiset (array(t, nat));
+
+fixpoint multiset<t> empty_multiset<t> () {
+  return mk_multiset (constant_array(O));
+}
+
+fixpoint multiset<t> multiset_add<t>(multiset<t> m, t a) {
+  switch (m) {
+    case mk_multiset(arr): return mk_multiset(set(arr, a, S(get(arr, a))));
+  }
+}
+
+predicate elements<t> (array(int, t) arr, multiset<t> m, int b, int e) =
+  b >= e ? empty_multiset() : elements(arr, ?mtl, b+1, e) &*& m == multiset_add(mtl, get(arr, b));
+    
+    
+predicate same_multiset<t> (array(int, t) start, array(int, t) end, int b, int e) =
+  elements(start, ?m, b, e) &*& elements(end, m, b, e);

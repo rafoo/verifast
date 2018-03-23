@@ -5014,9 +5014,9 @@ let check_if_list_is_defined () =
   let assume_eq t1 t2 cont = assume (ctxt#mk_eq t1 t2) cont
   let assume_neq t1 t2 cont = assume (ctxt#mk_not (ctxt#mk_eq t1 t2)) cont
   
-  let query_term t = 
+  let query_term ?(try_hard=false) t = 
     !stats#proverOtherQuery;
-    (ctxt#query t)
+    (ctxt#query ~try_hard t)
   
   let assert_term t h env l msg url = 
     !stats#proverOtherQuery;

@@ -46,9 +46,9 @@ module Assertions(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
     | ForallAsn _ -> true
     | _ -> false
   
-  let rec assert_expr env e h env l msg url = 
+  let rec assert_expr ?(try_hard=false) env e h env l msg url = 
     let t = eval None env e in
-    if query_term t then
+    if query_term t ~try_hard then
       ()
     else begin
       ignore (assert_expr_split e h env l msg url); ()
@@ -949,7 +949,7 @@ module Assertions(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
       | None -> let binding = (x, ev e) in cont [] h ghostenv (binding::env) (binding::env') None
       end
     | ExprAsn (l, e) ->
-      assert_expr env e h env l "Cannot prove condition." None; cont [] h ghostenv env env' None
+      assert_expr ~try_hard:true env e h env l "Cannot prove condition." None; cont [] h ghostenv env env' None
     | WMatchAsn (l, e, pat, tp) ->
       let v = ev e in
       let Some (ghostenv, env, env') = match_pat h l ghostenv env env' false (SrcPat pat) tp tp v (fun ghostenv env env' -> Some (ghostenv, env, env')) in

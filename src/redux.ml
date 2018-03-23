@@ -935,7 +935,7 @@ and context () =
       if verbosity > 0 then begin let time1 = Perf.time() in printff "%10.6fs: Exiting Redux.assume: %.6f seconds\n" time1 (time1 -. time0) end;
       result
 
-    method query (t: (symbol, termnode) term): bool =
+    method query ?(try_hard=false) (t: (symbol, termnode) term): bool =
       if verbosity > 0 then printff "%10.6fs: Entering Redux.query(%s)\n" (Perf.time()) (self#pprint t);
       Stopwatch.start stopwatch;
       assert (not self#prune_pending_splits);

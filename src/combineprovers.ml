@@ -160,22 +160,12 @@ object
   method pprint_sort (s1, s2) = Printf.sprintf "<%s;%s>" (p1#pprint_sort s1) (p2#pprint_sort s2)
   method push = p1#push; p2#push
   method pop = p1#pop; p2#pop
-  method assume = function
-    | Both (t1, t2) -> begin
-        match combination_strategy with
-        | Sync ->
-           combine_assume_result (p1#assume t1, p2#assume t2)
-        | Sequence ->
-           begin match p1#assume t1 with
-           | Unknown ->
-              p2#assume t2
-           | Unsat ->
-              p2#assert_term t2; Unsat
-           end
-      end
+  method assume = function (* We never try hard on this method *)
+    | Both (t1, t2) -> p2#assert_term t2; p1#assume t1
     | Left _ | Right _ -> failwith "Combineprovers.assume"
-  method query = function
+  method query ?(try_hard=false) = function
     | Both (t1, t2) -> begin
+        if not try_hard then p1#query t1 else
         match combination_strategy with
         | Sync ->
            let r1 = p1#query t1 in

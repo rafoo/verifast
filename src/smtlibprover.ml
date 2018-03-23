@@ -233,7 +233,7 @@ class smtlib_context input_fun output (features : string list) =
     method pprint = Smtlib.T.to_string
     method pprint_sort = Smtlib.Sort.to_string
     method pprint_sym = Smtlib.Sym.to_string
-    method query t =
+    method query ?(try_hard=false) t =
       add_statement
         (Smtlib.comment (Printf.sprintf "Query: %s" (Smtlib.T.to_string t)));
       query t

@@ -1,0 +1,32 @@
+#include "vfarray2.gh"
+
+inductive multiset = mk_multiset (array(int, nat));
+
+fixpoint nat multiset_get(multiset m, int i);
+
+fixpoint multiset empty_multiset();
+
+fixpoint multiset multiset_add(multiset m, int i);
+
+lemma int multiset_ext(multiset m1, multiset m2)
+  requires m1 != m2;
+  ensures multiset_get(m1, result) != multiset_get(m2, result);
+{ assume(false); }
+
+lemma void get_empty(int i)
+  requires true;
+  ensures multiset_get(empty_multiset(), i) == O;
+{ assume(false); }
+
+lemma void get_add(multiset m, int i, int j)
+  requires true;
+  ensures multiset_get(multiset_add(m, i), j) == ((i == j) ? S(multiset_get(m, i)) : multiset_get(m ,j));
+{ assume(false); }
+
+predicate array_multiset(int b, int e, array(int,int) arr; multiset m) =
+  (b >= e) ? m == empty_multiset() :
+     (array_multiset(b+1, e, arr, ?tl) &*&
+      m == multiset_add(tl, b));
+
+predicate same_multiset(array(int,int) a1, array(int,int) a2, int b, int e) =
+  array_multiset(b, e, a1, ?m) &*& array_multiset(b, e, a2, m);

@@ -1711,13 +1711,13 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
       begin
         match zip ts ts0 with
           Some tpairs when List.for_all (fun (t, t0) -> unify t t0) tpairs && (inputParamCount0 = None || inputParamCount = inputParamCount0) -> ()
-        | _ -> static_error l (msg ^ "Type mismatch1. Actual: " ^ string_of_type t ^ ". Expected: " ^ string_of_type t0 ^ ".") None
+        | _ -> static_error l (msg ^ "Type mismatch. Actual: " ^ string_of_type t ^ ". Expected: " ^ string_of_type t0 ^ ".") None
       end
     | (PureFuncType (t1, t2), PureFuncType (t10, t20)) -> expect_type_core l msg inAnnotation t10 t1; expect_type_core l msg inAnnotation t2 t20
     | (InductiveType _, AnyType) -> ()
     | (InductiveType (i1, args1), InductiveType (i2, args2)) when i1 = i2 ->
       List.iter2 (expect_type_core l msg inAnnotation) args1 args2
-    | _ -> if unify t t0 then () else static_error l (msg ^ "Type mismatch2. Actual: " ^ string_of_type t ^ ". Expected: " ^ string_of_type t0 ^ ".") None
+    | _ -> if unify t t0 then () else static_error l (msg ^ "Type mismatch. Actual: " ^ string_of_type t ^ ". Expected: " ^ string_of_type t0 ^ ".") None
 
   let expect_type l (inAnnotation: bool option) t t0 = expect_type_core l "" inAnnotation t t0
 

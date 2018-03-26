@@ -159,8 +159,13 @@ int partition (int* a, int lo, int hi)
     	ensures sorted(arr,b,e);
     	{ assume(false);}
     	
-    lemma void concat_array(int*a,array(int,int)res,array(int,int)a0,array(int,int)a1,int b0,int e0, int b1,int e1)
+    lemma void concat_array(int*a,array(int,int)a0,array(int,int)a1,int b0,int e0, int b1,int e1)
     	requires e0 + 1 == b1 &*& array_model(a,b0,e0,a0) &*& array_model(a,b1,e1,a1) ;//&*& same_multiset(res,a0,b0,e0) &*& same_multiset(res,a1,b1,e1);
+    	ensures array_model(a,b0,e1,?res);// &*& same_multiset(res,?end,b0,e1);
+    	{ assume(false);}
+    	
+    lemma void concat_array2(int*a,array(int,int)res,int b0,int e0, int b1,int e1)
+    	requires e0 + 1 == b1 &*& array_model(a,b0,e0,res) &*& array_model(a,b1,e1,res) ;//&*& same_multiset(res,a0,b0,e0) &*& same_multiset(res,a1,b1,e1);
     	ensures array_model(a,b0,e1,res);// &*& same_multiset(res,?end,b0,e1);
     	{ assume(false);}
     	
@@ -180,7 +185,7 @@ void quicksort (int* a, int lo, int hi)
 {
   if (lo >= hi){
    //@ empty_sorted(start,lo,hi);
-   // //@ same_multiset_refl(start,lo,hi+1);
+   //@ same_multiset_refl(start,lo,hi+1);
    return;
   }else{
    //@ array_model_get_unfold(a,lo,hi+1,start,hi);
@@ -191,7 +196,7 @@ void quicksort (int* a, int lo, int hi)
    //@ assert array_model(a,lo,p,?next0);
    quicksort(a, p+1, hi);
    //@ assert array_model(a,p+1,hi+1,?next1);
-   //@ concat_array(a,next,next0,next1,lo,p,p+1,hi+1);
+   //@ concat_array(a,next0,next1,lo,p,p+1,hi+1);
    ////@ concat_same_multiset(next,next0,next1,lo,p,p+1,hi);
   }
 }

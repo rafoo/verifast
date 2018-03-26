@@ -29,11 +29,11 @@ fixpoint array(t, u) set<t, u> (fixpoint(t, u) arr, t x, u y);
 */
 
 // good 
-inductive a<t> = a_intro (array(t, int)) | dummy';
-inductive a' = a_intro' (array(a<int>, int)) | dummy;
+inductive a<t> = a_intro (array(t, int));
+inductive a' = a_intro' (array(a<int>, int));
 
 //bad
-//inductive a'' = a_intro'' (array(a'', int)) | dummy'';
+//inductive a'' = a_intro'' (array(a'', int));
 
 /*
 fixpoint bool delta(a x) {
@@ -132,15 +132,16 @@ lemma void array_model_out_of_range_nat(int* a, int b, int e, array(int,nat) arr
 
 
 
-predicate array_list_model (int* a, int b, int e; list<pair<int,int> > m) =
+predicate array_list_model<key, val> (key* a, int b, int e, predicate(key*, int; val) pto; list<pair<int,val> > m) =
   (b >= e) ? m == nil :
-     (array_list_model(a, b+1, e, ?tl) &*&
-       pointsto(a+b, ?hd) &*&
+     (array_list_model<key, val>(a, b+1, e, pto, ?tl) &*&
+       pto(a, b, ?hd) &*&
       m == cons(pair(b, hd),tl));
 
+predicate int_pto(int* a, int b; int v) = integer(a + b, v);
 
 predicate array_forall (int* a, int b, int e, fixpoint(pair<int,int>, bool) p) =
-  array_list_model(a, b, e, ?m) &*&
+  array_list_model<int, int>(a, b, e, int_pto, ?m) &*&
     forall(m, p) == true;
 
 fixpoint bool array_models (array(int,int) arr, pair<int, int> iv) {
@@ -156,7 +157,7 @@ lemma void empty_array(int* a, int i, array(int, int) arr)
 requires true;
 ensures array_model(a, i, i, arr);
 {
-  close array_list_model(a, i, i, nil);
+  close array_list_model<int,int>(a, i, i, int_pto, nil);
   close array_forall(a, i, i, (array_models)(arr));
   close array_model(a, i, i, arr);
 }

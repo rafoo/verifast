@@ -98,20 +98,22 @@ void swap (int* a, int i, int j)
   //@ array_model_set_fold(a, b, e, set(start, j, get(start, i)), i);
 }
 
-/*@ predicate minore(int* arr, int lo, int hi, int bound) =
+/*@ predicate minore(array(int,int) arr, int lo, int hi, int bound) =
 	(lo>=hi) ? true :
-	pointsto(arr+lo,?hd) &*& hd <= bound
+	get(arr,lo) <= bound
 	&*& minore(arr,lo+1,hi,bound);
 @*/
-//@ predicate majore(int* arr, int lo, int hi, int bound) = (lo>=hi) ? true : pointsto(arr+lo,?hd) &*& hd >= bound &*& majore(arr,lo+1,hi,bound);
-
+/*@ predicate majore(array(int,int) arr, int lo, int hi, int bound) = (lo>=hi) ? true : 
+	get(arr,lo) >= bound &*& majore(arr,lo+1,hi,bound);
+@*/
 
 int partition (int* a, int lo, int hi)
 //@ requires array_model(a, lo, hi, ?start) &*& lo <= hi &*& pointsto(a+hi,?p) &*& p == get(start, hi);
-/*@ ensures array_model(a, lo, hi+1, ?end) &*& same_multiset(start, end, lo, hi+1) &*&
+/*@ ensures array_model(a, lo, hi+1, ?end) &*& 
+	same_multiset(start, end, lo, hi+1) &*&
       lo <= result &*& result <= hi &*&
-      //minore(a, lo, result-1, p) &*&
-      //majore(a, result+1, hi, p) &*&
+      //minore(end, lo, result-1, p) &*&
+      //majore(end, result+1, hi, p) &*&
       get(end, result) == p; @*/
 {
   int pivot = *(a+hi);
@@ -131,8 +133,12 @@ int partition (int* a, int lo, int hi)
         //@ same_multiset_swap(arr, i, j, lo, hi);
         //@ same_multiset_trans(start, arr, array_swap(arr, i, j), lo, hi);
         //@ swap_out(arr, i, j, hi);
+        //@ get(arr,i) < p;
+      }else{
+      	//@ get(arr,j) < p;
       }
     }else{
+    	//@ get(arr,j) > p;
    	//@ array_model_get_fold(a, lo, hi, arr, j);
     }
   }
@@ -159,8 +165,12 @@ int partition (int* a, int lo, int hi)
     	ensures sorted(arr,b,e);
     	{ assume(false);}
     	
+    lemma void ensure_empty_array(int*a, int b,array(int,int) arr)
+    	requires array_model(a,b,b,arr);
+    	ensures true;
+    	{assume(false);}
     lemma void concat_array(int*a,array(int,int)a0,array(int,int)a1,int b0,int e0, int b1,int e1)
-    	requires e0 + 1 == b1 &*& array_model(a,b0,e0,a0) &*& array_model(a,b1,e1,a1) ;//&*& same_multiset(res,a0,b0,e0) &*& same_multiset(res,a1,b1,e1);
+    	requires e0 == b1 &*& array_model(a,b0,e0,a0) &*& array_model(a,b1,e1,a1) ;//&*& same_multiset(res,a0,b0,e0) &*& same_multiset(res,a1,b1,e1);
     	ensures array_model(a,b0,e1,?res);// &*& same_multiset(res,?end,b0,e1);
     	{ assume(false);}
     	
@@ -174,8 +184,8 @@ int partition (int* a, int lo, int hi)
         ensures same_multiset(res,?end,b0,e1);
         { assume(false);}*/
         
-    lemma void concat_sorted(int* a,array(int,int)a0,array(int,int)a1,int b0, int e0, int b1, int e1,int bound)
-        requires sorted(a0,b0,e0) &*& sorted(a1,b1,e1) &*& minore(a, b0, e0, bound) &*& majore(a, b1, e1, bound) &*& e0 +1 == b1;
+    lemma void concat_sorted(array(int,int)a0,array(int,int)a1,int b0, int e0, int b1, int e1,int bound)
+        requires sorted(a0,b0,e0) &*& sorted(a1,b1,e1) &*& minore(a0, b0, e0, bound) &*& majore(a1, b1, e1, bound) &*& e0 +1 == b1;
         ensures sorted(?res,b0,e1);
         { assume(false);}
 @*/
@@ -196,7 +206,10 @@ void quicksort (int* a, int lo, int hi)
    //@ assert array_model(a,lo,p,?next0);
    quicksort(a, p+1, hi);
    //@ assert array_model(a,p+1,hi+1,?next1);
-   //@ concat_array(a,next0,next1,lo,p,p+1,hi+1);
+   //@ empty_array(a,p,next1);
+   //@ array_model_set_fold(a,p,hi+1,next1,p);
+   //@ ensure_empty_array(a,hi+1,start);
+   //@ concat_array(a,next0,set(next1,p,get(next,p)),lo,p,p,hi+1);
    ////@ concat_same_multiset(next,next0,next1,lo,p,p+1,hi);
   }
 }

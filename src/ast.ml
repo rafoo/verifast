@@ -143,7 +143,8 @@ let is_arithmetic_type t =
   | _ -> false
 
 type prover_type = ProverInt | ProverBool | ProverReal
-                   | ProverInductive | ProverArray (* ?prover_type *)
+                 | ProverInductive
+                 | ProverArray of prover_type * prover_type(* ?prover_type *)
 
 (** An object used in predicate assertion ASTs. Created by the parser and filled in by the type checker.
     TODO: Since the type checker now generates a new AST anyway, we can eliminate this hack. *)

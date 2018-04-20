@@ -256,9 +256,11 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
     | (ProverBool, ProverInductive) -> ctxt#mk_boxed_bool t
     | (ProverInt, ProverInductive) -> ctxt#mk_boxed_int t
     | (ProverReal, ProverInductive) -> ctxt#mk_boxed_real t
+    | (ProverArray _, ProverInductive) -> ctxt#mk_boxed_array t
     | (ProverInductive, ProverBool) -> ctxt#mk_unboxed_bool t
     | (ProverInductive, ProverInt) -> ctxt#mk_unboxed_int t
     | (ProverInductive, ProverReal) -> ctxt#mk_unboxed_real t
+    | (ProverInductive, ProverArray _) -> ctxt#mk_unboxed_array t
     | (t1, t2) when t1 = t2 -> t
 
   let rec typenode_of_provertype t =
@@ -289,13 +291,8 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
       ctxt#begin_formal;
       let bounds = imap (fun k t -> ctxt#mk_bound k t) domain_tnodes in
       let app = List.fold_left2 (fun t1 tp t2 -> ctxt#mk_app apply_symbol
-                                                   [t1; match tp with
-                                                        | ProverArray _-> t2
-                                                        | _ -> apply_conversion tp ProverInductive t2]) vsymb domain bounds in
-      let body = ctxt#mk_eq (
-                     match range with
-                     | ProverArray _ -> app
-                     | _ -> apply_conversion ProverInductive range app) (ctxt#mk_app fsymb bounds) in
+                                                   [t1; apply_conversion tp ProverInductive t2]) vsymb domain bounds in
+      let body = ctxt#mk_eq (apply_conversion ProverInductive range app) (ctxt#mk_app fsymb bounds) in
       ctxt#end_formal;
       ctxt#assume_forall name [app] domain_tnodes body;
       (fsymb, vsymb)
@@ -4624,9 +4621,7 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
   let field_address l t fparent fname = ctxt#mk_add t (field_offset l fparent fname)
 
   let convert_provertype term proverType proverType0 =
-    match proverType,proverType0 with
-    | ProverArray _,_ | _,ProverArray _ -> term
-    | _ ->  if proverType = proverType0 then term else apply_conversion proverType proverType0 term
+    if proverType = proverType0 then term else apply_conversion proverType proverType0 term
 
   let prover_convert_term term t t0 =
     if t = t0 then term else convert_provertype term (provertype_of_type t) (provertype_of_type t0)

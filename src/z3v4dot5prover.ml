@@ -131,6 +131,8 @@ class z3_context () =
   let unboxed_real = Z3.mk_func_decl ctxt (Z3native.mk_string_symbol ctxt "(real)") [| inductive_type |] real_type in
   let () = assume_is_inverse unboxed_real boxed_real real_type in
   let () = assume_is_inverse boxed_real unboxed_real inductive_type in
+  let boxed_array = Z3.mk_func_decl ctxt (Z3native.mk_string_symbol ctxt "(arraybox)") [| array_type inductive_type inductive_type |] inductive_type in
+  let unboxed_array = Z3.mk_func_decl ctxt (Z3native.mk_string_symbol ctxt "(array)") [| inductive_type|] (array_type inductive_type inductive_type) in
   let div = Z3.mk_func_decl ctxt (Z3native.mk_string_symbol ctxt "div") [| int_type; int_type |] int_type in
   let modulo = Z3.mk_func_decl ctxt (Z3native.mk_string_symbol ctxt "mod") [| int_type; int_type |] int_type in
   object
@@ -147,6 +149,8 @@ class z3_context () =
     method mk_unboxed_bool t = Z3.mk_app ctxt unboxed_bool [| t |]
     method mk_boxed_real t = Z3.mk_app ctxt boxed_real [| t |]
     method mk_unboxed_real t = Z3.mk_app ctxt unboxed_real [| t |]
+    method mk_boxed_array t = Z3.mk_app ctxt boxed_array [| t |]
+    method mk_unboxed_array t = Z3.mk_app ctxt unboxed_array [| t |]
     method mk_symbol name domain range kind =
       let tps = Array.of_list domain in
       let c = Z3.mk_func_decl ctxt (Z3native.mk_string_symbol ctxt name) tps range in
@@ -182,7 +186,7 @@ class z3_context () =
         | Uninterp -> ()
       end;
       c
-          
+
     method set_fpclauses fc k cs =
       List.iter
         (fun (csym, fbody) ->
@@ -263,7 +267,7 @@ class z3_context () =
     method begin_formal = ()
     method end_formal = ()
     method mk_bound (i: int) (tp: Z3native.sort) = Z3native.mk_bound ctxt i tp
-    method assume_forall (description: string) (triggers: Z3native.ast list) (tps: Z3native.sort list) (body: Z3native.ast): unit = 
+    method assume_forall (description: string) (triggers: Z3native.ast list) (tps: Z3native.sort list) (body: Z3native.ast): unit =
       if List.length tps = 0 then
         Z3native.solver_assert ctxt solver body
       else

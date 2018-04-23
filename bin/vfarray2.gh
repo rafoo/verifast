@@ -8,9 +8,9 @@ fixpoint array(t, u) set<t, u> (array(t, u) arr, t x, u y);
 
 fixpoint array(t, u) constant_array<t,u> (u v);
 
-lemma_auto (get(constant_array(i),v)) void constant_get<t,u> (u v, t i)
+lemma_auto (get(constant_array<t,u>(v),i)) void constant_get<t,u> (u v, t i)
   requires true;
-  ensures get (constant_array(v), i) == v;
+  ensures get (constant_array<t,u>(v), i) == v;
   { assume (false); }
 
 lemma t array_ext<t,u>(array(t,u) A, array(t,u) B)
@@ -55,79 +55,6 @@ lemma void liar ()
 */
 
 predicate pointsto (int* a; int b) = integer(a, b);
-
-
-
-
-
-
-
-
-
-predicate int_to_nat (int i; nat n) =
-   (i <= 0) ? n == O : 
-	int_to_nat(i-1,?m) &*&
-	n == S(m);
-	 
-fixpoint int nat_to_int (nat n) {
-  switch (n){
-      case O: return 0;
-      case S(n') : return 1 + nat_to_int(n');
-  }
-}
-
-predicate array_list_model_nat (int* a, int b, int e; list<pair<int,nat> > m) =
-  (b >= e) ? m == nil :
-     (array_list_model_nat(a, b+1, e, ?tl) &*&
-       pointsto(a+b, ?hd) &*&
-       int_to_nat(hd,?hd_nat) &*&
-      m == cons(pair(b, hd_nat),tl));
-      
-predicate array_forall_nat (int* a, int b, int e, fixpoint(pair<int,nat>, bool) p) =
-  array_list_model_nat(a, b, e, ?m) &*&
-    forall(m, p) == true;
-
-fixpoint bool array_models_nat (array(int,nat) arr, pair<int,nat> iv) {
-  switch(iv) {
-    case pair<int, at>(i, v): return nat_to_int(v) == nat_to_int(get(arr, i));
-  }
-}
-
-predicate array_model_nat (int* a, int b, int e, array(int,nat) arr) =
-  array_forall_nat(a, b, e, (array_models_nat)(arr));
-
-lemma void array_model_get_unfold_nat(int* a, int b, int e, array(int,nat) arr, int i)
-  requires array_model_nat(a, b, e, arr) &*& b <= i &*& i < e;
-  ensures array_model_nat(a, b, i, arr) &*& a[i] |-> ?res &*& int_to_nat (res, ?n) &*& n == get(arr, i) &*& array_model_nat(a, i+1, e, arr);
-{ assume(false); }
-
-lemma void array_model_set_fold_nat(int* a, int b, int e, array(int,nat) arr, int i)
-  requires array_model_nat(a, b, i, arr) &*& a[i] |-> ?res &*& int_to_nat (res, ?v) &*& array_model_nat(a, i+1, e, arr) &*& b <= i &*& i < e;
-  ensures array_model_nat(a, b, e, set(arr, i, v));
-{ assume(false); }
-
-lemma void array_model_get_fold_nat(int* a, int b, int e, array(int,nat) arr, int i)
-  requires array_model_nat(a, b, i, arr) &*& a[i] |-> ?res &*& int_to_nat (res, ?n) &*& n == get(arr, i) &*& array_model_nat(a, i+1, e, arr) &*& b <= i &*& i < e;
-  ensures array_model_nat(a, b, e, arr);
-{  if (arr != set(arr, i, get(arr, i))) {
-    	int j = array_ext(arr, set(arr, i, get(arr, i)));
-    	assert get(arr, j) != get(set(arr, i, get(arr, i)), j);
-    	get_set(arr, i, get(arr, i), j);
-    	assert false;
-    } else {
-    	array_model_set_fold_nat(a, b, e, arr, i);
-    }
-}
-
-lemma void array_model_out_of_range_nat(int* a, int b, int e, array(int,nat) arr, int i, nat v)
-  requires (i < b || i >= e) &*& array_model_nat(a, b, e, arr);
-  ensures array_model_nat(a, b, e, set(arr, i, v));
-{ assume(false); }
-
-
-
-
-
 
 
 

@@ -1723,7 +1723,8 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
       List.iter2 (expect_type_core l msg inAnnotation) args1 args2
     | _ -> if unify t t0 then () else static_error l (msg ^ "Type mismatch. Actual: " ^ string_of_type t ^ ". Expected: " ^ string_of_type t0 ^ ".") None
 
-  let expect_type l (inAnnotation: bool option) t t0 = expect_type_core l "" inAnnotation t t0
+  let expect_type l (inAnnotation: bool option) t t0 =
+    expect_type_core l "" inAnnotation t t0
 
   let is_assignable_to (inAnnotation: bool option) t t0 =
     try expect_type dummy_loc inAnnotation t t0; true with StaticError (l, msg, url) -> false (* TODO: Consider eliminating this hack *)
@@ -3107,9 +3108,15 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
           in
           let args = List.map (fun (e, t0) -> let t = instantiate_type tpenv t0 in box (checkt e t) t t0) pts in
           let t = instantiate_type tpenv t0 in
-          (unbox (WPureFunCall (l, g, targs, args)) t0 t, t, None)
+          begin match g,t,args with
+          | "set", StructArray _, [e0;e1;e2] -> (unbox (StoreArray(l, e0, e1, e2)) t0 t, t, None)
+          | "get", _, [e0;e1] -> (unbox (SelectArray(l, e0, e1)) t0 t, t, None)
+          | "constant_array", StructArray (td,_), [e] ->
+             (unbox (ConstantArray(l, provertype_of_type td, e)) t0 t, t, None)
+          | _ -> (unbox (WPureFunCall (l, g, targs, args)) t0 t, t, None)
+          end
         | None ->
-          static_error l (match language with CLang -> "No such function: " ^ g | Java -> "No such method or function: " ^ g) None
+           static_error l (match language with CLang -> "No such function: " ^ g | Java -> "No such method or function: " ^ g) None
       in
       if language = CLang || classmap = [] then func_call () else
       let try_qualified_call tn es args fb on_fail =
@@ -5495,7 +5502,13 @@ let check_if_list_is_defined () =
     | SizeofExpr (l, ManifestTypeExpr (_, t)) ->
       cont state (sizeof l t)
     | InstanceOfExpr(l, e, ManifestTypeExpr (l2, tp)) ->
-      ev state e $. fun state v -> cont state (ctxt#mk_app instanceof_symbol [v; prover_type_term l2 tp])
+       ev state e $. fun state v -> cont state (ctxt#mk_app instanceof_symbol [v; prover_type_term l2 tp])
+    | SelectArray (_, e0, e1) ->
+       evs state [e0;e1] $. fun state [v1; v2] -> cont state (ctxt#mk_select v1 v2)
+    | StoreArray (_, e0, e1, e2) ->
+      evs state [e0; e1; e2] $. fun state [v1; v2; v3] -> cont state (ctxt#mk_store v1 v2 v3)
+    | ConstantArray (_, t, e) ->
+       ev state e $. fun state v -> cont state (ctxt#mk_constant (typenode_of_provertype t) v)
     | _ -> static_error (expr_loc e) "Construct not supported in this position." None
 
   let rec eval_core ass_term read_field env e =

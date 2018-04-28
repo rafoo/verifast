@@ -250,26 +250,35 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
     in
     find_unused_ident !count_cell
 
-  (** Convert term [t] from type [proverType] to type [proverType0]. *)
-  let apply_conversion proverType proverType0 t =
-    match (proverType, proverType0) with
-    | (ProverBool, ProverInductive) -> ctxt#mk_boxed_bool t
-    | (ProverInt, ProverInductive) -> ctxt#mk_boxed_int t
-    | (ProverReal, ProverInductive) -> ctxt#mk_boxed_real t
-    | (ProverArray _, ProverInductive) -> ctxt#mk_boxed_array t
-    | (ProverInductive, ProverBool) -> ctxt#mk_unboxed_bool t
-    | (ProverInductive, ProverInt) -> ctxt#mk_unboxed_int t
-    | (ProverInductive, ProverReal) -> ctxt#mk_unboxed_real t
-    | (ProverInductive, ProverArray _) -> ctxt#mk_unboxed_array t
-    | (t1, t2) when t1 = t2 -> t
-
   let rec typenode_of_provertype t =
     match t with
       ProverInt -> ctxt#type_int
     | ProverBool -> ctxt#type_bool
     | ProverReal -> ctxt#type_real
     | ProverInductive -> ctxt#type_inductive
-    | ProverArray (t1,t2) -> ctxt#type_array (typenode_of_provertype t1) (typenode_of_provertype t2)
+    | ProverArray (t1,t2) ->
+       let provt1 = typenode_of_provertype t1 in
+       let provt2 = typenode_of_provertype t2 in
+       ctxt#type_array provt1 provt2
+
+  (** Convert term [t] from type [proverType] to type [proverType0]. *)
+  let apply_conversion proverType proverType0 t =
+    match (proverType, proverType0) with
+    | (ProverBool, ProverInductive) -> ctxt#mk_boxed_bool t
+    | (ProverInt, ProverInductive) -> ctxt#mk_boxed_int t
+    | (ProverReal, ProverInductive) -> ctxt#mk_boxed_real t
+    | (ProverArray (t1,t2), ProverInductive) ->
+       let provt1 = typenode_of_provertype t1 in
+       let provt2 = typenode_of_provertype t2 in
+       ctxt#mk_boxed_array provt1 provt2 t
+    | (ProverInductive, ProverBool) -> ctxt#mk_unboxed_bool t
+    | (ProverInductive, ProverInt) -> ctxt#mk_unboxed_int t
+    | (ProverInductive, ProverReal) -> ctxt#mk_unboxed_real t
+    | (ProverInductive, ProverArray (t1,t2)) ->
+       let provt1 = typenode_of_provertype t1 in
+       let provt2 = typenode_of_provertype t2 in
+       ctxt#mk_unboxed_array provt1 provt2 t
+    | (t1, t2) when t1 = t2 -> t
 
   let mk_symbol s domain range kind =
     ctxt#mk_symbol (mk_ident s) domain range kind

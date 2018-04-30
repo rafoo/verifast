@@ -119,8 +119,14 @@ module Symbol (S : SORT) : SYMBOL with type sort = S.t = struct
   (* We escape "@" using "_" as escape symbol. In SMTLib, names
      starting with "@" are reserved and should not appear in the input
      problems. *)
+  (* We also escape the single quotes that are allowed in VeriFast but
+     not allowed by Z3 (I do not know if single quotes are allowed in
+     the SMTlib standard). *)
+
   let escape_char = function
     | '@' -> "_@"
+    | '\'' -> "_prime"
+    | '_' -> "__"
     | c -> String.make 1 c
 
   let escape_string s =

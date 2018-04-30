@@ -8,6 +8,7 @@ fixpoint array(t, u) set<t, u> (array(t, u) arr, t x, u y);
 
 fixpoint array(t, u) constant_array<t,u> (u v);
 
+
 lemma_auto (get(constant_array<t,u>(v),i)) void constant_get<t,u> (u v, t i)
   requires true;
   ensures get (constant_array<t,u>(v), i) == v;
@@ -19,7 +20,7 @@ lemma t array_ext<t,u>(array(t,u) A, array(t,u) B)
 { assume(false); }
 
 	 		 		 
-lemma void get_set<t,u> (array(t,u) arr, t x, u y, t z)
+lemma_auto (get(set(arr, x, y), z)) void get_set<t,u> (array(t,u) arr, t x, u y, t z)
     requires true;
     ensures get (set(arr, x, y), z) == ((x == z) ? y : get (arr, z));
 { assume(false); }
@@ -34,6 +35,7 @@ inductive a' = a_intro' (array(a<int>, int));
 
 //bad
 //inductive a'' = a_intro'' (array(a'', int));
+
 
 /*
 fixpoint bool delta(a x) {
@@ -54,9 +56,8 @@ lemma void liar ()
 
 */
 
+
 predicate pointsto (int* a; int b) = integer(a, b);
-
-
 
 
 predicate array_list_model<key, val> (key* a, int b, int e, predicate(key*, int; val) pto; list<pair<int,val> > m) =
@@ -73,7 +74,7 @@ predicate array_forall (int* a, int b, int e, fixpoint(pair<int,int>, bool) p) =
 
 fixpoint bool array_models (array(int,int) arr, pair<int, int> iv) {
   switch(iv) {
-    case pair<int,int>(i, v): return v == get(arr, i);
+    case pair<int,int>(i, v): return v == get<int,int>(arr, i);
   }
 }
 

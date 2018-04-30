@@ -1,14 +1,14 @@
 #include "vfarray2.gh"
 
-inductive multiset = mk_multiset (array(int, nat));
+inductive multiset<t> = mk_multiset (array(t, nat));
 
-fixpoint nat multiset_get(multiset m, int i);
+fixpoint nat multiset_get<t>(multiset<t> m, t i);
 
-fixpoint multiset empty_multiset();
+fixpoint multiset<t> empty_multiset<t>();
 
-fixpoint multiset multiset_add(multiset m, int i);
+fixpoint multiset<t> multiset_add<t>(multiset<t> m, t i);
 
-lemma int multiset_ext(multiset m1, multiset m2)
+lemma t multiset_ext<t>(multiset<t> m1, multiset<t> m2)
   requires m1 != m2;
   ensures multiset_get(m1, result) != multiset_get(m2, result);
 { assume(false); }
@@ -18,15 +18,28 @@ lemma void get_empty(int i)
   ensures multiset_get(empty_multiset(), i) == O;
 { assume(false); }
 
-lemma void get_add(multiset m, int i, int j)
+lemma_auto (multiset_get(multiset_add(m, i), j)) void get_add<t>(multiset<t> m, t i, t j)
   requires true;
   ensures multiset_get(multiset_add(m, i), j) == ((i == j) ? S(multiset_get(m, i)) : multiset_get(m ,j));
 { assume(false); }
 
-predicate array_multiset(int b, int e, array(int,int) arr; multiset m) =
+predicate array_multiset(int b, int e, array(int,int) arr; multiset<int> m) =
   (b >= e) ? m == empty_multiset() :
      (array_multiset(b+1, e, arr, ?tl) &*&
-      m == multiset_add(tl, b));
+      m == multiset_add(tl, get(arr, b)));
 
 predicate same_multiset(array(int,int) a1, array(int,int) a2, int b, int e) =
   array_multiset(b, e, a1, ?m) &*& array_multiset(b, e, a2, m);
+  
+lemma void multiset_add_commutes<a>(multiset<a> M, a x, a y)
+requires true;
+ensures multiset_add(multiset_add(M, y), x) == multiset_add(multiset_add(M, x), y);
+{
+  multiset<a> My = multiset_add(M, y);
+  multiset<a> Mx = multiset_add(M, x);
+  multiset<a> Myx = multiset_add(My, x);
+  multiset<a> Mxy = multiset_add(Mx, y);
+  if (Myx != Mxy) {
+    a z = multiset_ext(Myx, Mxy);
+  }
+}

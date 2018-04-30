@@ -4,37 +4,31 @@
 
 /*@
 
-predicate int_compare (int b, int e) =
-  b >= e ? true : int_compare(b+1, e);
-
-lemma multiset<int> obtain_multiset(array(int, int) start, int b, int e)
-  requires int_compare(b,e);
-  ensures array_multiset(b, e, start, result) &*& array_multiset(b, e, start, result);
-  { if (b >= e) {
-      open int_compare(b, e);
-      close array_multiset(b, e, start, empty_multiset());
-      close array_multiset(b, e, start, empty_multiset());
-      return empty_multiset();
-    } else {
-      open int_compare(b, e);
-      multiset<int> tl = obtain_multiset(start, b+1, e);
-      close array_multiset(b, e, start, multiset_add(tl, b));
-      close array_multiset(b, e, start, multiset_add(tl, b));
-   	   return multiset_add(tl, b);
-    }
-  }
-
 lemma void same_multiset_refl (array(int,int) start, int b, int e)
-  requires int_compare(b,e);
-  ensures same_multiset(start, start, b, e);
-  { multiset<int> m = obtain_multiset(start, b, e);
-    close(same_multiset(start, start, b, e));
-  }
-
-lemma void int_compare_always(int b, int e)
   requires true;
-  ensures int_compare(b, e);
-{ assume(false); }
+  ensures same_multiset(start, start, b, e);
+{
+   if (b >= e) {
+     close array_multiset(b, e, start, empty_multiset());
+     close array_multiset(b, e, start, empty_multiset());
+     close same_multiset(start, start, b, e);
+   } else {
+     int i = e;
+     close array_multiset(i, e, start, empty_multiset());
+     close array_multiset(i, e, start, empty_multiset());
+     close same_multiset(start, start, i, e);
+     for (; i > b; i--)
+       invariant b <= i &*& i <= e &*& same_multiset(start, start, i, e);
+       decreases (i-b);
+       {
+          open same_multiset(start, start, i, e);
+          assert array_multiset(i, e, start, ?tl);
+          close array_multiset(i-1, e, start, multiset_add(tl, get(start, i-1)));
+          close array_multiset(i-1, e, start, multiset_add(tl, get(start, i-1)));
+          close same_multiset(start, start, i-1, e);
+       }
+   }
+}
 
 /*
 lemma void int_compare_model(int b, int e)
@@ -64,10 +58,62 @@ fixpoint array(int, int) array_swap(array(int, int) start, int i, int j) {
   return set(set(start, j, get(start, i)), i, get(start, j));
 }
 
+
+  
+
 lemma void same_multiset_swap(array(int, int) start, int i, int j, int b, int e)
-  requires true;
+  requires b <= i &*& i < j &*& j < e;
   ensures same_multiset(start, array_swap(start, i, j), b, e);
-{ assume(false); }
+{  array(int, int) end = array_swap(start, i, j);
+   if (b >= e) {
+     close array_multiset(b, e, start, empty_multiset());
+     close array_multiset(b, e, end, empty_multiset());
+     close same_multiset(start, end, b, e);
+  }else{
+     int k = e;
+     close array_multiset(k, e, start, empty_multiset());
+     close array_multiset(k, e, end, empty_multiset());
+     for(; k > j+1; k--)
+     invariant j < k &*& k <= e &*& array_multiset(k, e, start, ?MA) &*& array_multiset(k, e, end, ?MB) &*& MA == MB;
+     decreases (k-j);
+     {
+       close array_multiset(k-1, e, start, multiset_add (MA, get(start, k-1)));
+       // next line uses the theory of array
+       assert (get(start,k-1) == get(end, k-1));
+       close array_multiset(k-1, e, end, multiset_add (MB, get(start, k-1)));
+     }
+     assert array_multiset(k, e, start, ?MA) &*& array_multiset(k, e, end, ?MB);
+     close array_multiset(j, e, start, multiset_add(MA, get(start,j)));
+     // next line uses the theory of array
+     assert (get(start,i) == get(end, j));
+     close array_multiset(j, e, end, multiset_add(MB, get(start,i)));
+     k--;
+     multiset_add_commutes(MA, get(start, i), get(start, j));
+     for(; k > i+1; k--)
+     invariant i < k &*& k <= j &*& array_multiset(k, e, start, ?MA2) &*& array_multiset(k, e, end, ?MB2) &*& multiset_add(MA2, get(start,i)) == multiset_add(MB2, get(start,j));
+     decreases (k-i);
+     {
+     	close array_multiset(k-1, e, start, multiset_add(MA2, get(start,k-1)));
+     	assert (get(start,k-1) == get(end, k-1));
+        close array_multiset(k-1, e, end, multiset_add (MB2, get(start,k-1)));
+        multiset_add_commutes(MA2, get(start, i), get(start, k-1));
+        multiset_add_commutes(MB2, get(start, j), get(start, k-1));
+     }  
+     assert array_multiset(k, e, start, ?MA2) &*& array_multiset(k, e, end, ?MB2);  
+     close array_multiset(i, e, start, multiset_add(MA2, get(start,i)));
+     close array_multiset(i, e, start, multiset_add(MB2, get(start,j)));
+     k--;
+     for(; k > b; k--)
+     invariant b <= k &*& k <= i &*& array_multiset(k, e, start, ?MA3) &*& array_multiset(k, e, end, ?MB3) &*& MA3 == MB3;
+     decreases (k-b);
+     {
+     	close array_multiset(k-1, e, start, multiset_add(MA3, get(start,k-1)));
+     	assert (get(start,k-1) == get(end, k-1));
+        close array_multiset(k-1, e, end, multiset_add(MB3, get(start,k-1)));
+     } 
+     close same_multiset(start, end, b, e);
+     }
+  }
 
 lemma void same_multiset_trans(array(int, int) start, array(int, int) middle, array(int, int) end, int b, int e)
   requires same_multiset(start, middle, b, e) &*& same_multiset(middle, end, b, e);
@@ -95,18 +141,35 @@ lemma void same_multiset_add_at_end(array(int, int) start, array(int, int) end, 
 { assume(false); }
 
 @*/
+
+int select(int* arr, int key)
+//@ requires array_model(arr, ?lo, ?hi, ?m) &*& lo <= key &*& key < hi;
+//@ ensures array_model(arr, lo, hi, m) &*& get(m, key) == result;
+{
+      //@ array_model_get_unfold(arr,lo,hi,m,key);
+      int res = *(arr+key);
+      //@ array_model_get_fold(arr,lo,hi,m,key);
+      return res;
+}
+
+void update(int* arr, int key, int val)
+//@ requires array_model(arr, ?lo, ?hi, ?m) &*& lo <= key &*& key < hi;
+//@ ensures array_model(arr, lo, hi, set(m, key, val));
+{
+      //@ array_model_get_unfold(arr,lo,hi,m,key);
+      *(arr+key) = val;
+      //@ array_model_set_fold(arr,lo,hi,m,key);
+}
+
+
 void swap (int* a, int i, int j)
 //@ requires array_model(a, ?b, ?e, ?start) &*& b <= i &*& i < j &*& j < e;
 //@ ensures array_model(a, b, e, array_swap(start, i, j));
 {
-  //@ array_model_get_unfold(a, b, e, start, i);
-  //@ array_model_get_unfold(a, i+1, e, start, j);
-  int h = *(a+i);
-  a[i] = *(a+j);
-  a[j] = h;
-  //@ array_model_set_fold(a, i+1, e, start, j);
-  //@ array_model_out_of_range(a, b, i, start, j, get(start, i));
-  //@ array_model_set_fold(a, b, e, set(start, j, get(start, i)), i);
+  int ai = select(a, i);
+  int aj = select(a, j);
+  update(a, j, ai);
+  update(a, i, aj);
 }
 
 /*@ predicate minore(array(int,int) arr, int lo, int hi, int bound) =
@@ -195,7 +258,6 @@ int partition (int* a, int lo, int hi)
   int pivot = *(a+hi);
   int i = lo - 1;
   int j;
-  //@ int_compare_always(lo, hi);
   //@ same_multiset_refl(start, lo, hi);
   //@ bound_empty_minore(start,lo,i+1,p);
   //@ bound_empty_majore(start,i+1,lo,p);
@@ -204,10 +266,9 @@ int partition (int* a, int lo, int hi)
       &*& minore(arr,lo,i+1,p) &*& majore(arr,i+1,j,p); @*/
   { 
     // //@ assert (j < hi);
-    //@ array_model_get_unfold(a,lo,hi,arr,j);
-    if (*(a+j) < pivot) {
+    int aj = select(a, j);
+    if (aj < pivot) {
       i++;
-      //@ array_model_get_fold(a,lo,hi,arr,j);
       if (i < j) {
         swap(a, i, j);
         //@ same_multiset_swap(arr, i, j, lo, hi);
@@ -223,7 +284,6 @@ int partition (int* a, int lo, int hi)
       	//@ majore_out(arr, i, j, p);
       }
     }else{
-   	//@ array_model_get_fold(a, lo, hi, arr, j);
    	//@ one_more_bound_majore(arr, i+1, j, p);
     }
     
@@ -317,7 +377,6 @@ void quicksort (int* a, int lo, int hi)
 {
   if (lo > hi){
    //@ empty_sorted(start,lo,hi+1);
-   //@ int_compare_always(lo, hi+1);
    //@ same_multiset_refl(start,lo,hi+1);
    return;
   }else{

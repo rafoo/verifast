@@ -257,9 +257,7 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
     | ProverReal -> ctxt#type_real
     | ProverInductive -> ctxt#type_inductive
     | ProverArray (t1,t2) ->
-       let provt1 = typenode_of_provertype t1 in
-       let provt2 = typenode_of_provertype t2 in
-       ctxt#type_array provt1 provt2
+       ctxt#type_array (ctxt#type_inductive) (ctxt#type_inductive)
 
   (** Convert term [t] from type [proverType] to type [proverType0]. *)
   let apply_conversion proverType proverType0 t =
@@ -267,17 +265,13 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
     | (ProverBool, ProverInductive) -> ctxt#mk_boxed_bool t
     | (ProverInt, ProverInductive) -> ctxt#mk_boxed_int t
     | (ProverReal, ProverInductive) -> ctxt#mk_boxed_real t
-    | (ProverArray (t1,t2), ProverInductive) ->
-       let provt1 = typenode_of_provertype t1 in
-       let provt2 = typenode_of_provertype t2 in
-       ctxt#mk_boxed_array provt1 provt2 t
+    | (ProverArray _, ProverInductive) ->
+       ctxt#mk_boxed_array t
     | (ProverInductive, ProverBool) -> ctxt#mk_unboxed_bool t
     | (ProverInductive, ProverInt) -> ctxt#mk_unboxed_int t
     | (ProverInductive, ProverReal) -> ctxt#mk_unboxed_real t
-    | (ProverInductive, ProverArray (t1,t2)) ->
-       let provt1 = typenode_of_provertype t1 in
-       let provt2 = typenode_of_provertype t2 in
-       ctxt#mk_unboxed_array provt1 provt2 t
+    | (ProverInductive, ProverArray _)->
+       ctxt#mk_unboxed_array t
     | (t1, t2) when t1 = t2 -> t
 
   let mk_symbol s domain range kind =
@@ -338,7 +332,10 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
     (* Using expressions of the types below as values is wrong, but we must not crash here because this function is in some cases called by the type checker before it detects that there is a problem and produces a proper error message. *)
     | ClassOrInterfaceName n -> ProverInt
     | PackageName n -> ProverInt
-    | StructArray (t1,t2) -> ProverArray (provertype_of_type t1, provertype_of_type t2) (* Inutile encore, mais à quoi ça peut me servir ?*)
+    | StructArray (t1,t2) ->
+       let provt1 = provertype_of_type t1 in
+       let provt2 = provertype_of_type t2 in
+       ProverArray (provt1,provt2)
 
   let typenode_of_type t = typenode_of_provertype (provertype_of_type t)
 
@@ -3118,9 +3115,14 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
           let args = List.map (fun (e, t0) -> let t = instantiate_type tpenv t0 in box (checkt e t) t t0) pts in
           let t = instantiate_type tpenv t0 in
           begin match g,t,args with
-          | "set", StructArray _, [e0;e1;e2] -> (unbox (StoreArray(l, e0, e1, e2)) t0 t, t, None)
-          | "get", _, [e0;e1] -> (unbox (SelectArray(l, e0, e1)) t0 t, t, None)
+          | "set", StructArray _, [e0;e1;e2] ->
+             (* Printf.printf "caught set\n"; flush stdout; *)
+             (unbox (StoreArray(l, e0, e1, e2)) t0 t, t, None)
+          | "get", _, [e0;e1] ->
+             (* Printf.printf "caught get\n"; flush stdout; *)
+             (unbox (SelectArray(l, e0, e1)) t0 t, t, None)
           | "constant_array", StructArray (td,_), [e] ->
+             (* Printf.printf "caught constant\n"; flush stdout; *)
              (unbox (ConstantArray(l, provertype_of_type td, e)) t0 t, t, None)
           | _ -> (unbox (WPureFunCall (l, g, targs, args)) t0 t, t, None)
           end

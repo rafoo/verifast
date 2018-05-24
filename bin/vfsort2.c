@@ -144,6 +144,23 @@ void swap (int* a, int i, int j)
         open minore(a, lo, lo, bound, _);
     }}
 
+    lemma void clear_majore(array(int, int) a, int lo, int hi, int bound, nat n)
+    requires majore(a, lo, hi, bound) &*& int_diff(lo, hi, n);
+    ensures true;
+    {
+      switch(n) {
+        case O: {
+          open majore(a, lo, hi, bound);
+          open int_diff(lo, hi, n);
+        }
+        case S(p): {
+          open majore(a, lo, hi, bound);
+          open int_diff(lo, hi, n);
+          clear_majore(a, lo+1, hi, bound, p);
+        }
+      }
+    }
+
     lemma void minore_select(array(int, int) a, int lo, int hi, int bound, int i, nat l)
     requires minore(a, lo, hi, bound, _) &*& lo <= i &*& i < hi &*& int_diff(i, hi, l);
     ensures minore(a, lo, hi, bound, _) &*& int_diff(i, hi, l) &*& select(a, i) <= bound;
@@ -346,7 +363,19 @@ void swap (int* a, int i, int j)
     	requires majore(arr,lo,hi,bound) &*& j <= hi;
     	ensures majore(arr,lo,j,bound);
     	{
-    	  assume(false);
+    	  if (lo >= hi) {
+    	     open majore(arr,lo,hi,bound);
+    	     close majore(arr,lo,j,bound);
+    	  } else if (lo >= j) {
+    	     close majore(arr,lo,j,bound);
+    	     int_diff_always(lo, hi);
+    	     assert int_diff(lo, hi, ?n);
+    	     clear_majore(arr, lo, hi, bound, n);
+    	  } else {
+    	     open majore(arr,lo,hi,bound);
+    	     majore_top_less(arr, lo+1, hi, bound, j);
+    	     close majore(arr,lo,j,bound);
+    	  }
     	}
     	
     lemma void majore_bot_less(array(int,int) arr,int lo, int hi, int bound)

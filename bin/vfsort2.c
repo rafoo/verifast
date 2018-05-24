@@ -13,7 +13,6 @@ lemma void same_multiset_swap(array(int, int) start, int i, int j, int b, int e)
   requires b <= i &*& i < j &*& j < e;
   ensures same_multiset(start, array_swap(start, i, j), b, e);
 {  
-   assume(false);
    array(int, int) end = array_swap(start, i, j);
    if (b >= e) {
      close array_multiset(b, e, start, empty_multiset());
@@ -68,17 +67,17 @@ lemma void same_multiset_swap(array(int, int) start, int i, int j, int b, int e)
 lemma void swap_out(array(int, int) arr, int i, int j, int k)
   requires k != i &*& k != j;
   ensures select(array_swap(arr, i, j), k) == select(arr, k);
-{ assume (false);}
+{ }
 
 lemma void swap_in_i(array(int, int) arr, int i, int j)
   requires true;
   ensures select(array_swap(arr, i, j), i) == select(arr, j);
-{ assume (false);}
+{ }
 
 lemma void swap_in_j(array(int, int) arr, int i, int j)
   requires true;
   ensures select(array_swap(arr, i, j), j) == select(arr, i);
-{ assume (false);}
+{ }
 
 @*/
 

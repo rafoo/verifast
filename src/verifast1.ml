@@ -3115,10 +3115,10 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
           let args = List.map (fun (e, t0) -> let t = instantiate_type tpenv t0 in box (checkt e t) t t0) pts in
           let t = instantiate_type tpenv t0 in
           begin match g,t,args with
-          | "set", StructArray _, [e0;e1;e2] ->
+          | "store", StructArray _, [e0;e1;e2] ->
              (* Printf.printf "caught set\n"; flush stdout; *)
              (unbox (StoreArray(l, e0, e1, e2)) t0 t, t, None)
-          | "get", _, [e0;e1] ->
+          | "select", _, [e0;e1] ->
              (* Printf.printf "caught get\n"; flush stdout; *)
              (unbox (SelectArray(l, e0, e1)) t0 t, t, None)
           | "constant_array", StructArray (td,_), [e] ->

@@ -395,8 +395,15 @@ void swap (int* a, int i, int j)
     	if(hi+1 <= lo){
     	  open majore(arr,lo,hi,bound);
     	  close majore(arr,lo,hi+1,bound);
-    	}else{
-    	  assume(false);
+    	} else if (hi == lo) {
+    	  open majore(arr,lo,hi,bound);
+    	  close majore(arr,lo+1,hi+1,bound);
+    	  close majore(arr,lo,hi+1,bound);
+    	} else {
+          assert lo < hi;
+    	  open majore(arr,lo,hi,bound);
+    	  majore_top_more(arr,lo+1,hi,bound);
+    	  close majore(arr,lo,hi+1,bound);
     	}
     }
     

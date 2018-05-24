@@ -2,7 +2,7 @@
 
 inductive multiset<t> = mk_multiset (array(t, nat));
 
-fixpoint nat multiset_get<t>(multiset<t> m, t i) {
+fixpoint nat multiset_select<t>(multiset<t> m, t i) {
   switch(m) {
     case mk_multiset(a): return select(a, i);
   }
@@ -15,13 +15,13 @@ fixpoint multiset<t> empty_multiset<t>() {
 fixpoint multiset<t> multiset_add<t>(multiset<t> m, t i) {
   switch(m) {
     case mk_multiset(a):
-      return mk_multiset(set(a, i, S(select(a, i))));
+      return mk_multiset(store(a, i, S(select(a, i))));
   }
 }
 
 lemma t multiset_ext<t>(multiset<t> m1, multiset<t> m2)
   requires m1 != m2;
-  ensures multiset_get(m1, result) != multiset_get(m2, result);
+  ensures multiset_select(m1, result) != multiset_select(m2, result);
 { 
    switch (m1) {
      case mk_multiset(a1): {
@@ -41,9 +41,9 @@ lemma_auto (multiset_get(empty_multiset(), i)) void get_empty(int i)
 { }
 */
 
-lemma_auto (multiset_get(multiset_add(m, i), j)) void get_add<t>(multiset<t> m, t i, t j)
+lemma_auto (multiset_select(multiset_add(m, i), j)) void select_add<t>(multiset<t> m, t i, t j)
   requires true;
-  ensures multiset_get(multiset_add(m, i), j) == ((i == j) ? S(multiset_get(m, i)) : multiset_get(m ,j));
+  ensures multiset_select(multiset_add(m, i), j) == ((i == j) ? S(multiset_select(m, i)) : multiset_select(m ,j));
 { 
    assume (false);
    /*switch (m) {
@@ -191,10 +191,10 @@ lemma void regular_multiset_add<a>(multiset<a> MA, multiset<a> MB, a x)
      if( MA != MB){
        a t = multiset_ext(MA,MB);
        
-       	 get_add(MA, x, t);
-       	 get_add(MB, x, t);
+       	 select_add(MA, x, t);
+       	 select_add(MB, x, t);
        if (x == t){
-         inj_S(multiset_get(MA,x),multiset_get(MB,x));
+         inj_S(multiset_select(MA,x),multiset_select(MB,x));
        }
          
      }
@@ -307,7 +307,7 @@ lemma void same_multiset_add_at_end(array(int, int) start, array(int, int) end, 
 }
 
 lemma int array_multiset_assoc(array(int, int) a, int b, int e, int v, nat l)
-requires array_multiset(b, e, a, ?m) &*& multiset_get(m, v) != O &*& int_diff(b, e, l);
+requires array_multiset(b, e, a, ?m) &*& multiset_select(m, v) != O &*& int_diff(b, e, l);
 ensures array_multiset(b, e, a, m) &*& select(a, result) == v &*& b <= result &*& result < e;
 {
    open int_diff(b, e, l);
@@ -331,9 +331,9 @@ ensures array_multiset(b, e, a, m) &*& select(a, result) == v &*& b <= result &*
    }
 }
 
-lemma void array_multiset_get(array(int, int) a, int b, int e, int i, nat l)
+lemma void array_multiset_select(array(int, int) a, int b, int e, int i, nat l)
 requires b <= i &*& i < e &*& array_multiset(b, e, a, ?m) &*& int_diff(b, e, l);
-ensures multiset_get(m, select(a, i)) != O &*& array_multiset(b, e, a, m) &*& int_diff(b, e, l);
+ensures multiset_select(m, select(a, i)) != O &*& array_multiset(b, e, a, m) &*& int_diff(b, e, l);
 {
    switch(l)
    {
@@ -347,7 +347,7 @@ ensures multiset_get(m, select(a, i)) != O &*& array_multiset(b, e, a, m) &*& in
            open array_multiset(b, e, a, m);
         } else {
            open array_multiset(b, e, a, m);
-           array_multiset_get(a, b+1, e, i, p);
+           array_multiset_select(a, b+1, e, i, p);
         }
       }
    }
@@ -360,7 +360,7 @@ lemma int same_multiset_assoc(array(int, int) start, array(int, int) end, int b,
    open same_multiset(start, end, b, e);
    int_diff_always(b, e);
    assert int_diff(b, e, ?l);
-   array_multiset_get(start, b, e, i, l);
+   array_multiset_select(start, b, e, i, l);
    int j = array_multiset_assoc(end, b, e, select(start, i), l);
    close same_multiset(start, end, b, e);
    return j;

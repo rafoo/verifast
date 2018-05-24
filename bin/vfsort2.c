@@ -3,7 +3,7 @@
 //@ #include "multiset2.gh"
 
 /*@
-
+  
 fixpoint array(int, int) array_swap(array(int, int) start, int i, int j) {
   return store(store(start, j, select(start, i)), i, select(start, j));
 }

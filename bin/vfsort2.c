@@ -252,9 +252,19 @@ void swap (int* a, int i, int j)
     lemma void one_more_bound_majore(array(int,int) arr, int lo, int hi, int bound)
     	requires majore(arr,lo,hi,bound) &*& select(arr,hi) >= bound;
     	ensures majore(arr,lo,hi+1,bound);
-    	{ assume(false);}
-  
-          
+    	{ if (lo > hi) {
+    	    open majore(arr,lo,hi,bound);
+    	    close majore(arr,lo,hi+1,bound);
+    	  } else if (lo == hi) {
+    	    open majore(arr,lo,hi,bound);
+    	    close majore(arr,lo+1,hi+1,bound);
+    	    close majore(arr,lo,hi+1,bound);
+    	  } else {
+    	    open majore(arr,lo,hi,bound);
+    	    one_more_bound_majore(arr,lo+1,hi,bound);
+    	    close majore(arr,lo,hi+1,bound);
+    	  }
+        }
      
     lemma void one_more_bot_bound_majore(array(int,int) arr, int lo, int hi, int bound, int i, int j)
     	requires majore(arr,lo,hi,bound) &*& i == lo &*& j == hi &*& select(arr,j) <= bound;

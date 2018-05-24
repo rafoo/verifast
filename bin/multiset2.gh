@@ -45,9 +45,8 @@ lemma_auto (multiset_select(multiset_add(m, i), j)) void select_add<t>(multiset<
   requires true;
   ensures multiset_select(multiset_add(m, i), j) == ((i == j) ? S(multiset_select(m, i)) : multiset_select(m ,j));
 { 
-   assume (false);
-   /*switch (m) {
-     case mk_multiset(a): {}}*/
+   switch (m) {
+     case mk_multiset(a): {}}
 }
 
 predicate array_multiset_bis(int b, int e, array(int,int) arr; multiset<int> m, nat length) =
@@ -64,54 +63,8 @@ predicate array_multiset(int b, int e, array(int,int) arr; multiset<int> m) =
 predicate same_multiset(array(int,int) a1, array(int,int) a2, int b, int e) =
   array_multiset(b, e, a1, ?m) &*& array_multiset(b, e, a2, m);
 
-predicate int_diff(int b, int e; nat length) =
-  b >= e ? length == O : (int_diff(b+1, e, ?pred) &*& length == S(pred));
 
-lemma void int_diff_always(int b, int e)
-requires true;
-ensures int_diff(b, e, _);
-{
-  if (b >= e) {
-    close int_diff(b, e, O);
-  } else {
-    int i = e;
-    close int_diff(e, e, O);
-    for (; i > b; i--)
-    invariant b <= i &*& i <= e &*& int_diff(i, e, ?l);
-    decreases i - b;
-    {
-       close int_diff(i-1, e, S(l));
-    }
-  }
-}
 
-lemma void int_diff_clear(int b, int e, nat l)
-requires int_diff(b, e, l);
-ensures true;
-{
-  open int_diff(b, e, l);
-  switch(l) {
-    case O:
-    case S(p): int_diff_clear(b+1, e, p);
-  }
-}
-
-lemma void int_diff_translate(int b, int e, int delta, nat l)
-requires int_diff(b, e, l);
-ensures int_diff(b+delta, e+delta, l);
-{
-  switch(l) {
-    case O: {
-      open int_diff(b, e, l);
-      close int_diff(b+delta, e+delta, l);
-    }
-    case S(p): {
-      open int_diff(b, e, l);
-      int_diff_translate(b+1, e, delta, p);
-      close int_diff(b+delta, e+delta, l);
-    }
-  }
-}
 
 lemma void array_multiset_is_notbis(int b, int e, array(int,int) a, nat l)
 requires array_multiset_bis(b, e, a, ?m, l) &*& int_diff(b, e, l);
@@ -313,7 +266,6 @@ ensures array_multiset(b, e, a, m) &*& select(a, result) == v &*& b <= result &*
    open int_diff(b, e, l);
    switch(l) {
      case O: {
-      assume (false);
       open array_multiset(b, e, a, m);
       assert false;
      }

@@ -376,7 +376,7 @@ void swap (int* a, int i, int j)
 @*/
 
 int partition (int* a, int lo, int hi)
-//@ requires array_model(a, lo, hi, ?start) &*& lo <= hi &*& pointsto(a+hi,?p) &*& p == select(start, hi);
+//@ requires array_model(a, lo, hi, ?start) &*& lo <= hi &*& *(a+hi) |-> ?p &*& p == select(start, hi);
 /*@ ensures array_model(a, lo, hi+1, ?end) &*& same_multiset(start, end, lo, hi+1) &*&
       lo <= result &*& result <= hi &*&
       select(end, result) == p &*&
@@ -450,8 +450,7 @@ int partition (int* a, int lo, int hi)
     lemma void ensure_empty_array(int*a, int b,array(int,int) arr)
     	requires array_model(a,b,b,arr);
     	ensures true;
-    	{open array_model(a,b,b,arr);
-    	 open array_forall(a,b,b,_);}
+    	{open array_model(a,b,b,arr);}
     	
     lemma void same_multi_etend(array(int,int) end, array(int,int) end1, int b, int e)
     	requires same_multiset(end,end1,b,e);
@@ -462,7 +461,7 @@ int partition (int* a, int lo, int hi)
     	requires sorted(end,b,e) &*& p < b;
     	ensures sorted(store(end,p,v),b,e);
     	{assume(false);}
-    	
+    	/*
     lemma void same_multi_ret(array(int,int) end, array(int,int) end1, int b, int e)
     	requires same_multiset(end,store(end1,b-1, select(end,b-1)),b-1,e);
     	ensures same_multiset(end,end1,b,e);
@@ -476,14 +475,14 @@ int partition (int* a, int lo, int hi)
     lemma void concat_array2(int*a, array(int,int)res, int b0, int e0, int e1)
     	requires array_model(a,b0,e0,res) &*& array_model(a,e0,e1,res);// &*& same_multiset(res,a0,b0,e0) &*& same_multiset(res,a1,b1,e1);
     	ensures array_model(a,b0,e1,res);// &*& same_multiset(res,?end,b0,e1);
-    	{ assume(false);}
+    	{ assume(false);}*/
     	
     lemma void concat_array3(int*a, array(int,int) end, array(int,int) a0, array(int,int) a1, int b0, int e0, int e1, int bound)
     	requires array_model(a,b0,e0,a0) &*& array_model(a,e0,e1,a1) &*& same_multiset(end,a0,b0,e0) &*& same_multiset(end,a1,e0,e1) 
     		&*& sorted(a0,b0,e0) &*& sorted(a1,e0+1,e1) &*& minore(end,b0,e0,bound,_) &*& majore(end,e0+1,e1,bound) &*& bound == select(end,e0);
     	ensures array_model(a,b0,e1,?res) &*& same_multiset(res,end,b0,e1) &*& sorted(res,b0,e1);
     	{ assume(false);}
-        
+        /*
     lemma void concat_sorted(array(int,int)arr, array(int,int)arr0, array(int,int)arr1, int b0, int e0, int b1, int e1,int bound)
         requires same_multiset(arr,arr0,b0,e0) &*& same_multiset(arr,arr1,b1,e1) &*& sorted(arr0,b0,e0) &*& sorted(arr1,b1,e1) &*& minore(arr, b0, e0, bound,_) &*& majore(arr, b1, e1, bound) &*& e0 + 1 == b1 &*& bound == select(arr,e0);
         ensures sorted(arr,b0,e1);
@@ -492,7 +491,7 @@ int partition (int* a, int lo, int hi)
      lemma void concat_sorted2(array(int,int)arr, array(int,int)arr0, array(int,int)arr1, int b0, int e0, int b1, int e1,int bound)
         requires same_multiset(arr,arr0,b0,e0) &*& same_multiset(arr,arr1,b1,e1) &*& sorted(arr0,b0,e0) &*& sorted(arr1,b1,e1) &*& minore(arr, b0, e0, bound,_) &*& majore(arr, b1, e1, bound) &*& e0 + 1 == b1 &*& bound == select(arr,e0);
         ensures sorted(arr,b0,e1);
-        { assume(false);}
+        { assume(false);}*/
                      
      lemma void multiset_trans(array(int,int) arr, array(int,int) arr0, array(int,int) arr1, int b, int e)
      	requires same_multiset(arr0,arr,b,e) &*& same_multiset(arr1,arr,b,e);

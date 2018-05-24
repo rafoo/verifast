@@ -3123,7 +3123,7 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
              (unbox (SelectArray(l, e0, e1)) t0 t, t, None)
           | "constant_array", StructArray (td,_), [e] ->
              (* Printf.printf "caught constant\n"; flush stdout; *)
-             (unbox (ConstantArray(l, provertype_of_type td, e)) t0 t, t, None)
+             (unbox (ConstantArray(l, ProverInductive, e)) t0 t, t, None)
           | _ -> (unbox (WPureFunCall (l, g, targs, args)) t0 t, t, None)
           end
         | None ->

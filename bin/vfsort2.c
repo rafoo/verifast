@@ -5,7 +5,7 @@
 /*@
 
 fixpoint array(int, int) array_swap(array(int, int) start, int i, int j) {
-  return set(set(start, j, select(start, i)), i, select(start, j));
+  return store(store(start, j, select(start, i)), i, select(start, j));
 }
   
 
@@ -94,7 +94,7 @@ int select_c(int* arr, int key)
 
 void update(int* arr, int key, int val)
 //@ requires array_model(arr, ?lo, ?hi, ?m) &*& lo <= key &*& key < hi;
-//@ ensures array_model(arr, lo, hi, set(m, key, val));
+//@ ensures array_model(arr, lo, hi, store(m, key, val));
 {
       //@ array_model_select_unfold(arr,lo,hi,m,key);
       *(arr+key) = val;
@@ -455,16 +455,16 @@ int partition (int* a, int lo, int hi)
     	
     lemma void same_multi_etend(array(int,int) end, array(int,int) end1, int b, int e)
     	requires same_multiset(end,end1,b,e);
-    	ensures same_multiset(end,set(end1,b-1, select(end,b-1)),b-1,e);
+    	ensures same_multiset(end,store(end1,b-1, select(end,b-1)),b-1,e);
     	{assume(false);}
     	
     lemma void sorted_etend(array(int,int) end,int b, int e,int p,int v)
     	requires sorted(end,b,e) &*& p < b;
-    	ensures sorted(set(end,p,v),b,e);
+    	ensures sorted(store(end,p,v),b,e);
     	{assume(false);}
     	
     lemma void same_multi_ret(array(int,int) end, array(int,int) end1, int b, int e)
-    	requires same_multiset(end,set(end1,b-1, select(end,b-1)),b-1,e);
+    	requires same_multiset(end,store(end1,b-1, select(end,b-1)),b-1,e);
     	ensures same_multiset(end,end1,b,e);
     	{assume(false);}
     	
@@ -523,7 +523,7 @@ void quicksort (int* a, int lo, int hi)
    ////@ concat_sorted(end, end0, end1, lo, p, p+1, hi+1, get(end,p));
    //@ same_multi_etend(end,end1, p+1, hi+1);
    //@ sorted_etend(end1, p+1, hi+1, p, select(end,p));
-   //@ concat_array3(a,end,end0,set(end1,p, select(end,p)),lo,p,hi+1, select(end,p));
+   //@ concat_array3(a,end,end0,store(end1,p, select(end,p)),lo,p,hi+1, select(end,p));
    //@ assert array_model(a,lo,hi+1,?res);
    //@ multiset_trans(end,start,res, lo, hi+1);
    /*/@ same_multi_ret(end, end1, p+1, hi+1);

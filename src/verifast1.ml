@@ -2769,6 +2769,16 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
       in
       (unbox (WPureFunValueCall (l, w, ws)) tp, tp, None)
     in
+    let array_theory l g t args targs t0 =
+      match g,t,args with
+      | "store", StructArray _, [e0;e1;e2] ->
+         (unbox (StoreArray(l, e0, e1, e2)) t0 t, t, None)
+      | "select", _, [e0;e1] ->
+         (unbox (SelectArray(l, e0, e1)) t0 t, t, None)
+      | "constant_array", StructArray (td,_), [e] ->
+         (unbox (ConstantArray(l, ProverInductive, e)) t0 t, t, None)
+      | _ -> (unbox (WPureFunCall (l, g, targs, args)) t0 t, t, None)
+    in
     match e with
       True l -> (e, boolt, None)
     | False l -> (e, boolt, None)
@@ -3115,18 +3125,9 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
           in
           let args = List.map (fun (e, t0) -> let t = instantiate_type tpenv t0 in box (checkt e t) t t0) pts in
           let t = instantiate_type tpenv t0 in
-          begin match g,t,args with
-          | "store", StructArray _, [e0;e1;e2] ->
-             (* Printf.printf "caught set\n"; flush stdout; *)
-             (unbox (StoreArray(l, e0, e1, e2)) t0 t, t, None)
-          | "select", _, [e0;e1] ->
-             (* Printf.printf "caught get\n"; flush stdout; *)
-             (unbox (SelectArray(l, e0, e1)) t0 t, t, None)
-          | "constant_array", StructArray (td,_), [e] ->
-             (* Printf.printf "caught constant\n"; flush stdout; *)
-             (unbox (ConstantArray(l, ProverInductive, e)) t0 t, t, None)
-          | _ -> (unbox (WPureFunCall (l, g, targs, args)) t0 t, t, None)
-          end
+          if not disable_array_theory
+          then array_theory l g t args targs t0
+          else unbox (WPureFunCall (l, g, targs, args)) t0 t, t, None
         | None ->
            static_error l (match language with CLang -> "No such function: " ^ g | Java -> "No such method or function: " ^ g) None
       in

@@ -27,7 +27,7 @@ lemma t multiset_ext<t>(multiset<t> m1, multiset<t> m2)
      case mk_multiset(a1): {
        switch (m2) {
          case mk_multiset(a2): {
-           return array_ext(a1, a2);
+           return array_extensionality(a1, a2);
          }       
        }     
      }

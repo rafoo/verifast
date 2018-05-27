@@ -11,7 +11,7 @@ ensures a == b;
 fixpoint u select<t,u> (array(t,u) arr, t x);
 fixpoint array(t, u) store<t, u> (array(t, u) arr, t x, u y);
 fixpoint array(t, u) constant_array<t,u> (u v);
-fixpoint t ext<t, u> (array(t, u) a, array(t, u) b);
+fixpoint t array_ext<t, u> (array(t, u) a, array(t, u) b);
 
 
 // lemma_auto (get(constant_array<t,u>(v),i)) void constant_get<t,u> (u v, t i)
@@ -19,12 +19,11 @@ lemma void constant_select<t,u> (u v, t i);
   requires true;
   ensures select (constant_array<t,u>(v), i) == v;
 
-lemma t array_ext<t,u>(array(t,u) A, array(t,u) B)
+lemma t array_extensionality<t,u>(array(t,u) A, array(t,u) B)
   requires A != B;
   ensures select(A, result) != select(B, result);
 {
-   assume (false);
-   return ext(A, B);
+   return array_ext(A, B);
 }
 
 // lemma_auto (get(set(arr, x, y), z)) void get_set<t,u> (array(t,u) arr, t x, u y, t z)
@@ -147,21 +146,21 @@ lemma void array_model_select_unfold(int* a, int b, int e, array(int,int) arr, i
 lemma void array_model_set_fold(int* a, int b, int e, array(int,int) arr, int i)
   requires array_model(a, b, i, arr) &*& a[i] |-> ?v &*& array_model(a, i+1, e, arr) &*& b <= i &*& i < e;
   ensures array_model(a, b, e, store(arr, i, v));
-{ assume(false); }
+{ assume (false); }
 
 
 // This is a consequence of array_model_set_fold if we have extensionality
 lemma void array_model_select_fold(int* a, int b, int e, array(int,int) arr, int i)
   requires array_model(a, b, i, arr) &*& a[i] |-> select(arr, i) &*& array_model(a, i+1, e, arr) &*& b <= i &*& i < e;
   ensures array_model(a, b, e, arr);
-{  if (arr != store(arr, i, select(arr, i))) {
-    	int j = array_ext(arr, store(arr, i, select(arr, i)));
+{  /*if (arr != store(arr, i, select(arr, i))) {
+    	int j = array_extensionality(arr, store(arr, i, select(arr, i)));
     	assert select(arr, j) != select(store(arr, i, select(arr, i)), j);
     	select_set(arr, i, select(arr, i), j);
     	assert false;
-    } else {
+    } else {*/
     	array_model_set_fold(a, b, e, arr, i);
-    }
+    //}
 }
 
 

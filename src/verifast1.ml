@@ -2770,13 +2770,15 @@ module VerifyProgram1(VerifyProgramArgs: VERIFY_PROGRAM_ARGS) = struct
       (unbox (WPureFunValueCall (l, w, ws)) tp, tp, None)
     in
     let array_theory l g t args targs t0 =
-      match g,t,args with
-      | "store", StructArray _, [e0;e1;e2] ->
+      match g, args with
+      | "store", [e0; e1; e2] ->
          (unbox (StoreArray(l, e0, e1, e2)) t0 t, t, None)
-      | "select", _, [e0;e1] ->
+      | "select", [e0; e1] ->
          (unbox (SelectArray(l, e0, e1)) t0 t, t, None)
-      | "constant_array", StructArray (td,_), [e] ->
-         (unbox (ConstantArray(l, ProverInductive, e)) t0 t, t, None)
+      | "constant_array", [e] ->
+         (unbox (ConstantArray(l, e)) t0 t, t, None)
+      | "array_ext", [e0; e1] ->
+         (unbox (ExtArray(l, e0, e1)) t0 t, t, None)
       | _ -> (unbox (WPureFunCall (l, g, targs, args)) t0 t, t, None)
     in
     match e with
@@ -5520,8 +5522,10 @@ let check_if_list_is_defined () =
        evs state [e0;e1] $. fun state [v1; v2] -> cont state (ctxt#mk_select v1 v2)
     | StoreArray (_, e0, e1, e2) ->
       evs state [e0; e1; e2] $. fun state [v1; v2; v3] -> cont state (ctxt#mk_store v1 v2 v3)
-    | ConstantArray (_, t, e) ->
-       ev state e $. fun state v -> cont state (ctxt#mk_constant (typenode_of_provertype t) v)
+    | ConstantArray (_, e) ->
+       ev state e $. fun state v -> cont state (ctxt#mk_constant ctxt#type_inductive v)
+    | ExtArray(_, e0, e1) ->
+       evs state [e0; e1] $. fun state [v0; v1] -> cont state (ctxt#mk_array_ext v0 v1)
     | _ -> static_error (expr_loc e) "Construct not supported in this position." None
 
   let rec eval_core ass_term read_field env e =

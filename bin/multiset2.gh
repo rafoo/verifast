@@ -67,10 +67,9 @@ predicate same_multiset(array(int,int) a1, array(int,int) a2, int b, int e) =
 
 
 lemma void array_multiset_is_notbis(int b, int e, array(int,int) a, nat l)
-requires array_multiset_bis(b, e, a, ?m, l) &*& int_diff(b, e, l);
+requires array_multiset_bis(b, e, a, ?m, l) &*& int_diff(b, e, l) == true;
 ensures array_multiset(b, e, a, m);
 {
-  open int_diff(b, e, l);
   switch(l) {
     case O: {
       open array_multiset_bis(b, e, a, m, l);
@@ -85,10 +84,9 @@ ensures array_multiset(b, e, a, m);
 }
 
 lemma void array_multiset_is_bis(int b, int e, array(int,int) a, nat l)
-requires array_multiset(b, e, a, ?m) &*& int_diff(b, e, l);
+requires array_multiset(b, e, a, ?m) &*& int_diff(b, e, l) == true;
 ensures array_multiset_bis(b, e, a, m, l);
 {
-  open int_diff(b, e, l);
   switch(l) {
     case O: {
       open array_multiset(b, e, a, m);
@@ -260,10 +258,9 @@ lemma void same_multiset_add_at_end(array(int, int) start, array(int, int) end, 
 }
 
 lemma int array_multiset_assoc(array(int, int) a, int b, int e, int v, nat l)
-requires array_multiset(b, e, a, ?m) &*& multiset_select(m, v) != O &*& int_diff(b, e, l);
+requires array_multiset(b, e, a, ?m) &*& multiset_select(m, v) != O &*& int_diff(b, e, l) == true;
 ensures array_multiset(b, e, a, m) &*& select(a, result) == v &*& b <= result &*& result < e;
 {
-   open int_diff(b, e, l);
    switch(l) {
      case O: {
       open array_multiset(b, e, a, m);
@@ -271,7 +268,6 @@ ensures array_multiset(b, e, a, m) &*& select(a, result) == v &*& b <= result &*
      }
      case S(p): {
         if (select(a, b) == v) {
-          int_diff_clear(b+1, e, p);
           return b;
         } else {
           open array_multiset(b, e, a, m);
@@ -284,8 +280,8 @@ ensures array_multiset(b, e, a, m) &*& select(a, result) == v &*& b <= result &*
 }
 
 lemma void array_multiset_select(array(int, int) a, int b, int e, int i, nat l)
-requires b <= i &*& i < e &*& array_multiset(b, e, a, ?m) &*& int_diff(b, e, l);
-ensures multiset_select(m, select(a, i)) != O &*& array_multiset(b, e, a, m) &*& int_diff(b, e, l);
+requires b <= i &*& i < e &*& array_multiset(b, e, a, ?m) &*& int_diff(b, e, l) == true;
+ensures multiset_select(m, select(a, i)) != O &*& array_multiset(b, e, a, m);
 {
    switch(l)
    {
@@ -294,7 +290,6 @@ ensures multiset_select(m, select(a, i)) != O &*& array_multiset(b, e, a, m) &*&
         assert false;
       }
       case S(p): {
-        open int_diff(b, e, l);
         if (b == i) {
            open array_multiset(b, e, a, m);
         } else {
@@ -310,8 +305,7 @@ lemma int same_multiset_assoc(array(int, int) start, array(int, int) end, int b,
   ensures same_multiset(start, end, b, e) &*& select(start, i) == select(end, result) &*& b <= result &*& result < e;
 {
    open same_multiset(start, end, b, e);
-   int_diff_always(b, e);
-   assert int_diff(b, e, ?l);
+   nat l = int_diff_always(b, e);
    array_multiset_select(start, b, e, i, l);
    int j = array_multiset_assoc(end, b, e, select(start, i), l);
    close same_multiset(start, end, b, e);

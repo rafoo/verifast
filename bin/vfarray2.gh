@@ -87,40 +87,35 @@ lemma void array_model_init(int* a, int length)
   { assume (false);}
 
 lemma void close_array_model_right(nat n)
-requires array_model(?a, ?b, ?e, ?arr) &*& b <= e &*& int_diff(b, e, n) &*& a[e] |-> select(arr, e);
-ensures array_model(a, b, e+1, arr) &*& int_diff(b, e, n);
+requires array_model(?a, ?b, ?e, ?arr) &*& b <= e &*& int_diff(b, e, n) == true &*& a[e] |-> select(arr, e);
+ensures array_model(a, b, e+1, arr);
 {
   switch(n) {
     case O: {
-      open int_diff(b, e, n);
       open array_model(a, b, e, arr);
       assert (b == e);
       close array_model(a, e+1, e+1, arr);
       close array_model(a, b, e+1, arr);
     }
     case S(p): {
-      open int_diff(b, e, n);
       open array_model(a, b, e, arr);
       close_array_model_right(p);
       close array_model(a, b, e+1, arr);
-      close int_diff(b, e, n);
     }
   }
 }
 
 lemma void array_model_init_diff(int* a, int length, nat n)
-  requires ints((void*)a, length, _) &*& length >= 0 &*& int_diff(0, length, n);
-  ensures array_model(a, 0, length, _) &*& int_diff(0, length, n);
+  requires ints((void*)a, length, _) &*& length >= 0 &*& int_diff(0, length, n) == true;
+  ensures array_model(a, 0, length, _);
 { 
    switch (n) {
      case (O) : {
-        open int_diff(0,length,n);
      	empty_array(a,0,constant_array<int,int>(0));
      }
      case (S (p)) : 
      {
      	open_ints_right (p);
-        open int_diff(0,length,n);
      	int_diff_translate(1,length,-1,p);
      	array_model_init_diff(a,length-1,p);
      	assert a[length-1] |-> ?v;
@@ -128,7 +123,6 @@ lemma void array_model_init_diff(int* a, int length, nat n)
         array_model_out_of_range(a, 0, length-1, arr, length-1, v);
      	close_array_model_right(p);
      	int_diff_translate(0,length-1,1,p);
-     	close int_diff(0, length, n);
 //     	close array_model(a, 0, length, constant_array<int,int>(0));
      }
      }

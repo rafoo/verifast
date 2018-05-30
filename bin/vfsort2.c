@@ -145,25 +145,23 @@ void swap (int* a, int i, int j)
     }}
 
     lemma void clear_majore(array(int, int) a, int lo, int hi, int bound, nat n)
-    requires majore(a, lo, hi, bound) &*& int_diff(lo, hi, n);
+    requires majore(a, lo, hi, bound) &*& int_diff(lo, hi, n) == true;
     ensures true;
     {
       switch(n) {
         case O: {
           open majore(a, lo, hi, bound);
-          open int_diff(lo, hi, n);
         }
         case S(p): {
           open majore(a, lo, hi, bound);
-          open int_diff(lo, hi, n);
           clear_majore(a, lo+1, hi, bound, p);
         }
       }
     }
 
     lemma void minore_select(array(int, int) a, int lo, int hi, int bound, int i, nat l)
-    requires minore(a, lo, hi, bound, _) &*& lo <= i &*& i < hi &*& int_diff(i, hi, l);
-    ensures minore(a, lo, hi, bound, _) &*& int_diff(i, hi, l) &*& select(a, i) <= bound;
+    requires minore(a, lo, hi, bound, _) &*& lo <= i &*& i < hi &*& int_diff(i, hi, l) == true;
+    ensures minore(a, lo, hi, bound, _) &*& select(a, i) <= bound;
     {
        switch(l) {
          case O: {
@@ -175,12 +173,9 @@ void swap (int* a, int i, int j)
             if(i == hi-1) {
               close minore(a, lo, hi, bound, _);
             } else {
-              open int_diff(i, hi, l);
               int_diff_translate(i+1, hi, -1, p);
               minore_select(a, lo, hi-1, bound, i, p);
               close minore(a, lo, hi, bound, _);
-              int_diff_translate(i, hi-1, 1, p);
-              close int_diff(i, hi, l);
             }
          }
        }
@@ -233,26 +228,22 @@ void swap (int* a, int i, int j)
     }
 
     lemma void minore_same_multiset(array(int,int) start, array(int, int) end, int lo, int hi, int bound, int i, nat length)
-    requires same_multiset(start, end, lo, hi) &*& minore(start, lo, hi, bound, _) &*& int_diff(lo, i, length) &*& i <= hi;
+    requires same_multiset(start, end, lo, hi) &*& minore(start, lo, hi, bound, _) &*& int_diff(lo, i, length) == true &*& i <= hi;
     ensures same_multiset(start, end, lo, hi) &*& minore(start, lo, hi, bound, _) &*& minore(end, lo, i, bound, length);
     {
        switch(length) {
          case O: {
-           open int_diff(lo, i, length);
            close minore(end, lo, i, bound, length);
          }
          case S(pred): {
-            open int_diff(lo, i, length);
             int_diff_translate(lo+1, i, -1, pred);
             minore_same_multiset(start, end, lo, hi, bound, i-1, pred);
             same_multiset_sym(start, end, lo, hi);
             int j = same_multiset_assoc(end, start, lo, hi, i-1);
             same_multiset_sym(end, start, lo, hi);
-            int_diff_always(j, hi);
-            assert int_diff(j, hi, ?lj);
+            nat lj = int_diff_always(j, hi);
             minore_select(start, lo, hi, bound, j, lj);
             close minore(end, lo, i, bound, length);
-            int_diff_clear(j, hi, lj);
          }
        
        }
@@ -368,8 +359,7 @@ void swap (int* a, int i, int j)
     	     close majore(arr,lo,j,bound);
     	  } else if (lo >= j) {
     	     close majore(arr,lo,j,bound);
-    	     int_diff_always(lo, hi);
-    	     assert int_diff(lo, hi, ?n);
+    	     nat n = int_diff_always(lo, hi);
     	     clear_majore(arr, lo, hi, bound, n);
     	  } else {
     	     open majore(arr,lo,hi,bound);

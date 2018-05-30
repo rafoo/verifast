@@ -49,12 +49,6 @@ lemma_auto (multiset_select(multiset_add(m, i), j)) void select_add<t>(multiset<
      case mk_multiset(a): {}}
 }
 
-predicate array_multiset_bis(int b, int e, array(int,int) arr; multiset<int> m, nat length) =
-  (b >= e) ? (m == empty_multiset() &*& length == O) :
-     (array_multiset_bis(b+1, e, arr, ?tl, ?pred) &*&
-      m == multiset_add(tl, select(arr, b)) &*&
-      length == S(pred));
-
 predicate array_multiset(int b, int e, array(int,int) arr; multiset<int> m) =
   (b >= e) ? (m == empty_multiset()) :
      (array_multiset(b+1, e, arr, ?tl) &*&
@@ -63,42 +57,6 @@ predicate array_multiset(int b, int e, array(int,int) arr; multiset<int> m) =
 predicate same_multiset(array(int,int) a1, array(int,int) a2, int b, int e) =
   array_multiset(b, e, a1, ?m) &*& array_multiset(b, e, a2, m);
 
-
-
-
-lemma void array_multiset_is_notbis(int b, int e, array(int,int) a, nat l)
-requires array_multiset_bis(b, e, a, ?m, l) &*& int_diff(b, e, l) == true;
-ensures array_multiset(b, e, a, m);
-{
-  switch(l) {
-    case O: {
-      open array_multiset_bis(b, e, a, m, l);
-      close array_multiset(b, e, a, m);
-    }
-    case S(p): {
-      open array_multiset_bis(b, e, a, m, l);
-      array_multiset_is_notbis(b+1, e, a, p);
-      close array_multiset(b, e, a, m);
-    }
-  }
-}
-
-lemma void array_multiset_is_bis(int b, int e, array(int,int) a, nat l)
-requires array_multiset(b, e, a, ?m) &*& int_diff(b, e, l) == true;
-ensures array_multiset_bis(b, e, a, m, l);
-{
-  switch(l) {
-    case O: {
-      open array_multiset(b, e, a, m);
-      close array_multiset_bis(b, e, a, m, _);
-    }
-    case S(p): {
-      open array_multiset(b, e, a, m);
-      array_multiset_is_bis(b+1, e, a, p);
-      close array_multiset_bis(b, e, a, m, _);
-    }
-  }
-}
 
 lemma void same_multiset_address(array(int,int) m, int b, int e)
   requires array_multiset(b, e, m, ?MA) &*& array_multiset(b, e, m, ?MB);

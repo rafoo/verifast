@@ -1,3 +1,6 @@
+#ifndef INTDIFF_H
+#define INTDIFF_H
+
 inductive nat = O | S(nat);
 
 fixpoint bool int_diff(int b, int e, nat n) {

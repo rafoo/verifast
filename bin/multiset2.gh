@@ -1,3 +1,6 @@
+#ifndef MULTISET2_H
+#define MULTISET2_H
+
 #include "vfarray2.gh"
 
 inductive multiset<t> = mk_multiset (array(t, nat));
@@ -181,6 +184,8 @@ ensures same_multiset(end, start, b, e);
 
 lemma void same_multiset_trans(array(int, int) start, array(int, int) middle, array(int, int) end, int b, int e)
   requires same_multiset(start, middle, b, e) &*& same_multiset(middle, end, b, e);
+
+#endif
   ensures same_multiset(start, end, b, e);
 { 
   if (b >= e) {

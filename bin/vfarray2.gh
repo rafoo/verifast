@@ -4,7 +4,7 @@
 #include "intdiff.gh"
 
 lemma void inj_S(nat a, nat b)
-requires S(a) == S(b);
+requires succ(a) == succ(b);
 ensures a == b;
 {}
 
@@ -91,13 +91,13 @@ requires array_model(?a, ?b, ?e, ?arr) &*& b <= e &*& int_diff(b, e, n) == true 
 ensures array_model(a, b, e+1, arr);
 {
   switch(n) {
-    case O: {
+    case zero: {
       open array_model(a, b, e, arr);
       assert (b == e);
       close array_model(a, e+1, e+1, arr);
       close array_model(a, b, e+1, arr);
     }
-    case S(p): {
+    case succ(p): {
       open array_model(a, b, e, arr);
       close_array_model_right(p);
       close array_model(a, b, e+1, arr);
@@ -110,10 +110,10 @@ lemma void array_model_init_diff(int* a, int length, nat n)
   ensures array_model(a, 0, length, _);
 { 
    switch (n) {
-     case (O) : {
+     case zero : {
      	empty_array(a,0,constant_array<int,int>(0));
      }
-     case (S (p)) : 
+     case succ(p) : 
      {
      	open_ints_right (p);
      	int_diff_translate(1,length,-1,p);

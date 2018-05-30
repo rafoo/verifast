@@ -1,12 +1,12 @@
 #ifndef INTDIFF_H
 #define INTDIFF_H
 
-inductive nat = O | S(nat);
+#include "nat.gh"
 
 fixpoint bool int_diff(int b, int e, nat n) {
   switch (n) {
-    case O: return (b >= e);
-    case S(p): return (b < e && int_diff(b+1, e, p));
+    case zero: return (b >= e);
+    case succ(p): return (b < e && int_diff(b+1, e, p));
 }}
 
 lemma nat int_diff_always(int b, int e)
@@ -14,15 +14,15 @@ requires true;
 ensures int_diff(b, e, result) == true;
 {
   if (b >= e) {
-    return O;
+    return zero;
   } else {
     int i = e;
-    nat l = O;
+    nat l = zero;
     for (; i > b; i--)
     invariant b <= i &*& i <= e &*& int_diff(i, e, l) == true;
     decreases i - b;
     {
-       l = S(l);
+       l = succ(l);
     }
     return l;
   }
@@ -33,23 +33,23 @@ requires int_diff(b, e, l) == true;
 ensures int_diff(b+delta, e+delta, l) == true;
 {
   switch(l) {
-    case O: {}
-    case S(p): int_diff_translate(b+1, e, delta, p);
+    case zero: {}
+    case succ(p): int_diff_translate(b+1, e, delta, p);
   }
 }
 
 
 lemma void open_ints_right(nat n)
-requires ints(?p, ?count, ?vs) &*& int_diff(0, count, S(n)) == true;
+requires ints(?p, ?count, ?vs) &*& int_diff(0, count, succ(n)) == true;
 ensures ints(p, count-1, ?bl) &*& integer(p+count-1, ?lst) &*& vs == append(bl, cons(lst, nil));
 {
   switch(n) {
-    case O: {
+    case zero: {
       open ints(p, count, vs);
       open ints(p+1, count-1, _);
       close ints(p, count-1, nil);
     }
-    case S(m): {
+    case succ(m): {
       int_diff_translate(1, count, -1, n);
       open ints(p, count, vs);
       assert ints(p+1, count-1, ?l);

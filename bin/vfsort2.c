@@ -111,9 +111,9 @@ void swap (int* a, int i, int j)
 }
 
 /*@ predicate minore(array(int,int) arr, int lo, int hi, int bound; nat length) =
-	(lo>=hi) ? length == O :
+	(lo>=hi) ? length == zero :
 	select(arr,hi-1) <= bound
-	&*& minore(arr,lo,hi-1,bound, ?pred) &*& length == S(pred);
+	&*& minore(arr,lo,hi-1,bound, ?pred) &*& length == succ(pred);
 
     predicate majore(array(int,int) arr, int lo, int hi, int bound) = 
         (lo>=hi) ? true : 
@@ -149,10 +149,10 @@ void swap (int* a, int i, int j)
     ensures true;
     {
       switch(n) {
-        case O: {
+        case zero: {
           open majore(a, lo, hi, bound);
         }
-        case S(p): {
+        case succ(p): {
           open majore(a, lo, hi, bound);
           clear_majore(a, lo+1, hi, bound, p);
         }
@@ -164,11 +164,11 @@ void swap (int* a, int i, int j)
     ensures minore(a, lo, hi, bound, _) &*& select(a, i) <= bound;
     {
        switch(l) {
-         case O: {
+         case zero: {
             open int_diff(i, hi, l);
             assert false;
          }
-         case S(p): {
+         case succ(p): {
             open minore(a, lo, hi, bound, _);
             if(i == hi-1) {
               close minore(a, lo, hi, bound, _);
@@ -213,12 +213,12 @@ void swap (int* a, int i, int j)
     ensures minore(a, lo, hi, bound, length) &*& minore(a, lo, hi, bound, length);
     {
       switch(length) {
-        case O: {
+        case zero: {
            open minore(a, lo, hi, bound, length);
            close minore(a, lo, hi, bound, length);
            close minore(a, lo, hi, bound, length);
         }
-        case S(pred): {
+        case succ(pred): {
            open minore(a, lo, hi, bound, length);
            minore_dup(a, lo, hi-1, bound);
            close minore(a, lo, hi, bound, length);
@@ -232,10 +232,10 @@ void swap (int* a, int i, int j)
     ensures same_multiset(start, end, lo, hi) &*& minore(start, lo, hi, bound, _) &*& minore(end, lo, i, bound, length);
     {
        switch(length) {
-         case O: {
+         case zero: {
            close minore(end, lo, i, bound, length);
          }
-         case S(pred): {
+         case succ(pred): {
             int_diff_translate(lo+1, i, -1, pred);
             minore_same_multiset(start, end, lo, hi, bound, i-1, pred);
             same_multiset_sym(start, end, lo, hi);

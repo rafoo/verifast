@@ -12,13 +12,13 @@ fixpoint nat multiset_select<t>(multiset<t> m, t i) {
 }
 
 fixpoint multiset<t> empty_multiset<t>() {
-  return (mk_multiset(constant_array<t,nat>(O)));
+  return (mk_multiset(constant_array<t,nat>(zero)));
 }
 
 fixpoint multiset<t> multiset_add<t>(multiset<t> m, t i) {
   switch(m) {
     case mk_multiset(a):
-      return mk_multiset(store(a, i, S(select(a, i))));
+      return mk_multiset(store(a, i, succ(select(a, i))));
   }
 }
 
@@ -46,7 +46,7 @@ lemma_auto (multiset_get(empty_multiset(), i)) void get_empty(int i)
 
 lemma_auto (multiset_select(multiset_add(m, i), j)) void select_add<t>(multiset<t> m, t i, t j)
   requires true;
-  ensures multiset_select(multiset_add(m, i), j) == ((i == j) ? S(multiset_select(m, i)) : multiset_select(m ,j));
+  ensures multiset_select(multiset_add(m, i), j) == ((i == j) ? succ(multiset_select(m, i)) : multiset_select(m ,j));
 { 
    switch (m) {
      case mk_multiset(a): {}}
@@ -221,15 +221,15 @@ lemma void same_multiset_add_at_end(array(int, int) start, array(int, int) end, 
 }
 
 lemma int array_multiset_assoc(array(int, int) a, int b, int e, int v, nat l)
-requires array_multiset(b, e, a, ?m) &*& multiset_select(m, v) != O &*& int_diff(b, e, l) == true;
+requires array_multiset(b, e, a, ?m) &*& multiset_select(m, v) != zero &*& int_diff(b, e, l) == true;
 ensures array_multiset(b, e, a, m) &*& select(a, result) == v &*& b <= result &*& result < e;
 {
    switch(l) {
-     case O: {
+     case zero: {
       open array_multiset(b, e, a, m);
       assert false;
      }
-     case S(p): {
+     case succ(p): {
         if (select(a, b) == v) {
           return b;
         } else {
@@ -244,15 +244,15 @@ ensures array_multiset(b, e, a, m) &*& select(a, result) == v &*& b <= result &*
 
 lemma void array_multiset_select(array(int, int) a, int b, int e, int i, nat l)
 requires b <= i &*& i < e &*& array_multiset(b, e, a, ?m) &*& int_diff(b, e, l) == true;
-ensures multiset_select(m, select(a, i)) != O &*& array_multiset(b, e, a, m);
+ensures multiset_select(m, select(a, i)) != zero &*& array_multiset(b, e, a, m);
 {
    switch(l)
    {
-      case O: { 
+      case zero: { 
         open int_diff(b, e, l);
         assert false;
       }
-      case S(p): {
+      case succ(p): {
         if (b == i) {
            open array_multiset(b, e, a, m);
         } else {

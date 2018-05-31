@@ -115,9 +115,9 @@ void swap (int* a, int i, int j)
 	select(arr,hi-1) <= bound
 	&*& minore(arr,lo,hi-1,bound, ?pred) &*& length == S(pred);
 
-    predicate majore(array(int,int) arr, int lo, int hi, int bound) = 
-        (lo>=hi) ? true : 
-	select(arr,lo) >= bound &*& majore(arr,lo+1,hi,bound);
+    predicate majore(array(int,int) arr, int lo, int hi, int bound; nat length) = 
+        (lo>=hi) ? length == O : 
+	select(arr,lo) >= bound &*& majore(arr,lo+1,hi,bound, ?pred) &*& length == S(pred);
 
     lemma void bound_empty_minore(array(int,int) arr, int lo, int hi, int bound)
       requires lo >= hi;
@@ -126,8 +126,8 @@ void swap (int* a, int i, int j)
      
     lemma void bound_empty_majore(array(int,int) arr, int lo, int hi, int bound)
       requires lo >= hi;
-      ensures majore(arr,lo,hi,bound);
-      { close majore(arr,lo,hi,bound);}
+      ensures majore(arr,lo,hi,bound,_);
+      { close majore(arr,lo,hi,bound,_);}
       
     lemma void clear_minore(array(int, int) a, int lo, int hi, int bound)
     requires minore(a, lo, hi, bound, _);
@@ -145,16 +145,16 @@ void swap (int* a, int i, int j)
     }}
 
     lemma void clear_majore(array(int, int) a, int lo, int hi, int bound, nat n)
-    requires majore(a, lo, hi, bound) &*& int_diff(lo, hi, n);
+    requires majore(a, lo, hi, bound,_) &*& int_diff(lo, hi, n);
     ensures true;
     {
       switch(n) {
         case O: {
-          open majore(a, lo, hi, bound);
+          open majore(a, lo, hi, bound,_);
           open int_diff(lo, hi, n);
         }
         case S(p): {
-          open majore(a, lo, hi, bound);
+          open majore(a, lo, hi, bound,_);
           open int_diff(lo, hi, n);
           clear_majore(a, lo+1, hi, bound, p);
         }
@@ -186,32 +186,6 @@ void swap (int* a, int i, int j)
        }
 
     }
-/*
-    lemma void minore_get(array(int, int) a, int lo, int hi, int bound, int i)
-    requires minore(a, lo, hi, bound, _) &*& lo <= i &*& i < hi;
-    ensures get(a, i) <= bound;
-    {
-      int j = hi-1;
-      for (; j > i; j--)
-        invariant i <= j &*& j <= hi &*& minore(a, lo, j+1, bound,_);
-        decreases j - i;
-        {
-           open minore(a, lo, j+1, bound, _);
-        } 
-        open minore(a, lo, i+1, bound, _);
-        clear_minore(a, lo, i, bound);
-    }
-*/
-/*
-   lemma void minore_left(array(int, int) a, int lo, int hi, int bound)
-   requires get(a, lo) <= bound &*& minore(a, lo+1, hi, bound);
-   ensures minore(a, lo, hi, bound);
-   {
-      int i = 
-   
-   
-   }
-*/
 
     lemma void minore_dup(array(int, int) a, int lo, int hi, int bound)
     requires minore(a, lo, hi, bound, ?length);
@@ -267,149 +241,132 @@ void swap (int* a, int i, int j)
     	}
     	
     lemma void one_more_bound_majore(array(int,int) arr, int lo, int hi, int bound)
-    	requires majore(arr,lo,hi,bound) &*& select(arr,hi) >= bound;
-    	ensures majore(arr,lo,hi+1,bound);
+    	requires majore(arr,lo,hi,bound,_) &*& select(arr,hi) >= bound;
+    	ensures majore(arr,lo,hi+1,bound,_);
     	{ if (lo > hi) {
-    	    open majore(arr,lo,hi,bound);
-    	    close majore(arr,lo,hi+1,bound);
+    	    open majore(arr,lo,hi,bound,_);
+    	    close majore(arr,lo,hi+1,bound,_);
     	  } else if (lo == hi) {
-    	    open majore(arr,lo,hi,bound);
-    	    close majore(arr,lo+1,hi+1,bound);
-    	    close majore(arr,lo,hi+1,bound);
+    	    open majore(arr,lo,hi,bound,_);
+    	    close majore(arr,lo+1,hi+1,bound,_);
+    	    close majore(arr,lo,hi+1,bound,_);
     	  } else {
-    	    open majore(arr,lo,hi,bound);
+    	    open majore(arr,lo,hi,bound,_);
     	    one_more_bound_majore(arr,lo+1,hi,bound);
-    	    close majore(arr,lo,hi+1,bound);
+    	    close majore(arr,lo,hi+1,bound,_);
     	  }
         }
      
-    lemma void one_more_bot_bound_majore(array(int,int) arr, int lo, int hi, int bound, int i, int j)
-    	requires majore(arr,lo,hi,bound) &*& i == lo &*& j == hi &*& select(arr,j) <= bound;
-    	ensures majore(array_swap(arr,i,j),lo+1,hi+1,bound);
+    lemma void one_more_bot_bound_majore(array(int,int) arr, int lo, int hi, int bound, nat length)
+    	requires majore(arr,lo,hi,bound,length) &*& select(arr,hi) < bound;
+    	ensures majore(array_swap(arr,lo,hi),lo+1,hi+1,bound,_);
     	{
-    	
-    	
+    	  switch (length) {
+    	    case (O) : {
+   	      open majore(arr,lo,hi,bound,_);
+    	      close majore(array_swap(arr,lo,hi),lo+1,hi+1,bound,_);
+    	    }
+    	    case S(p) : {
+    	        assume (false);
+    	        open majore(arr, lo, hi, bound, length);
+    	        open majore(arr, lo+1, hi, bound, p);
+    	        close majore(arr, lo+1, hi, bound, p);
+    	        one_more_bot_bound_majore(arr, lo+1, hi, bound, p);
+    	        close majore(array_swap(arr,lo,hi),lo+1,hi+1,bound,_);
+    	      }
+    	    }
+    	  
+    	  }/*
    	   if(lo >= hi){
-   	      open majore(arr,lo,hi,bound);
-    	      close majore(array_swap(arr,i,j),lo+1,hi+1,bound);
+   	      open majore(arr,lo,hi,bound,_);
+    	      close majore(array_swap(arr,lo,hi),lo+1,hi+1,bound,_);
     	   }else{
-    	   /*
-    	      int k = hi+1;
-    	      open majore(arr,lo,hi,bound);
-    	      close majore(array_swap(arr,i,j),k,hi+1,bound);
-    	      for(;k > lo;k--)
-    	        invariant k <= hi+1 &*& lo < k &*& majore(array_swap(arr,i,j),k,hi+1,bound) &*& majore(arr, lo+1, hi, bound);
-    	        decreases (k-lo);
-    	        {
-    	          int g = lo+1;
-    	          for(; g < k; g++)
-	             invariant lo <= g &*& g <= k &*& majore(arr,g,hi,bound) &*& bound <= get(arr,g-1);
-	             decreases ((hi+1)-g);
-	             {
-	             	if(g>= hi)
-	             	  break;
-	             	else {
-	             	  open majore(arr,g,hi,bound);
-	                }
-	             }
-	          close majore(arr,g,hi,bound);
-	          assert (g == k-1);
-	          assert get(arr,g-1) >= bound;
-	          int h = g;
-	          for(; h > lo; h--)
-	             invariant h <= g &*& h >= lo &*& majore(arr,h,hi,bound);
-	             decreases (h-(lo+1));
-	             {
-	                
-	                  close majore(arr,h,hi,bound);
-	                
-	             }
-	          assert (h==lo+1);
-	          close majore(array_swap(arr,i,j),g,hi+1,bound);
-    	   }*/ assume(false);
-    	}
-     }
-         	
+    	      if (length == O){
+    	        assume(false);
+    	      }else{
+    	        open majore(arr, lo, hi, bound, length);
+    	        assert length == S(?p);
+    	        open majore(arr, lo+1, hi, bound, p);
+    	        close majore(arr, lo+1, hi, bound, p);
+    	        one_more_bot_bound_majore(arr, lo+1, hi, bound, p);
+    	        close majore(array_swap(arr,lo,hi),lo+1,hi+1,bound,_);
+    	      }
+    	   }
+        }  */	
     lemma void minore_out(array(int,int) arr,int lo, int hi, int bound, int i, int j)
-    	requires minore(arr,lo,hi,bound,_) &*& hi <= i &*& hi <= j;
-    	ensures minore(array_swap(arr,i,j),lo,hi,bound,_);
-    	{  /*
-    	   if (lo>=hi) {
-    	     open minore(arr,lo,hi,bound);
-    	     close minore(array_swap(arr,i,j),lo,hi,bound);
-    	   }else{
-    	     int k = lo;
-    	     close minore(array_swap(arr,i,j),lo,k,bound);
-    	     for(;k<hi;k++)
-    	       invariant k >= lo &*& k <= hi &*& minore(arr,k,hi,bound) &*& minore(array_swap(arr,i,j),lo,k,bound);
-    	       decreases (hi-k);
-    	       {
-    	       	open minore(arr,k,hi,bound);
-    	       	close minore(array_swap(arr,i,j),lo,k+1,bound);
-    	       }
-    	     close minore(array_swap(arr,i,j),lo,hi,bound);
-    	   }*/
-    	   assume (false);
-    	}
-    	
+    	requires minore(arr,lo,hi,bound,?length) &*& hi <= i &*& hi <= j;
+    	ensures minore(array_swap(arr,i,j),lo,hi,bound,length);
+    	{  
+    	   switch (length) {
+    	     case O : {
+    	       open minore(arr,lo,hi,bound,length);
+    	       close minore(array_swap(arr,i,j),lo,hi,bound,length);
+    	     }
+    	     case S(p) : {
+    	       open minore(arr,lo,hi,bound,length);
+    	       minore_out(arr,lo,hi-1,bound,i,j);
+    	       close minore(array_swap(arr,i,j),lo,hi,bound,length);
+    	     }
+    	   }
+    	}    	
     lemma void majore_out(array(int,int) arr,int lo, int hi, int bound)
-    	requires majore(arr,lo,hi,bound) &*& lo >= hi;
-    	ensures majore(arr,lo+1,hi+1,bound);
+    	requires majore(arr,lo,hi,bound,_) &*& lo >= hi;
+    	ensures majore(arr,lo+1,hi+1,bound,_);
     	{
-    	open majore(arr,lo,hi,bound); 
-    	close majore(arr,lo+1,hi+1,bound);}
+    	open majore(arr,lo,hi,bound,_); 
+    	close majore(arr,lo+1,hi+1,bound,_);}
    
     lemma void majore_top_less(array(int,int) arr,int lo, int hi, int bound, int j)
-    	requires majore(arr,lo,hi,bound) &*& j <= hi;
-    	ensures majore(arr,lo,j,bound);
+    	requires majore(arr,lo,hi,bound,_) &*& j <= hi;
+    	ensures majore(arr,lo,j,bound,_);
     	{
     	  if (lo >= hi) {
-    	     open majore(arr,lo,hi,bound);
-    	     close majore(arr,lo,j,bound);
+    	     open majore(arr,lo,hi,bound,_);
+    	     close majore(arr,lo,j,bound,_);
     	  } else if (lo >= j) {
-    	     close majore(arr,lo,j,bound);
+    	     close majore(arr,lo,j,bound,_);
     	     int_diff_always(lo, hi);
     	     assert int_diff(lo, hi, ?n);
     	     clear_majore(arr, lo, hi, bound, n);
     	  } else {
-    	     open majore(arr,lo,hi,bound);
+    	     open majore(arr,lo,hi,bound,_);
     	     majore_top_less(arr, lo+1, hi, bound, j);
-    	     close majore(arr,lo,j,bound);
+    	     close majore(arr,lo,j,bound,_);
     	  }
     	}
     	
     lemma void majore_bot_less(array(int,int) arr,int lo, int hi, int bound)
-    	requires majore(arr,lo,hi,bound);
-    	ensures majore(arr,lo+1,hi,bound);
+    	requires majore(arr,lo,hi,bound,_);
+    	ensures majore(arr,lo+1,hi,bound,_);
     	{ 
-    	open majore(arr,lo,hi,bound);
+    	open majore(arr,lo,hi,bound,_);
     	if (hi <= lo){
-    	  close majore(arr,lo+1,hi,bound);
+    	  close majore(arr,lo+1,hi,bound,_);
     	}
     	}
     
     lemma void majore_top_more(array(int,int) arr,int lo,int hi,int bound)
-    	requires majore(arr,lo,hi,bound) &*& select(arr,hi) >= bound;
-    	ensures majore(arr,lo,hi+1,bound);
+    	requires majore(arr,lo,hi,bound,_) &*& select(arr,hi) >= bound;
+    	ensures majore(arr,lo,hi+1,bound,_);
     	{
     	if(hi+1 <= lo){
-    	  open majore(arr,lo,hi,bound);
-    	  close majore(arr,lo,hi+1,bound);
+    	  open majore(arr,lo,hi,bound,_);
+    	  close majore(arr,lo,hi+1,bound,_);
     	} else if (hi == lo) {
-    	  open majore(arr,lo,hi,bound);
-    	  close majore(arr,lo+1,hi+1,bound);
-    	  close majore(arr,lo,hi+1,bound);
+    	  open majore(arr,lo,hi,bound,_);
+    	  close majore(arr,lo+1,hi+1,bound,_);
+    	  close majore(arr,lo,hi+1,bound,_);
     	} else {
           assert lo < hi;
-    	  open majore(arr,lo,hi,bound);
+    	  open majore(arr,lo,hi,bound,_);
     	  majore_top_more(arr,lo+1,hi,bound);
-    	  close majore(arr,lo,hi+1,bound);
+    	  close majore(arr,lo,hi+1,bound,_);
     	}
     }
     
     lemma void swap_majore(array(int,int) arr,int lo, int hi, int bound, int i, int j)
-    	requires majore(arr,lo,hi,bound) &*& lo <= i &*& j < hi;
-    	ensures majore(array_swap(arr,i,j),lo,hi,bound);
+    	requires majore(arr,lo,hi,bound,_) &*& lo <= i &*& j < hi &*& i < j;
+    	ensures majore(array_swap(arr,i,j),lo,hi,bound,_);
     	{
     	  if(hi <= lo){
     	     open majore(arr,lo,hi,bound);
@@ -426,7 +383,7 @@ int partition (int* a, int lo, int hi)
       lo <= result &*& result <= hi &*&
       select(end, result) == p &*&
       minore(end, lo, result, select(end,result),_) &*&
-      majore(end, result+1, hi+1, select(end,result)); @*/
+      majore(end, result+1, hi+1, select(end,result),_); @*/
 {
   int pivot = *(a+hi);
   int i = lo - 1;
@@ -436,7 +393,7 @@ int partition (int* a, int lo, int hi)
   //@ bound_empty_majore(start,i+1,lo,p);
   for (j = lo; j < hi; j++) 
   /*@ invariant array_model(a,lo,hi,?arr) &*& lo <= j &*& j < hi+1 &*& i < j &*& lo -1 <= i &*& same_multiset(start, arr, lo, hi) &*& select(arr, hi) == p 
-      &*& minore(arr,lo,i+1,p,_) &*& majore(arr,i+1,j,p); @*/
+      &*& minore(arr,lo,i+1,p,_) &*& majore(arr,i+1,j,p,_); @*/
   { 
     // //@ assert (j < hi);
     int aj = select_c(a, j);
@@ -450,7 +407,8 @@ int partition (int* a, int lo, int hi)
         //@ swap_in_i(arr,i,j);
     	//@ minore_out(arr,lo, i, p, i, j);
       	//@ one_more_bound_minore(array_swap(arr,i,j),lo,i,p);
-      	//@ one_more_bot_bound_majore(arr, i, j, p, i, j);
+      	//@ assert majore(arr, i, j, p, ?length);
+      	//@ one_more_bot_bound_majore(arr, i, j, p, length);
       }else{
       	//@ one_more_bound_minore(arr,lo,i,p);
       	//@ majore_out(arr, i, j, p);
@@ -524,7 +482,7 @@ int partition (int* a, int lo, int hi)
     	
     lemma void concat_array3(int*a, array(int,int) end, array(int,int) a0, array(int,int) a1, int b0, int e0, int e1, int bound)
     	requires array_model(a,b0,e0,a0) &*& array_model(a,e0,e1,a1) &*& same_multiset(end,a0,b0,e0) &*& same_multiset(end,a1,e0,e1) 
-    		&*& sorted(a0,b0,e0) &*& sorted(a1,e0+1,e1) &*& minore(end,b0,e0,bound,_) &*& majore(end,e0+1,e1,bound) &*& bound == select(end,e0);
+    		&*& sorted(a0,b0,e0) &*& sorted(a1,e0+1,e1) &*& minore(end,b0,e0,bound,_) &*& majore(end,e0+1,e1,bound,_) &*& bound == select(end,e0);
     	ensures array_model(a,b0,e1,?res) &*& same_multiset(res,end,b0,e1) &*& sorted(res,b0,e1);
     	{ assume(false);}
         /*

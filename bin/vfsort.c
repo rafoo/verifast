@@ -71,10 +71,10 @@ void swap (int* a, int i, int j)
   update(a, i, aj);
 }
 
-/*@ predicate minore(array(int,int) arr, int lo, int hi, int bound; nat length) =
-	(lo>=hi) ? length == zero :
+/*@ predicate minore(array(int,int) arr, int lo, int hi, int bound) =
+	(lo>=hi) ? true :
 	select(arr,hi-1) <= bound
-	&*& minore(arr,lo,hi-1,bound, ?pred) &*& length == succ(pred);
+	&*& minore(arr,lo,hi-1,bound);
 
     predicate majore(array(int,int) arr, int lo, int hi, int bound) = 
         (lo>=hi) ? true : 
@@ -82,8 +82,8 @@ void swap (int* a, int i, int j)
 
     lemma void bound_empty_minore(array(int,int) arr, int lo, int hi, int bound)
       requires lo >= hi;
-      ensures minore(arr,lo,hi,bound, _);
-      {close minore(arr,lo,hi,bound, _);}
+      ensures minore(arr,lo,hi,bound);
+      {close minore(arr,lo,hi,bound);}
      
     lemma void bound_empty_majore(array(int,int) arr, int lo, int hi, int bound)
       requires lo >= hi;
@@ -91,18 +91,18 @@ void swap (int* a, int i, int j)
       { close majore(arr,lo,hi,bound);}
       
     lemma void clear_minore(array(int, int) a, int lo, int hi, int bound)
-    requires minore(a, lo, hi, bound, _);
+    requires minore(a, lo, hi, bound);
     ensures true;
     {
-      if (lo >= hi) { open minore(a, lo, hi, bound, _); } else {
+      if (lo >= hi) { open minore(a, lo, hi, bound); } else {
       int i = hi;
       for (; i > lo; i--)
-        invariant minore(a, lo, i, bound, _) &*& lo <= i &*& i <= hi;
+        invariant minore(a, lo, i, bound) &*& lo <= i &*& i <= hi;
         decreases i - lo;
         {
-          open minore(a, lo, i, bound, _);
+          open minore(a, lo, i, bound);
         }
-        open minore(a, lo, lo, bound, _);
+        open minore(a, lo, lo, bound);
     }}
 
     lemma void clear_majore(array(int, int) a, int lo, int hi, int bound, nat n)
@@ -121,8 +121,8 @@ void swap (int* a, int i, int j)
     }
 
     lemma void minore_select(array(int, int) a, int lo, int hi, int bound, int i, nat l)
-    requires minore(a, lo, hi, bound, _) &*& lo <= i &*& i < hi &*& int_diff(i, hi, l) == true;
-    ensures minore(a, lo, hi, bound, _) &*& select(a, i) <= bound;
+    requires minore(a, lo, hi, bound) &*& lo <= i &*& i < hi &*& int_diff(i, hi, l) == true;
+    ensures minore(a, lo, hi, bound) &*& select(a, i) <= bound;
     {
        switch(l) {
          case zero: {
@@ -130,13 +130,13 @@ void swap (int* a, int i, int j)
             assert false;
          }
          case succ(p): {
-            open minore(a, lo, hi, bound, _);
+            open minore(a, lo, hi, bound);
             if(i == hi-1) {
-              close minore(a, lo, hi, bound, _);
+              close minore(a, lo, hi, bound);
             } else {
               int_diff_translate(i+1, hi, -1, p);
               minore_select(a, lo, hi-1, bound, i, p);
-              close minore(a, lo, hi, bound, _);
+              close minore(a, lo, hi, bound);
             }
          }
        }
@@ -169,32 +169,33 @@ void swap (int* a, int i, int j)
    }
 */
 
-    lemma void minore_dup(array(int, int) a, int lo, int hi, int bound)
-    requires minore(a, lo, hi, bound, ?length);
-    ensures minore(a, lo, hi, bound, length) &*& minore(a, lo, hi, bound, length);
+    lemma void minore_dup(array(int, int) a, int lo, int hi, int bound, nat length)
+    requires minore(a, lo, hi, bound) &*& int_diff(lo, hi, length) == true;
+    ensures minore(a, lo, hi, bound) &*& minore(a, lo, hi, bound);
     {
       switch(length) {
         case zero: {
-           open minore(a, lo, hi, bound, length);
-           close minore(a, lo, hi, bound, length);
-           close minore(a, lo, hi, bound, length);
+           open minore(a, lo, hi, bound);
+           close minore(a, lo, hi, bound);
+           close minore(a, lo, hi, bound);
         }
         case succ(pred): {
-           open minore(a, lo, hi, bound, length);
-           minore_dup(a, lo, hi-1, bound);
-           close minore(a, lo, hi, bound, length);
-           close minore(a, lo, hi, bound, length);        
+           open minore(a, lo, hi, bound);
+           int_diff_translate(lo+1, hi, -1, pred);
+           minore_dup(a, lo, hi-1, bound, pred);
+           close minore(a, lo, hi, bound);
+           close minore(a, lo, hi, bound);        
         }
         }
     }
 
     lemma void minore_same_multiset(array(int,int) start, array(int, int) end, int lo, int hi, int bound, int i, nat length)
-    requires same_multiset(start, end, lo, hi) &*& minore(start, lo, hi, bound, _) &*& int_diff(lo, i, length) == true &*& i <= hi;
-    ensures same_multiset(start, end, lo, hi) &*& minore(start, lo, hi, bound, _) &*& minore(end, lo, i, bound, length);
+    requires same_multiset(start, end, lo, hi) &*& minore(start, lo, hi, bound) &*& int_diff(lo, i, length) == true &*& i <= hi;
+    ensures same_multiset(start, end, lo, hi) &*& minore(start, lo, hi, bound) &*& minore(end, lo, i, bound);
     {
        switch(length) {
          case zero: {
-           close minore(end, lo, i, bound, length);
+           close minore(end, lo, i, bound);
          }
          case succ(pred): {
             int_diff_translate(lo+1, i, -1, pred);
@@ -204,18 +205,18 @@ void swap (int* a, int i, int j)
             same_multiset_sym(end, start, lo, hi);
             nat lj = int_diff_always(j, hi);
             minore_select(start, lo, hi, bound, j, lj);
-            close minore(end, lo, i, bound, length);
+            close minore(end, lo, i, bound);
          }
        
        }
     }
 
     lemma void one_more_bound_minore(array(int,int) arr, int lo, int hi, int bound)
-    	requires minore(arr,lo,hi,bound,_) &*& select(arr,hi) < bound;
-    	ensures minore(arr,lo,hi+1,bound,_);
+    	requires minore(arr,lo,hi,bound) &*& select(arr,hi) < bound;
+    	ensures minore(arr,lo,hi+1,bound);
     	{
-    	   if (lo > hi) open minore(arr, lo, hi, bound, _);
-    	   close minore(arr,lo,hi+1,bound,_);
+    	   if (lo > hi) open minore(arr, lo, hi, bound);
+    	   close minore(arr,lo,hi+1,bound);
     	}
     	
     lemma void one_more_bound_majore(array(int,int) arr, int lo, int hi, int bound)
@@ -283,8 +284,8 @@ void swap (int* a, int i, int j)
      }
          	
     lemma void minore_out(array(int,int) arr,int lo, int hi, int bound, int i, int j)
-    	requires minore(arr,lo,hi,bound,_) &*& hi <= i &*& hi <= j;
-    	ensures minore(array_swap(arr,i,j),lo,hi,bound,_);
+    	requires minore(arr,lo,hi,bound) &*& hi <= i &*& hi <= j;
+    	ensures minore(array_swap(arr,i,j),lo,hi,bound);
     	{  /*
     	   if (lo>=hi) {
     	     open minore(arr,lo,hi,bound);
@@ -376,7 +377,7 @@ int partition (int* a, int lo, int hi)
 /*@ ensures array_model(a, lo, hi+1, ?end) &*& same_multiset(start, end, lo, hi+1) &*&
       lo <= result &*& result <= hi &*&
       select(end, result) == p &*&
-      minore(end, lo, result, select(end,result),_) &*&
+      minore(end, lo, result, select(end,result)) &*&
       majore(end, result+1, hi+1, select(end,result)); @*/
 {
   int pivot = *(a+hi);
@@ -387,7 +388,7 @@ int partition (int* a, int lo, int hi)
   //@ bound_empty_majore(start,i+1,lo,p);
   for (j = lo; j < hi; j++) 
   /*@ invariant array_model(a,lo,hi,?arr) &*& lo <= j &*& j < hi+1 &*& i < j &*& lo -1 <= i &*& same_multiset(start, arr, lo, hi) &*& select(arr, hi) == p 
-      &*& minore(arr,lo,i+1,p,_) &*& majore(arr,i+1,j,p); @*/
+      &*& minore(arr,lo,i+1,p) &*& majore(arr,i+1,j,p); @*/
   { 
     int aj = select_c(a, j);
     if (aj < pivot) {
@@ -457,7 +458,7 @@ int partition (int* a, int lo, int hi)
     	
     lemma void concat_array3(int*a, array(int,int) end, array(int,int) a0, array(int,int) a1, int b0, int e0, int e1, int bound)
     	requires array_model(a,b0,e0,a0) &*& array_model(a,e0,e1,a1) &*& same_multiset(end,a0,b0,e0) &*& same_multiset(end,a1,e0,e1) 
-    		&*& sorted(a0,b0,e0) &*& sorted(a1,e0+1,e1) &*& minore(end,b0,e0,bound,_) &*& majore(end,e0+1,e1,bound) &*& bound == select(end,e0);
+    		&*& sorted(a0,b0,e0) &*& sorted(a1,e0+1,e1) &*& minore(end,b0,e0,bound) &*& majore(end,e0+1,e1,bound) &*& bound == select(end,e0);
     	ensures array_model(a,b0,e1,?res) &*& same_multiset(res,end,b0,e1) &*& sorted(res,b0,e1);
     	{ assume(false);}
                      

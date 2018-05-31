@@ -428,7 +428,6 @@ int partition (int* a, int lo, int hi)
   /*@ invariant array_model(a,lo,hi,?arr) &*& lo <= j &*& j < hi+1 &*& i < j &*& lo -1 <= i &*& same_multiset(start, arr, lo, hi) &*& select(arr, hi) == p 
       &*& minore(arr,lo,i+1,p,_) &*& majore(arr,i+1,j,p); @*/
   { 
-    // //@ assert (j < hi);
     int aj = select_c(a, j);
     if (aj < pivot) {
       i++;
@@ -463,11 +462,9 @@ int partition (int* a, int lo, int hi)
   //@ same_multiset_trans(start, arr, array_swap(arr, i, hi), lo, hi+1);
   //@ swap_in_i(arr, i, hi);
   //@ minore_out(arr, lo, i, p, i, hi);
-  ////@ minore_less(array_swap(arr,i,hi), lo, i, p);
   //@ swap_majore(arr, i, hi+1, p, i,hi);
   //@ majore_bot_less(array_swap(arr,i,hi), i, hi+1, p);
   }else{
-  ////@ minore_less(arr, lo, i, p);
   //@ majore_bot_less(arr, i, hi+1, p);
   }
   return i;
@@ -482,10 +479,10 @@ int partition (int* a, int lo, int hi)
     	ensures sorted(arr,b,e);
     	{ close sorted(arr,b,e);}
     	
-    lemma void ensure_empty_array(int*a, int b,array(int,int) arr)
+/*    lemma void ensure_empty_array(int*a, int b,array(int,int) arr)
     	requires array_model(a,b,b,arr);
     	ensures true;
-    	{open array_model(a,b,b,arr);}
+    	{open array_model(a,b,b,arr);} */
     	
     lemma void same_multi_etend(array(int,int) end, array(int,int) end1, int b, int e)
     	requires same_multiset(end,end1,b,e);
@@ -496,37 +493,12 @@ int partition (int* a, int lo, int hi)
     	requires sorted(end,b,e) &*& p < b;
     	ensures sorted(store(end,p,v),b,e);
     	{assume(false);}
-    	/*
-    lemma void same_multi_ret(array(int,int) end, array(int,int) end1, int b, int e)
-    	requires same_multiset(end,store(end1,b-1, select(end,b-1)),b-1,e);
-    	ensures same_multiset(end,end1,b,e);
-    	{assume(false);}
-    	
-    lemma void concat_array(int*a,array(int,int)a0,array(int,int)a1,int b0,int e0,int e1)
-    	requires array_model(a,b0,e0,a0) &*& array_model(a,e0,e1,a1);// &*& same_multiset(res,a0,b0,e0) &*& same_multiset(res,a1,e0,e1);
-    	ensures array_model(a,b0,e1,?res);// &*& same_multiset(res,?end,b0,e1);
-    	{ assume(false);}
-    	
-    lemma void concat_array2(int*a, array(int,int)res, int b0, int e0, int e1)
-    	requires array_model(a,b0,e0,res) &*& array_model(a,e0,e1,res);// &*& same_multiset(res,a0,b0,e0) &*& same_multiset(res,a1,b1,e1);
-    	ensures array_model(a,b0,e1,res);// &*& same_multiset(res,?end,b0,e1);
-    	{ assume(false);}*/
     	
     lemma void concat_array3(int*a, array(int,int) end, array(int,int) a0, array(int,int) a1, int b0, int e0, int e1, int bound)
     	requires array_model(a,b0,e0,a0) &*& array_model(a,e0,e1,a1) &*& same_multiset(end,a0,b0,e0) &*& same_multiset(end,a1,e0,e1) 
     		&*& sorted(a0,b0,e0) &*& sorted(a1,e0+1,e1) &*& minore(end,b0,e0,bound,_) &*& majore(end,e0+1,e1,bound) &*& bound == select(end,e0);
     	ensures array_model(a,b0,e1,?res) &*& same_multiset(res,end,b0,e1) &*& sorted(res,b0,e1);
     	{ assume(false);}
-        /*
-    lemma void concat_sorted(array(int,int)arr, array(int,int)arr0, array(int,int)arr1, int b0, int e0, int b1, int e1,int bound)
-        requires same_multiset(arr,arr0,b0,e0) &*& same_multiset(arr,arr1,b1,e1) &*& sorted(arr0,b0,e0) &*& sorted(arr1,b1,e1) &*& minore(arr, b0, e0, bound,_) &*& majore(arr, b1, e1, bound) &*& e0 + 1 == b1 &*& bound == select(arr,e0);
-        ensures sorted(arr,b0,e1);
-        { assume(false);}
-        
-     lemma void concat_sorted2(array(int,int)arr, array(int,int)arr0, array(int,int)arr1, int b0, int e0, int b1, int e1,int bound)
-        requires same_multiset(arr,arr0,b0,e0) &*& same_multiset(arr,arr1,b1,e1) &*& sorted(arr0,b0,e0) &*& sorted(arr1,b1,e1) &*& minore(arr, b0, e0, bound,_) &*& majore(arr, b1, e1, bound) &*& e0 + 1 == b1 &*& bound == select(arr,e0);
-        ensures sorted(arr,b0,e1);
-        { assume(false);}*/
                      
      lemma void multiset_trans(array(int,int) arr, array(int,int) arr0, array(int,int) arr1, int b, int e)
      	requires same_multiset(arr0,arr,b,e) &*& same_multiset(arr1,arr,b,e);
@@ -554,15 +526,10 @@ void quicksort (int* a, int lo, int hi)
    //@ empty_array(a,p,end1);
    //@ array_model_store_fold(a,p,hi+1,end1,p);
    //@ ensure_empty_array(a,hi+1,start);
-   ////@ concat_array(a,end0,set(end1,p,get(end,p)),lo,p,hi+1);
-   ////@ concat_sorted(end, end0, end1, lo, p, p+1, hi+1, get(end,p));
    //@ same_multi_etend(end,end1, p+1, hi+1);
    //@ sorted_etend(end1, p+1, hi+1, p, select(end,p));
    //@ concat_array3(a,end,end0,store(end1,p, select(end,p)),lo,p,hi+1, select(end,p));
    //@ assert array_model(a,lo,hi+1,?res);
    //@ multiset_trans(end,start,res, lo, hi+1);
-   /*/@ same_multi_ret(end, end1, p+1, hi+1);
-   //@ concat_sorted2(end, end0, end1, lo, p, p+1, hi+1, get(end,p));
-  	*/
   }
 }

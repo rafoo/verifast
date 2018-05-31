@@ -962,7 +962,6 @@ let expr_fold_open iter state e =
   | StoreArray (_, e0, e1, e2) -> iters state [e0; e1; e2]
   | ConstantArray (_, e) -> iter state e
   | ExtArray (_, e0, e1) -> iters state [e0; e1]
-
 (* Postfix fold *)
 let expr_fold f state e = let rec iter state e = f (expr_fold_open iter state e) e in iter state e
 

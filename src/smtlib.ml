@@ -492,7 +492,10 @@ let array_ext t1 t2 =
   | Some range -> bapp (Sym.array_ext dom range) t1 t2
   | None -> failwith "first argument of array_ext should be an array"
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 let get_type = T.get_type
 let print_term = T.print
 

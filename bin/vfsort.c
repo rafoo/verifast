@@ -12,57 +12,18 @@ fixpoint array(int, int) array_swap(array(int, int) start, int i, int j) {
 lemma void same_multiset_swap(array(int, int) start, int i, int j, int b, int e)
   requires b <= i &*& i < j &*& j < e;
   ensures same_multiset(start, array_swap(start, i, j), b, e);
-{  
-   array(int, int) end = array_swap(start, i, j);
-   if (b >= e) {
-     close array_multiset(b, e, start, empty_multiset());
-     close array_multiset(b, e, end, empty_multiset());
-     close same_multiset(start, end, b, e);
-  }else{
-     int k = e;
-     close array_multiset(k, e, start, empty_multiset());
-     close array_multiset(k, e, end, empty_multiset());
-     for(; k > j+1; k--)
-     invariant j < k &*& k <= e &*& array_multiset(k, e, start, ?MA) &*& array_multiset(k, e, end, ?MB) &*& MA == MB;
-     decreases (k-j);
-     {
-       close array_multiset(k-1, e, start, multiset_add (MA, select(start, k-1)));
-       // next line uses the theory of array
-       assert (select(start,k-1) == select(end, k-1));
-       close array_multiset(k-1, e, end, multiset_add (MB, select(start, k-1)));
-     }
-     assert array_multiset(k, e, start, ?MA) &*& array_multiset(k, e, end, ?MB);
-     close array_multiset(j, e, start, multiset_add(MA, select(start,j)));
-     // next line uses the theory of array
-     assert (select(start,i) == select(end, j));
-     close array_multiset(j, e, end, multiset_add(MB, select(start,i)));
-     k--;
-     multiset_add_commutes(MA, select(start, i), select(start, j));
-     for(; k > i+1; k--)
-     invariant i < k &*& k <= j &*& array_multiset(k, e, start, ?MA2) &*& array_multiset(k, e, end, ?MB2) &*& multiset_add(MA2, select(start,i)) == multiset_add(MB2, select(start,j));
-     decreases (k-i);
-     {
-     	close array_multiset(k-1, e, start, multiset_add(MA2, select(start,k-1)));
-     	assert (select(start,k-1) == select(end, k-1));
-        close array_multiset(k-1, e, end, multiset_add (MB2, select(start,k-1)));
-        multiset_add_commutes(MA2, select(start, i), select(start, k-1));
-        multiset_add_commutes(MB2, select(start, j), select(start, k-1));
-     }  
-     assert array_multiset(k, e, start, ?MA2) &*& array_multiset(k, e, end, ?MB2);  
-     close array_multiset(i, e, start, multiset_add(MA2, select(start,i)));
-     close array_multiset(i, e, start, multiset_add(MB2, select(start,j)));
-     k--;
-     for(; k > b; k--)
-     invariant b <= k &*& k <= i &*& array_multiset(k, e, start, ?MA3) &*& array_multiset(k, e, end, ?MB3) &*& MA3 == MB3;
-     decreases (k-b);
-     {
-     	close array_multiset(k-1, e, start, multiset_add(MA3, select(start,k-1)));
-     	assert (select(start,k-1) == select(end, k-1));
-        close array_multiset(k-1, e, end, multiset_add(MB3, select(start,k-1)));
-     } 
-     close same_multiset(start, end, b, e);
-     }
-  }
+{
+   nat n = int_diff_always(b, e);
+   int_diff_le(b, e, n);
+   multiset<int> m = array_multiset(b, n, start);
+   multiset<int> m2 = multiset_select_in(b, e, n, start, j);
+   assert m == multiset_add(m2, select(start, j));
+   same_multiset_store_in(b, e, n, start, m2, j, select(start, i));
+   array(int, int) middle = store(start, j, select(start, i));
+   assert array_multiset(b, n, middle) == multiset_add(m2, select(start, i));
+   same_multiset_store_in(b, e, n, middle, m2, i, select(start, j));
+   close same_multiset(start, array_swap(start, i, j), b, e);
+}
 
 lemma void swap_out(array(int, int) arr, int i, int j, int k)
   requires k != i &*& k != j;
@@ -525,7 +486,7 @@ void quicksort (int* a, int lo, int hi)
    //@ assert array_model(a,p+1,hi+1,?end1);
    //@ empty_array(a,p,end1);
    //@ array_model_store_fold(a,p,hi+1,end1,p);
-   //@ ensure_empty_array(a,hi+1,start);
+   //@ open array_model(a, hi+1, hi+1, start);
    //@ same_multi_etend(end,end1, p+1, hi+1);
    //@ sorted_etend(end1, p+1, hi+1, p, select(end,p));
    //@ concat_array3(a,end,end0,store(end1,p, select(end,p)),lo,p,hi+1, select(end,p));

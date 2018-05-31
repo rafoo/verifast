@@ -9,6 +9,16 @@ fixpoint bool int_diff(int b, int e, nat n) {
     case succ(p): return (b < e && int_diff(b+1, e, p));
 }}
 
+lemma void int_diff_le(int b, int e, nat n)
+requires b <= e &*& int_diff(b, e, n) == true;
+ensures n == nat_of_int(e - b);
+{
+  switch(n) {
+    case zero:
+    case succ(p): int_diff_le(b+1, e, p);
+  }
+}
+
 lemma nat int_diff_always(int b, int e)
 requires true;
 ensures int_diff(b, e, result) == true;

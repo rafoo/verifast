@@ -531,7 +531,8 @@ int partition (int* a, int lo, int hi)
      lemma void multiset_trans(array(int,int) arr, array(int,int) arr0, array(int,int) arr1, int b, int e)
      	requires same_multiset(arr0,arr,b,e) &*& same_multiset(arr1,arr,b,e);
      	ensures same_multiset(arr0,arr1,b,e);
-     	{assume(false);}
+     	{ same_multiset_sym(arr1, arr, b, e);
+     	  same_multiset_trans(arr0, arr, arr1, b, e); }
 @*/
 void quicksort (int* a, int lo, int hi)
 //@ requires array_model(a, lo, hi+1, ?start);

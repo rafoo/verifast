@@ -58,3 +58,20 @@ ensures ints(p, count-1, ?bl) &*& integer(p+count-1, ?lst) &*& vs == append(bl, 
     }
   }
 }
+
+lemma void close_ints_right(nat n)
+requires ints(?a, ?count, ?vs) &*& int_diff(0, count, succ(n)) == true &*& integer(a+count, ?lst); 
+ensures ints(a, count+1, ?bl)  &*& bl == append(vs, cons(lst, nil));
+{
+  switch (n) {
+    case zero : {
+      open ints(a, count, vs);
+      open ints(a+1, count-1, _);
+    }
+    case succ(p) : {
+      int_diff_translate(1, count, -1, n);
+      open ints(a, count, vs);
+      close_ints_right(p);
+    }
+  }
+}

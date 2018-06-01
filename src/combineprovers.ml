@@ -47,7 +47,6 @@ type combination_strategy =
 type poly_map = {f : 'a 'b 'c. ('a, 'b, 'c) context -> 'c -> 'c}
 type poly_map2 = {f : 'a 'b 'c. ('a, 'b, 'c) context -> 'c -> 'c -> 'c}
 type poly_map3 = {f : 'a 'b 'c. ('a, 'b, 'c) context -> 'c -> 'c -> 'c -> 'c}
-type poly_map4 = {f : 'a 'b 'c. ('a, 'b, 'c) context -> 'a -> 'a -> 'c -> 'c}
 (* ['a, 'b, 'c, 'd, 'e, 'f] combined_context is an
    ('a * 'd, 'b * 'e, ('c, 'f) my_pair) context *)
 class ['a, 'b, 'c, 'd, 'e, 'f] combined_context (p1 : ('a, 'b, 'c) context)
@@ -74,10 +73,6 @@ class ['a, 'b, 'c, 'd, 'e, 'f] combined_context (p1 : ('a, 'b, 'c) context)
        Right (r.f p2 a b c)
     | _ -> failwith "map3"
   in
-  let map4 (r : poly_map4) a b = function
-    | Left x -> Left (r.f p1 (fst a) (fst b) x)
-    | Right y -> Right (r.f p2 (snd a) (snd b) y)
-    | Both (x, y) -> Both (r.f p1 (fst a) (fst b) x, r.f p2 (snd a) (snd b) y) in
 object
   (* All methods but "set_fpclauses" are trivial. The
      combination_strategy is used in methods "query" and "assume". *)

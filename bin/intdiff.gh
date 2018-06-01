@@ -1,100 +1,87 @@
-inductive nat = O | S(nat);
+#ifndef INTDIFF_H
+#define INTDIFF_H
 
+#include "nat.gh"
 
-predicate int_diff(int b, int e; nat length) =
-  b >= e ? length == O : (int_diff(b+1, e, ?pred) &*& length == S(pred));
+fixpoint bool int_diff(int b, int e, nat n) {
+  switch (n) {
+    case zero: return (b >= e);
+    case succ(p): return (b < e && int_diff(b+1, e, p));
+}}
 
-lemma void int_diff_always(int b, int e)
-requires true;
-ensures int_diff(b, e, _);
+lemma void int_diff_le(int b, int e, nat n)
+requires b <= e &*& int_diff(b, e, n) == true;
+ensures n == nat_of_int(e - b);
 {
-  if (b >= e) {
-    close int_diff(b, e, O);
-  } else {
-    int i = e;
-    close int_diff(e, e, O);
-    for (; i > b; i--)
-    invariant b <= i &*& i <= e &*& int_diff(i, e, ?l);
-    decreases i - b;
-    {
-       close int_diff(i-1, e, S(l));
-    }
+  switch(n) {
+    case zero:
+    case succ(p): int_diff_le(b+1, e, p);
   }
 }
 
-
-lemma void int_diff_clear(int b, int e, nat l)
-requires int_diff(b, e, l);
-ensures true;
+lemma nat int_diff_always(int b, int e)
+requires true;
+ensures int_diff(b, e, result) == true;
 {
-  open int_diff(b, e, l);
-  switch(l) {
-    case O:
-    case S(p): int_diff_clear(b+1, e, p);
+  if (b >= e) {
+    return zero;
+  } else {
+    int i = e;
+    nat l = zero;
+    for (; i > b; i--)
+    invariant b <= i &*& i <= e &*& int_diff(i, e, l) == true;
+    decreases i - b;
+    {
+       l = succ(l);
+    }
+    return l;
   }
 }
 
 lemma void int_diff_translate(int b, int e, int delta, nat l)
-requires int_diff(b, e, l);
-ensures int_diff(b+delta, e+delta, l);
+requires int_diff(b, e, l) == true;
+ensures int_diff(b+delta, e+delta, l) == true;
 {
   switch(l) {
-    case O: {
-      open int_diff(b, e, l);
-      close int_diff(b+delta, e+delta, l);
-    }
-    case S(p): {
-      open int_diff(b, e, l);
-      int_diff_translate(b+1, e, delta, p);
-      close int_diff(b+delta, e+delta, l);
-    }
+    case zero: {}
+    case succ(p): int_diff_translate(b+1, e, delta, p);
   }
 }
 
 
 lemma void open_ints_right(nat n)
-requires ints(?p, ?count, ?vs) &*& int_diff(0, count, S(n)); 
-ensures ints(p, count-1, ?bl) &*& integer(p+count-1, ?lst) &*& vs == append(bl, cons(lst, nil)) &*& int_diff(0, count, S(n));
+requires ints(?p, ?count, ?vs) &*& int_diff(0, count, succ(n)) == true;
+ensures ints(p, count-1, ?bl) &*& integer(p+count-1, ?lst) &*& vs == append(bl, cons(lst, nil));
 {
   switch(n) {
-    case O: {
-      open int_diff(0, count, S(n));
-      open int_diff(1, count, n);
+    case zero: {
       open ints(p, count, vs);
       open ints(p+1, count-1, _);
       close ints(p, count-1, nil);
     }
-    case S(m): {
-      open int_diff(0, count, S(n));
+    case succ(m): {
       int_diff_translate(1, count, -1, n);
       open ints(p, count, vs);
       assert ints(p+1, count-1, ?l);
       open_ints_right(m);
       close ints(p, count-1, _);
-      int_diff_translate(0, count-1, 1, n);
-      close int_diff(0, count, S(n));
     }
   }
 }
 
 lemma void close_ints_right(nat n)
-requires ints(?a, ?count, ?vs) &*& int_diff(0, count, S(n)) &*& integer(a+count, ?lst); 
-ensures ints(a, count+1, ?bl)  &*& bl == append(vs, cons(lst, nil)) &*& int_diff(0, count, S(n));
+requires ints(?a, ?count, ?vs) &*& int_diff(0, count, succ(n)) == true &*& integer(a+count, ?lst); 
+ensures ints(a, count+1, ?bl)  &*& bl == append(vs, cons(lst, nil));
 {
   switch (n) {
-    case O : {
-      open int_diff(0, count, S(n));
-      open int_diff(1, count, n);
+    case zero : {
       open ints(a, count, vs);
       open ints(a+1, count-1, _);
     }
-    case S(p) : {
-      open int_diff(0, count, S(n));
+    case succ(p) : {
       int_diff_translate(1, count, -1, n);
       open ints(a, count, vs);
       close_ints_right(p);
-      int_diff_translate(0, count-1, 1, n);
-      close int_diff(0, count, S(n));
     }
   }
 }

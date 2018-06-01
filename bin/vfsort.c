@@ -25,21 +25,6 @@ lemma void same_multiset_swap(array(int, int) start, int i, int j, int b, int e)
    close same_multiset(start, array_swap(start, i, j), b, e);
 }
 
-lemma void swap_out(array(int, int) arr, int i, int j, int k)
-  requires k != i &*& k != j;
-  ensures select(array_swap(arr, i, j), k) == select(arr, k);
-{ }
-
-lemma void swap_in_i(array(int, int) arr, int i, int j)
-  requires true;
-  ensures select(array_swap(arr, i, j), i) == select(arr, j);
-{ }
-
-lemma void swap_in_j(array(int, int) arr, int i, int j)
-  requires true;
-  ensures select(array_swap(arr, i, j), j) == select(arr, i);
-{ }
-
 @*/
 
 int select_c(int* arr, int key)
@@ -349,8 +334,6 @@ int partition (int* a, int lo, int hi)
         swap(a, i, j);
         //@ same_multiset_swap(arr, i, j, lo, hi);
         //@ same_multiset_trans(start, arr, array_swap(arr, i, j), lo, hi);
-        //@ swap_out(arr, i, j, hi);
-        //@ swap_in_i(arr,i,j);
     	//@ minore_out(arr,lo, i, p, i, j);
       	//@ one_more_bound_minore(array_swap(arr,i,j),lo,i,p);
       	//@ nat length = int_diff_always(i, j);
@@ -375,7 +358,6 @@ int partition (int* a, int lo, int hi)
     swap(a, i, hi);
   //@ same_multiset_swap(arr, i, hi, lo, hi+1);
   //@ same_multiset_trans(start, arr, array_swap(arr, i, hi), lo, hi+1);
-  //@ swap_in_i(arr, i, hi);
   //@ minore_out(arr, lo, i, p, i, hi);
   //@ swap_majore(arr, i, hi+1, p, i,hi);
   //@ majore_bot_less(array_swap(arr,i,hi), i, hi+1, p);

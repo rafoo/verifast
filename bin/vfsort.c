@@ -283,26 +283,30 @@ void swap (int* a, int i, int j)
     	}
      }
          	
+    lemma void minore_out_length(array(int,int) arr,int lo, int hi, int bound, int i, int j, nat length)
+	requires minore(arr,lo,hi,bound) &*& hi <= i &*& hi <= j &*& int_diff(lo, hi, length) == true;
+    	ensures minore(array_swap(arr,i,j),lo,hi,bound);
+    	{
+          switch (length) {
+    	     case zero : {
+    	       open minore(arr,lo,hi,bound);
+    	       close minore(array_swap(arr,i,j),lo,hi,bound);
+    	     }
+    	     case succ(p) : {
+    	       open minore(arr,lo,hi,bound);
+    	       int_diff_translate(lo+1, hi, -1, p);
+    	       minore_out_length(arr,lo,hi-1,bound,i,j,p);
+    	       close minore(array_swap(arr,i,j),lo,hi,bound);
+    	     }
+    	   }
+    	}
+
     lemma void minore_out(array(int,int) arr,int lo, int hi, int bound, int i, int j)
     	requires minore(arr,lo,hi,bound) &*& hi <= i &*& hi <= j;
     	ensures minore(array_swap(arr,i,j),lo,hi,bound);
-    	{  /*
-    	   if (lo>=hi) {
-    	     open minore(arr,lo,hi,bound);
-    	     close minore(array_swap(arr,i,j),lo,hi,bound);
-    	   }else{
-    	     int k = lo;
-    	     close minore(array_swap(arr,i,j),lo,k,bound);
-    	     for(;k<hi;k++)
-    	       invariant k >= lo &*& k <= hi &*& minore(arr,k,hi,bound) &*& minore(array_swap(arr,i,j),lo,k,bound);
-    	       decreases (hi-k);
-    	       {
-    	       	open minore(arr,k,hi,bound);
-    	       	close minore(array_swap(arr,i,j),lo,k+1,bound);
-    	       }
-    	     close minore(array_swap(arr,i,j),lo,hi,bound);
-    	   }*/
-    	   assume (false);
+    	{
+    	  nat length = int_diff_always(lo, hi);
+    	  minore_out_length(arr, lo, hi, bound, i, j, length);
     	}
     	
     lemma void majore_out(array(int,int) arr,int lo, int hi, int bound)

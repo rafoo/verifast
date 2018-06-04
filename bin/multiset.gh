@@ -42,13 +42,6 @@ lemma t multiset_ext<t>(multiset<t> m1, multiset<t> m2)
    }
 }
 
-/*
-lemma_auto (multiset_get(empty_multiset(), i)) void get_empty(int i)
-  requires true;
-  ensures multiset_get(empty_multiset(), i) == O;
-{ }
-*/
-
 lemma_auto (multiset_select(multiset_add(m, i), j)) void select_add<t>(multiset<t> m, t i, t j)
   requires true;
   ensures multiset_select(multiset_add(m, i), j) == ((i == j) ? succ(multiset_select(m, i)) : multiset_select(m ,j));
@@ -486,7 +479,6 @@ lemma void same_multiset_store_in(int b, int e, nat n, array(int, int) start, mu
 }
 
 // same as array_multiset but with a plugable multiset to ease spatial concatenation
-
 fixpoint multiset<int> array_multiset_linear(int b, nat n, array(int, int) arr, multiset<int> m) {
   switch(n) {
     case zero: return m;

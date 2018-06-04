@@ -3,11 +3,11 @@
 //@ #include "multiset.gh"
 
 /*@
-  
+
 fixpoint array(int, int) array_swap(array(int, int) start, int i, int j) {
   return store(store(start, j, select(start, i)), i, select(start, j));
 }
-  
+
 
 lemma void same_multiset_swap_in(array(int, int) start, int i, int j, int b, int e)
   requires b <= i &*& i < j &*& j < e;
@@ -127,7 +127,7 @@ void swap (int* a, int i, int j)
     	   finite_multiset_add((geq)(bound), array_multiset(lo, n, arr), select(arr, hi));
     	   close minore(arr, lo, succ(n), bound);
     	}
-    	
+
     lemma void one_more_bound_majore(array(int,int) arr, int lo, nat n, int hi, int bound)
     	requires majore(arr,lo,n,bound) &*& int_diff(lo, hi, n) == true &*& lo <= hi &*& select(arr,hi) >= bound;
     	ensures majore(arr,lo,succ(n),bound);
@@ -137,7 +137,7 @@ void swap (int* a, int i, int j)
     	   finite_multiset_add((leq)(bound), array_multiset(lo, n, arr), select(arr, hi));
     	   close majore(arr, lo, succ(n), bound);
         }
-     
+
     lemma void one_more_bot_bound_majore(array(int,int) arr, int lo, int hi, int bound, nat length)
     	requires majore(arr,lo,length,bound) &*& select(arr,hi) < bound &*& lo < hi &*& int_diff(lo, hi, length) == true;
     	ensures majore(array_swap(arr,lo,hi),lo+1,length,bound);
@@ -149,7 +149,7 @@ void swap (int* a, int i, int j)
           open same_multiset(arr, array_swap(arr, lo, hi), lo, hi+1);
           int_diff_le(lo, hi, length);
     	  assert array_multiset(lo, succ(length), array_swap(arr,lo,hi)) == multiset_add(m, select(arr, hi));
-    	  regular_multiset_add(array_multiset(lo+1, length, array_swap(arr, lo, hi)), m, select(arr, hi)); 
+    	  regular_multiset_add(array_multiset(lo+1, length, array_swap(arr, lo, hi)), m, select(arr, hi));
     	  assert array_multiset(lo+1, length, array_swap(arr,lo,hi)) == m;
     	  open majore(arr, lo, length, bound);
     	  close majore(array_swap(arr, lo, hi), lo+1, length, bound);
@@ -189,7 +189,7 @@ void swap (int* a, int i, int j)
            finite_multiset_remove((leq)(bound), array_multiset(lo+1, n, arr), select(arr, lo), n);
            close majore(arr,lo+1,n,bound);
     	}
-    
+
     lemma void majore_top_more(array(int,int) arr,int lo,int hi,nat n,int bound)
     	requires majore(arr,lo,n,bound) &*& int_diff(lo, hi, n) == true &*& lo <= hi &*& select(arr,hi) >= bound;
     	ensures majore(arr,lo,succ(n),bound);
@@ -199,7 +199,7 @@ void swap (int* a, int i, int j)
     	   finite_multiset_add((leq)(bound), array_multiset(lo, n, arr), select(arr, hi));
     	   close majore(arr, lo, succ(n), bound);
     }
-    
+
     lemma void swap_majore(array(int,int) arr,int lo, int hi, nat n, int bound, int i, int j)
     	requires majore(arr,lo,n,bound) &*& lo <= i &*& j < hi &*& i < j &*& int_diff(lo, hi, n) == true;
     	ensures majore(array_swap(arr,i,j),lo,n,bound);
@@ -228,10 +228,10 @@ int partition (int* a, int lo, int hi)
   //@ nat left_length = zero;
   //@ nat middle_length = zero;
   //@ bound_empty_majore(start,i+1,p);
-  for (j = lo; j < hi; j++) 
+  for (j = lo; j < hi; j++)
   /*@ invariant array_model(a,lo,hi,?arr) &*& lo <= j &*& j < hi+1 &*& i < j &*& int_diff(i+1, j, middle_length) == true &*& lo -1 <= i &*& same_multiset(start, arr, lo, hi) &*& select(arr, hi) == p
       &*& minore(arr,lo,left_length,p) &*& int_diff(lo, i+1, left_length) == true &*& majore(arr,i+1,middle_length,p); @*/
-  { 
+  {
     int aj = select_c(a, j);
     if (aj < pivot) {
       i++;
@@ -255,7 +255,7 @@ int partition (int* a, int lo, int hi)
    	//@ middle_length = succ(middle_length);
         //@ int_diff_translate(i, j, 1, middle_length);
     }
-    
+
   }
   //@ assert array_model(a, lo, hi, ?arr);
   //@ nat right_length = int_diff_always(i+1, hi);
@@ -289,7 +289,7 @@ int partition (int* a, int lo, int hi)
 
     predicate sorted(array(int,int) arr, int b, int e) =
       b <= e ? sorted_nat(arr, b, nat_of_int(e-b)) : true;
-    
+
     lemma void empty_sorted(array(int,int)arr, int b, int e)
     	requires b >= e;
     	ensures sorted(arr, b, e);
@@ -301,12 +301,7 @@ int partition (int* a, int lo, int hi)
     	    close sorted(arr, b, e);
     	  }
     	}
-    	
-/*    lemma void ensure_empty_array(int*a, int b,array(int,int) arr)
-    	requires array_model(a,b,b,arr);
-    	ensures true;
-    	{open array_model(a,b,b,arr);} */
-    	
+
     lemma void same_multi_etend(array(int,int) end, array(int,int) end1, int b, int e)
     	requires same_multiset(end,end1,b,e) &*& b <= e;
     	ensures same_multiset(end,store(end1,b-1, select(end,b-1)),b-1,e);
@@ -317,7 +312,7 @@ int partition (int* a, int lo, int hi)
     	   same_multiset_trans(end, end1, store(end1, b-1, select(end, b-1)), b, e);
     	   close_same_multiset(end, store(end1, b-1, select(end, b-1)), b, e);
     	}
-    	
+
     lemma void sorted_etend(array(int,int) end, int b, nat n, int p, int v)
     	requires sorted_nat(end, b, n) &*& p < b;
     	ensures sorted_nat(store(end, p, v), b, n);
@@ -342,81 +337,6 @@ int partition (int* a, int lo, int hi)
     	    }
     	  }
     	}
-    	
-    lemma void sorted_destruct(array(int, int) arr, int b, nat n)
-    requires sorted_nat(arr, b, succ(n));
-    ensures sorted_nat(arr, b+1, n);
-    {
-      switch(n) {
-        case zero: {
-          open sorted_nat(arr, b, succ(n));
-          close sorted_nat(arr, b+1, n);
-        }
-        case succ(pred): {
-          open sorted_nat(arr, b, succ(n));
-        }
-      }
-    }
-
-    lemma void majore_weaken(array(int, int) arr, int b, nat n, int bound1, int bound2)
-    requires majore(arr, b, n, bound1) &*& bound1 >= bound2;
-    ensures majore(arr, b, n, bound2);
-    {
-      switch(n) {
-        case zero: {
-          clear_majore(arr, b, n, bound1);
-          bound_empty_majore(arr, b, bound2);
-        }
-        case succ(p): {
-          open majore(arr, b, n, bound1);
-          finite_multiset_remove((leq)(bound1), array_multiset(b+1, p, arr), select(arr, b), p);
-          close majore(arr, b+1, p, bound1);
-          majore_weaken(arr, b+1, p, bound1, bound2);
-          open majore(arr, b+1, p, bound2);
-          finite_multiset_add((leq)(bound2), array_multiset(b+1, p, arr), select(arr, b));
-          close majore(arr, b, n, bound2);
-        }
-      }
-    }
-
-    lemma void sorted_imp_majore(array(int, int) arr, int b, nat n)
-    requires sorted_nat(arr, b, succ(n));
-    ensures sorted_nat(arr, b+1, n) &*& majore(arr, b+1, n, select(arr, b));
-    {
-      switch(n) {
-        case zero: {
-          open sorted_nat(arr, b, succ(zero));
-          close sorted_nat(arr, b+1, zero);
-          bound_empty_majore(arr, b+1, select(arr, b));
-        }
-        case succ(p): {
-          open sorted_nat(arr, b, succ(succ(p)));
-          sorted_imp_majore(arr, b+1, p);
-          assert select(arr, b) <= select(arr, b+1);
-          if (p != zero && select(arr, b+1) > select(arr, b+2)) {
-            switch(p) { case zero: assert false; case succ(pred): {
-              open majore(arr, b+2, p, select(arr, b+1));
-              finite_multiset_remove((leq)(select(arr, b+1)), array_multiset(b+3, pred, arr), select(arr, b+2), pred);
-              assert false;
-            }}
-          }
-          majore_weaken(arr, b+2, p, select(arr, b+1), select(arr, b));
-          open majore(arr, b+2, p, select(arr, b));
-          finite_multiset_add((leq)(select(arr, b)), array_multiset(b+2, p, arr), select(arr, b+1));
-          close majore(arr, b+1, n, select(arr, b));
-          switch(p) {
-            case zero: {
-              open sorted_nat(arr, b+2, zero);
-              close sorted_nat(arr, b+1, succ(zero));
-            }
-            case succ(pred): {
-              close sorted_nat(arr, b+1, n);
-              assert true;
-            }
-          }
-        }
-      }
-    }
 
     lemma void sorted_majore(array(int, int) arr, int b, nat n)
     requires sorted_nat(arr, b+1, n) &*& majore(arr, b+1, n, select(arr, b));
@@ -458,7 +378,7 @@ int partition (int* a, int lo, int hi)
           concat_array_model(a, a0, a1, b0+1, e0, e1, p);
           close array_model(a, b0, b0, concat_array(a0, a1, b0+1, e0, e1, p));
           array_model_store_fold(a, b0, e1, concat_array(a0, a1, b0+1, e0, e1, p), b0);
-          assert array_model(a, b0, e1, concat_array(a0, a1, b0, e0, e1, left)); 
+          assert array_model(a, b0, e1, concat_array(a0, a1, b0, e0, e1, left));
         }
       }
     }
@@ -573,7 +493,7 @@ int partition (int* a, int lo, int hi)
     	  same_multiset_concat(end, res, b0, e0, e1);
     	  same_multiset_sym(end, res, b0, e1);
     	}
-                     
+
      lemma void multiset_trans(array(int,int) arr, array(int,int) arr0, array(int,int) arr1, int b, int e)
      	requires same_multiset(arr0,arr,b,e) &*& same_multiset(arr1,arr,b,e);
      	ensures same_multiset(arr0,arr1,b,e);

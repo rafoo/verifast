@@ -81,15 +81,10 @@ lemma void regular_multiset_add<a>(multiset<a> MA, multiset<a> MB, a x)
    requires multiset_add(MA,x) == multiset_add(MB,x);
    ensures MA == MB;
    {
-     if( MA != MB){
+     if(MA != MB) {
        a t = multiset_ext(MA,MB);
-
-       	 select_add(MA, x, t);
-       	 select_add(MB, x, t);
-       if (x == t){
-         inj_S(multiset_select(MA,x),multiset_select(MB,x));
-       }
-
+       select_add(MA, x, t);
+       select_add(MB, x, t);
      }
    }
 
@@ -106,7 +101,6 @@ ensures m1 == multiset_add(result, y) &*& m2 == multiset_add(result, x);
       switch(m1) {
         case mk_multiset(a):
           multiset<a> res = mk_multiset(store(a, y, p));
-          assert m1 == multiset_add(res, y);
           multiset_add_commutes(res, x, y);
           regular_multiset_add(m2, multiset_add(res, x), y);
           return res;
@@ -142,10 +136,10 @@ ensures m == empty_multiset();
   assert finite_multiset_list(?l, p, m, zero);
   switch(l) {
     case nil: open finite_multiset_list(nil, p, m, zero);
-    case cons(hd, tl):
-      {
-        open finite_multiset_list(cons(hd, tl), p, m, zero); assert false;
-      }
+    case cons(hd, tl): {
+      open finite_multiset_list(cons(hd, tl), p, m, zero);
+      assert false;
+    }
   }
 }
 
@@ -184,25 +178,15 @@ ensures finite_multiset(p, m, n) &*& p(x) == true;
       pair <t, multiset<t> > ym2 = finite_multiset_destruct(p, multiset_add(m, x), n);
       t y = fst(ym2);
       multiset<t> m2 = snd(ym2);
-      assert multiset_add(m, x) == multiset_add(m2, y);
-      open finite_multiset(p, m2, n);
-      open finite_multiset_list(_, p, m2, n);
-      assert m2 == empty_multiset();
-      switch (multiset_select(multiset_add(m2, y), x)) {
-        case zero: assert false;
-        case succ(pred):
-          {
-            assert x == y;
-            regular_multiset_add(m, m2, x);
-            finite_empty_multiset(p);
-          }
-      }
+      finite_multiset_is_empty(p, m2);
+      if (x != y) { switch(multiset_select(multiset_add(m2, y), x)) {case zero: case succ(pred):} assert false; }
+      regular_multiset_add(m, m2, x);
+      finite_empty_multiset(p);
     }
     case succ(pred): {
       pair <t, multiset<t> > ym2 = finite_multiset_destruct(p, multiset_add(m, x), n);
       t y = fst(ym2);
       multiset<t> m2 = snd(ym2);
-      assert multiset_add(m, x) == multiset_add(m2, y);
       if (x == y) {
         regular_multiset_add(m, m2, x);
       } else {
@@ -221,8 +205,7 @@ ensures true;
 {
   switch(n) {
     case zero: {
-      open finite_multiset(p, m, n);
-      open finite_multiset_list(_, p, m, n);
+      finite_multiset_is_empty(p, m);
     }
     case succ(pred): {
       pair <t, multiset<t> > xm2 = finite_multiset_destruct(p, m, pred);
@@ -239,12 +222,9 @@ ensures finite_multiset(p, m, n) &*& finite_multiset(p, m, n);
 {
   switch(n) {
     case zero: {
-      open finite_multiset(p, m, n);
-      open finite_multiset_list(_, p, m, n);
-      close finite_multiset_list(nil, p, m, n);
-      close finite_multiset(p, m, n);
-      close finite_multiset_list(nil, p, m, n);
-      close finite_multiset(p, m, n);
+      finite_multiset_is_empty(p, m);
+      finite_empty_multiset(p);
+      finite_empty_multiset(p);
     }
     case succ(pred): {
       pair <t, multiset<t> > xm2 = finite_multiset_destruct(p, m, pred);
@@ -257,14 +237,13 @@ ensures finite_multiset(p, m, n) &*& finite_multiset(p, m, n);
   }
 }
 
-lemma void finite_multiset_select<t>(fixpoint (t, bool) p, multiset<t> m, nat n, t x)
+lemma multiset<t> finite_multiset_select<t>(fixpoint (t, bool) p, multiset<t> m, nat n, t x)
 requires finite_multiset(p, m, n) &*& multiset_select(m, x) != zero;
-ensures finite_multiset(p, m, n) &*& p(x) == true;
+ensures finite_multiset(p, m, n) &*& p(x) == true &*& m == multiset_add(result, x);
 {
   switch(n) {
     case zero: {
-      open finite_multiset(p, m, n);
-      open finite_multiset_list(_, p, m, n);
+      finite_multiset_is_empty(p, m);
       assert false;
     }
     case succ(pred): {
@@ -272,9 +251,16 @@ ensures finite_multiset(p, m, n) &*& p(x) == true;
       t y = fst(ym2);
       multiset<t> m2 = snd(ym2);
       if (x != y) {
-        finite_multiset_select(p, m2, pred, x);
+        multiset<t> m3 = finite_multiset_select(p, m2, pred, x);
+        finite_multiset_add(p, m2, y);
+        assert m == multiset_add(m2, y);
+        assert m2 == multiset_add(m3, x);
+        multiset_add_commutes(m3, x, y);
+        return multiset_add(m3, y);
+      } else {
+        finite_multiset_add(p, m2, y);
+        return m2;
       }
-      finite_multiset_add(p, m2, y);
     }
   }
 }
@@ -297,8 +283,6 @@ ensures finite_multiset(truep, array_multiset(b, n, arr), n);
   switch(n) {
     case zero: {
       finite_empty_multiset<int>(truep);
-      assert array_multiset(b, n, arr) == empty_multiset<int>();
-      assert finite_multiset(truep, array_multiset(b, n, arr), n);
     }
     case succ(p): {
       array_multiset_finite(b+1, p, arr);
@@ -324,55 +308,44 @@ lemma int array_multiset_assoc(array(int, int) a, int b, int e, int v, nat l)
 requires multiset_select(array_multiset(b, l, a), v) != zero &*& int_diff(b, e, l) == true;
 ensures select(a, result) == v &*& b <= result &*& result < e;
 {
-   switch(l) {
-     case zero: {
+  switch(l) {
+    case zero: {
       open array_multiset(b, e, a, m);
       assert false;
-     }
-     case succ(p): {
-        if (select(a, b) == v) {
-          return b;
-        } else {
-          return array_multiset_assoc(a, b+1, e, v, p);
-        }
-     }
-   }
+    }
+    case succ(p): {
+      if (select(a, b) == v) {
+        return b;
+      } else {
+        return array_multiset_assoc(a, b+1, e, v, p);
+      }
+    }
+  }
 }
 
 lemma void array_multiset_select(array(int, int) a, int b, int e, int i, nat l)
 requires b <= i &*& i < e &*& int_diff(b, e, l) == true;
 ensures multiset_select(array_multiset(b, l, a), select(a, i)) != zero;
 {
-   switch(l)
-   {
-      case zero: {
-        open int_diff(b, e, l);
-        assert false;
-      }
-      case succ(p): {
-        if (b != i) {
-           array_multiset_select(a, b+1, e, i, p);
-        }
-      }
-   }
-}
-
-lemma multiset<int> multiset_select_in(int b, int e, nat n, array(int, int) start, int k)
-  requires int_diff(b, e, n) == true &*& b <= k &*& k < e;
-  ensures array_multiset(b, n, start) == multiset_add(result, select(start, k));
-{
-  switch(n) {
+  switch(l) {
     case zero: assert false;
     case succ(p): {
-      if (b == k) {
-        return array_multiset(b+1, p, start);
-      } else {
-        multiset<int> m = multiset_select_in(b+1, e, p, start, k);
-        multiset_add_commutes(m, select(start, k), select(start, b));
-        return multiset_add(m, select(start, b));
+      if (b != i) {
+        array_multiset_select(a, b+1, e, i, p);
       }
     }
   }
+}
+
+lemma multiset<int> multiset_select_in(int b, int e, nat n, array(int, int) start, int k)
+requires int_diff(b, e, n) == true &*& b <= k &*& k < e;
+ensures array_multiset(b, n, start) == multiset_add(result, select(start, k));
+{
+  array_multiset_finite(b, n, start);
+  array_multiset_select(start, b, e, k, n);
+  multiset<int> m = finite_multiset_select(truep, array_multiset(b, n, start), n, select(start, k));
+  finite_multiset_clear(truep, array_multiset(b, n, start), n);
+  return m;
 }
 
 // Having the same multiset of elements, this is a way to express that a2 is a permutation of a1

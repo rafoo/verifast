@@ -3,10 +3,14 @@
 
 #include "intdiff.gh"
 
-lemma void inj_S(nat a, nat b)
-requires succ(a) == succ(b);
-ensures a == b;
-{}
+/*
+   Axiomatic theory of arrays.
+
+   The theory of arrays provides a built-in type array(t, u) of possibly infinite arrays indexed by t and ranging over u.
+   The primitive functions are: select, store, constant_array, and array_ext.
+
+   When using Z3, these functions are directly mapped to their conterpart in Z3.
+*/
 
 fixpoint u select<t,u> (array(t,u) arr, t x);
 fixpoint array(t, u) store<t, u> (array(t, u) arr, t x, u y);
@@ -25,7 +29,7 @@ lemma void select_store<t,u> (array(t,u) arr, t x, u y, t z)
 
 predicate array_model (int* a, int b, int e, array(int,int) arr) =
   (b >= e) ? true : (integer(a+b,?v) &*& select(arr, b) == v &*& array_model(a, b+1, e, arr));
-  
+
 lemma void array_model_out_of_range_diff(int* a, int b, int e, array(int,int) arr, int i, int v, nat n)
   requires (i < b || i >= e) &*& array_model(a, b, e, arr) &*& int_diff(b, e, n) == true;
   ensures array_model(a, b, e, store(arr, i, v));
@@ -79,12 +83,12 @@ ensures array_model(a, b, e+1, arr);
 lemma void array_model_init_diff(int* a, int length, nat n)
   requires ints((void*)a, length, _) &*& length >= 0 &*& int_diff(0, length, n) == true;
   ensures array_model(a, 0, length, _);
-{ 
+{
    switch (n) {
      case zero : {
      	empty_array(a,0,constant_array<int,int>(0));
      }
-     case succ(p) : 
+     case succ(p) :
      {
      	open_ints_right (p);
      	int_diff_translate(1,length,-1,p);
@@ -101,7 +105,7 @@ lemma void array_model_init_diff(int* a, int length, nat n)
 lemma void array_model_init(int* a, int length)
   requires ints((void*)a, length, _) &*& length >= 0;
   ensures array_model(a, 0, length, _);
-  { 
+  {
   nat n = int_diff_always(0, length);
   array_model_init_diff(a, length, n);
   }
@@ -109,7 +113,7 @@ lemma void array_model_init(int* a, int length)
 lemma void array_model_delete(int* a, int length)
   requires array_model(a, 0, length, _) &*& length > 0;
   ensures ints((void*)a, length, _);
-{ 
+{
    int k = 0;
    close ints(a,0, _);
    for(k = 0; k < length; k++)
@@ -129,10 +133,10 @@ lemma void array_model_delete(int* a, int length)
 lemma void array_model_select_unfold_diff(int* a, int b, int e, array(int,int) arr, int i, nat n)
   requires array_model(a, b, e, arr) &*& b <= i &*& i < e &*& int_diff(b, i+1, n) == true;
   ensures array_model(a, b, i, arr) &*& a[i] |-> select(arr, i) &*& array_model(a, i+1, e, arr);
-{ 
+{
   switch (n) {
     case zero : {
-       open int_diff(b,i+1,n); 
+       open int_diff(b,i+1,n);
     }
     case succ(p) : {
       open array_model(a, b, e, arr);
@@ -174,7 +178,7 @@ lemma void array_model_store_fold_diff(int* a, int b, int e, array(int,int) arr,
 lemma void array_model_store_fold(int* a, int b, int e, array(int,int) arr, int i)
   requires array_model(a, b, i, arr) &*& a[i] |-> ?v &*& array_model(a, i+1, e, arr) &*& b <= i &*& i < e;
   ensures array_model(a, b, e, store(arr, i, v));
-{ 
+{
   nat n = int_diff_always(b, i+1);
   array_model_store_fold_diff(a, b, e, arr, i, n);
 }

@@ -19,21 +19,11 @@ lemma void constant_select<t,u> (u v, t i);
   requires true;
   ensures select (constant_array<t,u>(v), i) == v;
 
-lemma t array_extensionality<t,u>(array(t,u) A, array(t,u) B)
-  requires A != B;
-  ensures select(A, result) != select(B, result);
-{
-   assume(false);
-   return array_ext(A, B);
-}
-
 // lemma_auto (get(set(arr, x, y), z)) void get_set<t,u> (array(t,u) arr, t x, u y, t z)
 lemma void select_store<t,u> (array(t,u) arr, t x, u y, t z)
     requires true;
     ensures select (store(arr, x, y), z) == ((x == z) ? y : select (arr, z));
-{ 
-   assume (select (store(arr, x, y), z) == ((x == z) ? y : select (arr, z)));
-}
+{}
 /*
 fixpoint int get<t,u> (array(int,int) arr, int x);
 fixpoint array(t, u) set<t, u> (fixpoint(t, u) arr, t x, u y);

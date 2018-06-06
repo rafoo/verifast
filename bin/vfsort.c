@@ -3,11 +3,11 @@
 //@ #include "multiset.gh"
 
 /*@
-  
+
 fixpoint array(int, int) array_swap(array(int, int) start, int i, int j) {
   return store(store(start, j, select(start, i)), i, select(start, j));
 }
-  
+
 
 lemma void same_multiset_swap(array(int, int) start, int i, int j, int b, int e)
   requires b <= i &*& i < j &*& j < e;
@@ -76,20 +76,20 @@ void swap (int* a, int i, int j)
 	select(arr,hi-1) <= bound
 	&*& minore(arr,lo,hi-1,bound);
 
-    predicate majore(array(int,int) arr, int lo, int hi, int bound) = 
-        (lo>=hi) ? true : 
+    predicate majore(array(int,int) arr, int lo, int hi, int bound) =
+        (lo>=hi) ? true :
 	select(arr,lo) >= bound &*& majore(arr,lo+1,hi,bound);
 
     lemma void bound_empty_minore(array(int,int) arr, int lo, int hi, int bound)
       requires lo >= hi;
       ensures minore(arr,lo,hi,bound);
       {close minore(arr,lo,hi,bound);}
-     
+
     lemma void bound_empty_majore(array(int,int) arr, int lo, int hi, int bound)
       requires lo >= hi;
       ensures majore(arr,lo,hi,bound);
       { close majore(arr,lo,hi,bound);}
-      
+
     lemma void clear_minore(array(int, int) a, int lo, int hi, int bound)
     requires minore(a, lo, hi, bound);
     ensures true;
@@ -158,7 +158,7 @@ void swap (int* a, int i, int j)
            int_diff_translate(lo+1, hi, -1, pred);
            minore_dup(a, lo, hi-1, bound, pred);
            close minore(a, lo, hi, bound);
-           close minore(a, lo, hi, bound);        
+           close minore(a, lo, hi, bound);
         }
         }
     }
@@ -181,7 +181,7 @@ void swap (int* a, int i, int j)
             minore_select(start, lo, hi, bound, j, lj);
             close minore(end, lo, i, bound);
          }
-       
+
        }
     }
 
@@ -192,7 +192,7 @@ void swap (int* a, int i, int j)
     	   if (lo > hi) open minore(arr, lo, hi, bound);
     	   close minore(arr,lo,hi+1,bound);
     	}
-    	
+
     lemma void one_more_bound_majore(array(int,int) arr, int lo, int hi, int bound)
     	requires majore(arr,lo,hi,bound) &*& select(arr,hi) >= bound;
     	ensures majore(arr,lo,hi+1,bound);
@@ -209,7 +209,7 @@ void swap (int* a, int i, int j)
     	    close majore(arr,lo,hi+1,bound);
     	  }
         }
-     
+
     lemma void one_more_bot_bound_majore(array(int,int) arr, int lo, int hi, int bound, nat length)
     	requires majore(arr,lo,hi,bound) &*& select(arr,hi) < bound &*& int_diff(lo, hi, length) == true;
     	ensures majore(array_swap(arr,lo,hi),lo+1,hi+1,bound);
@@ -228,7 +228,7 @@ void swap (int* a, int i, int j)
     	        close majore(array_swap(arr,lo,hi),lo+1,hi+1,bound,_);
     	      }
     	    }
-    	  
+
     	  }
 
     lemma void minore_out_length(array(int,int) arr,int lo, int hi, int bound, int i, int j, nat length)
@@ -256,14 +256,14 @@ void swap (int* a, int i, int j)
     	  nat length = int_diff_always(lo, hi);
     	  minore_out_length(arr, lo, hi, bound, i, j, length);
     	}
-    	
+
     lemma void majore_out(array(int,int) arr,int lo, int hi, int bound)
     	requires majore(arr,lo,hi,bound) &*& lo >= hi;
     	ensures majore(arr,lo+1,hi+1,bound);
     	{
-    	open majore(arr,lo,hi,bound); 
+    	open majore(arr,lo,hi,bound);
     	close majore(arr,lo+1,hi+1,bound);}
-   
+
     lemma void majore_top_less(array(int,int) arr,int lo, int hi, int bound, int j)
     	requires majore(arr,lo,hi,bound) &*& j <= hi;
     	ensures majore(arr,lo,j,bound);
@@ -281,17 +281,17 @@ void swap (int* a, int i, int j)
     	     close majore(arr,lo,j,bound);
     	  }
     	}
-    	
+
     lemma void majore_bot_less(array(int,int) arr,int lo, int hi, int bound)
     	requires majore(arr,lo,hi,bound);
     	ensures majore(arr,lo+1,hi,bound);
-    	{ 
+    	{
     	open majore(arr,lo,hi,bound);
     	if (hi <= lo){
     	  close majore(arr,lo+1,hi,bound);
     	}
     	}
-    
+
     lemma void majore_top_more(array(int,int) arr,int lo,int hi,int bound)
     	requires majore(arr,lo,hi,bound) &*& select(arr,hi) >= bound;
     	ensures majore(arr,lo,hi+1,bound);
@@ -310,7 +310,7 @@ void swap (int* a, int i, int j)
     	  close majore(arr,lo,hi+1,bound);
     	}
     }
-    
+
     lemma void swap_majore(array(int,int) arr,int lo, int hi, int bound, int i, int j)
     	requires majore(arr,lo,hi,bound) &*& lo <= i &*& j < hi &*& i < j;
     	ensures majore(array_swap(arr,i,j),lo,hi,bound);
@@ -338,10 +338,10 @@ int partition (int* a, int lo, int hi)
   //@ same_multiset_refl(start, lo, hi);
   //@ bound_empty_minore(start,lo,i+1,p);
   //@ bound_empty_majore(start,i+1,lo,p);
-  for (j = lo; j < hi; j++) 
-  /*@ invariant array_model(a,lo,hi,?arr) &*& lo <= j &*& j < hi+1 &*& i < j &*& lo -1 <= i &*& same_multiset(start, arr, lo, hi) &*& select(arr, hi) == p 
+  for (j = lo; j < hi; j++)
+  /*@ invariant array_model(a,lo,hi,?arr) &*& lo <= j &*& j < hi+1 &*& i < j &*& lo -1 <= i &*& same_multiset(start, arr, lo, hi) &*& select(arr, hi) == p
       &*& minore(arr,lo,i+1,p) &*& majore(arr,i+1,j,p); @*/
-  { 
+  {
     int aj = select_c(a, j);
     if (aj < pivot) {
       i++;
@@ -362,7 +362,7 @@ int partition (int* a, int lo, int hi)
     }else{
    	//@ one_more_bound_majore(arr, i+1, j, p);
     }
-    
+
   }
   //@ assert array_model(a, lo, hi, ?arr);
   //@ majore_top_less(arr, i+1, j, p, hi);
@@ -386,35 +386,35 @@ int partition (int* a, int lo, int hi)
 }
 
 /*@ predicate sorted(array(int,int) arr,int b, int e) =
-     (b >= e) ? true : 
+     (b >= e) ? true :
      select(arr,b) <= select(arr,b+1) &*& sorted(arr,b+1,e);
-    
+
     lemma void empty_sorted(array(int,int)arr,int b, int e)
     	requires b>=e;
     	ensures sorted(arr,b,e);
     	{ close sorted(arr,b,e);}
-    	
+
 /*    lemma void ensure_empty_array(int*a, int b,array(int,int) arr)
     	requires array_model(a,b,b,arr);
     	ensures true;
     	{open array_model(a,b,b,arr);} */
-    	
+
     lemma void same_multi_etend(array(int,int) end, array(int,int) end1, int b, int e)
     	requires same_multiset(end,end1,b,e);
     	ensures same_multiset(end,store(end1,b-1, select(end,b-1)),b-1,e);
     	{assume(false);}
-    	
+
     lemma void sorted_etend(array(int,int) end,int b, int e,int p,int v)
     	requires sorted(end,b,e) &*& p < b;
     	ensures sorted(store(end,p,v),b,e);
     	{assume(false);}
-    	
+
     lemma void concat_array3(int*a, array(int,int) end, array(int,int) a0, array(int,int) a1, int b0, int e0, int e1, int bound)
-    	requires array_model(a,b0,e0,a0) &*& array_model(a,e0,e1,a1) &*& same_multiset(end,a0,b0,e0) &*& same_multiset(end,a1,e0,e1) 
+    	requires array_model(a,b0,e0,a0) &*& array_model(a,e0,e1,a1) &*& same_multiset(end,a0,b0,e0) &*& same_multiset(end,a1,e0,e1)
     		&*& sorted(a0,b0,e0) &*& sorted(a1,e0+1,e1) &*& minore(end,b0,e0,bound) &*& majore(end,e0+1,e1,bound) &*& bound == select(end,e0);
     	ensures array_model(a,b0,e1,?res) &*& same_multiset(res,end,b0,e1) &*& sorted(res,b0,e1);
     	{ assume(false);}
-                     
+
      lemma void multiset_trans(array(int,int) arr, array(int,int) arr0, array(int,int) arr1, int b, int e)
      	requires same_multiset(arr0,arr,b,e) &*& same_multiset(arr1,arr,b,e);
      	ensures same_multiset(arr0,arr1,b,e);
@@ -441,6 +441,7 @@ void quicksort (int* a, int lo, int hi)
    //@ empty_array(a,p,end1);
    //@ array_model_store_fold(a,p,hi+1,end1,p);
    //@ open array_model(a, hi+1, hi+1, start);
+
    //@ same_multi_etend(end,end1, p+1, hi+1);
    //@ sorted_etend(end1, p+1, hi+1, p, select(end,p));
    //@ concat_array3(a,end,end0,store(end1,p, select(end,p)),lo,p,hi+1, select(end,p));

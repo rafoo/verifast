@@ -88,3 +88,4 @@ ensures ints(a, count+1, ?bl)  &*& bl == append(vs, cons(lst, nil));
     }
   }
 }
+#endif

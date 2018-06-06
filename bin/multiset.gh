@@ -551,3 +551,4 @@ ensures same_multiset(arr1, arr2, b, e1);
   same_array_multiset_linear(b, e0, left, arr1, arr2, m, nat_of_int(e1-e0));
   close same_multiset(arr1, arr2, b, e1);
 }
+#endif

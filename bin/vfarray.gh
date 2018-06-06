@@ -27,6 +27,11 @@ lemma void select_store<t,u> (array(t,u) arr, t x, u y, t z)
     ensures select (store(arr, x, y), z) == ((x == z) ? y : select (arr, z));
 {}
 
+lemma void array_extensionality<t, u>(array(t, u) a, array(t, u) b)
+requires select(a, array_ext<t, u>(a, b)) == select(b, array_ext<t, u>(a, b));
+ensures a == b;
+{}
+
 predicate array_model (int* a, int b, int e, array(int,int) arr) =
   (b >= e) ? true : (integer(a+b,?v) &*& select(arr, b) == v &*& array_model(a, b+1, e, arr));
 

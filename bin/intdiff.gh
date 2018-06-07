@@ -1,6 +1,8 @@
 #ifndef INTDIFF_H
 #define INTDIFF_H
 
+// This file introduces a boolean ternary predicate int_diff such that int_diff(b, e, n) means n == nat_of_int(e-b) when b <= e (and zero otherwise)
+
 #include "nat.gh"
 
 fixpoint bool int_diff(int b, int e, nat n) {
@@ -48,6 +50,7 @@ ensures int_diff(b+delta, e+delta, l) == true;
   }
 }
 
+// We can use int_diff to reason on the ints predicate
 
 lemma void open_ints_right(nat n)
 requires ints(?p, ?count, ?vs) &*& int_diff(0, count, succ(n)) == true;
@@ -70,18 +73,19 @@ ensures ints(p, count-1, ?bl) &*& integer(p+count-1, ?lst) &*& vs == append(bl, 
 }
 
 lemma void close_ints_right(nat n)
-requires ints(?a, ?count, ?vs) &*& int_diff(0, count, succ(n)) == true &*& integer(a+count, ?lst); 
+requires ints(?a, ?count, ?vs) &*& int_diff(0, count, n) == true &*& integer(a+count, ?lst);
 ensures ints(a, count+1, ?bl)  &*& bl == append(vs, cons(lst, nil));
 {
   switch (n) {
     case zero : {
       open ints(a, count, vs);
-      open ints(a+1, count-1, _);
+      close ints(a, 1, cons(lst, nil));
     }
     case succ(p) : {
-      int_diff_translate(1, count, -1, n);
+      int_diff_translate(1, count, -1, p);
       open ints(a, count, vs);
       close_ints_right(p);
     }
   }
 }
+#endif

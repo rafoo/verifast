@@ -4,6 +4,10 @@
 \usepackage[francais]{babel}
 \usepackage{listings}
 \usepackage{tikz}
+\newcommand{\verifast}{VeriFast}
+\lstset{language={C}}
+\lstset{alsoletter={&},morekeywords={predicate,array,true,false,lemma,&*&}}
+
 \setcounter{tocdepth}{2}
 \begin{document}
 \chapter{Introduction}
@@ -11,9 +15,9 @@
 		\subsection{Int\'er\^et de prouver des programmes}
 		Aujourd'hui, les programmes informatiques sont de plus en plus pr\'esents dans notre quotidien et ont certaines fois notre vie entre leurs lignes. En effet, si un bug informatique emp\^eche le m\'etro de s'arr\^eter ou fait exploser une fus\'ee, il risque d'y avoir des pertes humaines. \par
 		Malheureusement, v\'erifier qu'un programme est correct est ind\'ecidable. Du coup, la m\'ethode la plus courante est de tester un programme dans diff\'erents environnements. Cependant, on ne peut pas tester le nombre infini de vols possibles d'une fus\'ee. Les m\'ethodes de test permettent de conna\^itre le comportement r\'eel du programme dans un environnement pr\'ecis; \`a l'inverse, d'autres m\'ethodes utilisent un mod\`ele de l'ex\'ecution du programme pour d\'eterminer une approximation du comportement du programme dans de nombreux environnements. M\^eme si le r\'esultat est une approximation, cette m\'ethode d\'etectera si le programme se comporte correctement. Par contre, elle peut indiquer qu'un programme n'est pas correct alors qu'il l'est. Mais ceci n'apporte aucun pr\'ejudice \`a la s\'ecurit\'e.
-			
+
 		\subsection{Logique de Hoare}
-		Les m\'ethodes d\'eductives qui vont prouver qu'un programme suit sa sp\'ecification utilise la logique de Hoare.\par 
+		Les m\'ethodes d\'eductives qui vont prouver qu'un programme suit sa sp\'ecification utilise la logique de Hoare.\par
 		Cette logique se base sur le triplet de Hoare muni d'axiomes et r\`egles pour toutes le instructions de base d'un langage imp\'eratif. Le triplet est constitu\'e d'une pr\'econdition $B$, d'une postcondition $A$ et d'un programme $P$ repr\'esent\'e ainsi : $\{B\}P\{A\}$. Deux types de correction peuvent \^etre prouv\'ees :
 		\begin{itemize}
 			\item Une correction partielle : le triplet est vrai si pour tout valuation qui rend $B$ vraie et telle que $P$ s'arr\^ete, alors, apr\`es l'ex\'ecution et l'arr\^et de $P$, $A$ est vraie.
@@ -21,10 +25,10 @@
 		\end{itemize}
 		En pratique, une programme calcule la plus faible pr\'econdition n\'ecessaire pour que la postcondition soit respect\'e. On la notera $wp(P,A)$ et on aura donc\\ $\forall B'$ tel que $\{B'\}P\{A\}$, $B' \rightarrow wp(P,A)$
 		\subsubsection{Axiome de skip}
-		
-		
 
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
 
 \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
 %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
@@ -41,7 +45,7 @@ Un programme vide ne change pas l'\'etat du programme.
 		\subsubsection{Axiome de l'affectation}
 		L'affectation est l'instruction $x := E$, associant \`a la variable $x$ la valeur de l'expression $E$. $P[ E/x]$ d\'esigne l'expression $P$ dans laquelle les occurrences de la variable $x$ ont \'et\'e remplac\'ees par l'expression $E$.
 
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
 
 \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
 %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
@@ -59,7 +63,7 @@ Un programme vide ne change pas l'\'etat du programme.
 
 La r\`egle de composition pour les programmes S et T s'ils sont ex\'ecut\'es s\'equentiellement, o\`u S s'ex\'ecute avant T.
 
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
 
 \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
 %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
@@ -78,7 +82,7 @@ La r\`egle de composition pour les programmes S et T s'ils sont ex\'ecut\'es s\'
 \subsubsection{R\`egle de la conditionnelle}
 
 La r\`egle de la conditionnelle a une postcondition $R$ qui doit \^etre commun \`a \textbf{alors} et \textbf{sinon}.
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
 
 \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
 %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
@@ -97,7 +101,7 @@ La r\`egle de la conditionnelle a une postcondition $R$ qui doit \^etre commun \
 
 
 La r\`egle de la cons\'equence permet d'affailblir les pr\'econditions et postconditions en les rempla\c{c}ant par des cons\'equences logiques.
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
 
 \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
 %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
@@ -116,7 +120,7 @@ La r\`egle de la cons\'equence permet d'affailblir les pr\'econditions et postco
 \subsubsection{R\`egle de l'it\'eration}
 Dans une boucle, on doit s'assurer qu'\`a chaque it\'eration des propri\'et\'es sont respect\'es, ce sont les invariants de boucle.
 Cette r\`egle n'assure pas la terminaison de la boucle.
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
 
 \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
 %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
@@ -137,7 +141,7 @@ o\`u I est l'invariant de boucle.
 			La logique de Hoare peut permettre d'assurer la terminaison. La r\`egle de l'it\'eration doit \^etre enrichi avec le notion de variant : une fonction des \'etats dans un ensemble bien fond\'e dont la valeur d\'ecroit strictement \`a chaque tour de boucle. L'absence de cha\^ine infinie d\'ecroissante dans un ensemble bien fond\'e garantie donc la terminaison du programme. La r\`egle devient alors :
 
 
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
 
 \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
 %uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
@@ -154,22 +158,22 @@ o\`u I est l'invariant de boucle.
 
 		\subsection{Les outils}
 		Ils existent diff\'erents outils pour prouver ou certifier des programmes. Il y a des assistants de preuve tel que Coq ou Isabelle qui permettent de d\'emontrer des th\'eor\`emes math\'ematiques. En mod\'elisant math\'ematiquement le comportement du programme, il est donc possible de prouver sa correction. \par
-	D'autres logiciels permettent la preuve de programme en se sp\'ecialisant dans des langages pr\'ecis. Par exemple, Verifast a \'et\'e con\c{c}u pour le C et le java.	
-		\subsection{Courte description de Verifast}
-			Verifast est un outil de v\'erification d\'eductive de programme, C ou Java, avec un seul ou plusieurs threads. L'outil vous assure qu'il n'y a pas d'acc\`es ill\'egaux \`a la m\'emoire, que les pr\'econditions et postconditions sont bien respect\'ees et qu'il n'y est pas de probl\`eme de concurrence. Il est principalement con\c{c}u par Bart Jabocs, Jan Smans et Frank Piessens \`a l'universit\'e de Leuven en Belgique. Verifast est bas\'e sur la logique de s\'eparation, la logique multi-sorted et r\'esout les \'enonces math\'ematiques avec les SMT-solvers Redux et Z3.
-		\subsection{Exemple : Quicksort avec verifast et d'autres....}
+	D'autres logiciels permettent la preuve de programme en se sp\'ecialisant dans des langages pr\'ecis. Par exemple, \verifast{} a \'et\'e con\c{c}u pour le C et le java.
+		\subsection{Courte description de \verifast{}}
+			\verifast{} est un outil de v\'erification d\'eductive de programme, C ou Java, avec un seul ou plusieurs threads. L'outil vous assure qu'il n'y a pas d'acc\`es ill\'egaux \`a la m\'emoire, que les pr\'econditions et postconditions sont bien respect\'ees et qu'il n'y est pas de probl\`eme de concurrence. Il est principalement con\c{c}u par Bart Jabocs, Jan Smans et Frank Piessens \`a l'universit\'e de Leuven en Belgique. \verifast{} est bas\'e sur la logique de s\'eparation, la logique multi-sorted et r\'esout les \'enonces math\'ematiques avec les SMT-solvers Redux et Z3.
+		\subsection{Exemple : Quicksort avec \verifast{} et d'autres....}
 		\subsection{Contributions}
-		Il y a eu trois contributions concernant verifast. Pour des raisons pratiques, les trois contributions ont \'et\'e fait simultan\'ement.
+		Il y a eu trois contributions concernant \verifast{}. Pour des raisons pratiques, les trois contributions ont \'et\'e fait simultan\'ement.
 			\subsubsection{Integrer la theorie des tableaux}
-				Z3 a des fonctions primitives pour la th\'eorie des tableaux mais verifast ne les utilise pas. La premi\`ere contribution a \'et\'e d'enrichir la logique de verifast en y ajoutant des fonctions repr\'esentant la th\'eories des tableaux afin de les relier aux fonctions primitives de Z3. \par
-				La th\'eorie des tableaux permet de simplifier certaines preuves comme celle du Quicksort.
+				Z3 a des fonctions primitives pour la th\'eorie des tableaux mais \verifast{} ne les utilise pas. La premi\`ere contribution a \'et\'e d'enrichir la logique de \verifast{} en y ajoutant des fonctions repr\'esentant la th\'eories des tableaux afin de les relier aux fonctions primitives de Z3. \par
+				La th\'eorie des tableaux permet de simplifier certaines preuves comme celle du quicksort.
 			\subsubsection{Biblioth\`eque sur les tableaux et les multi-ensembles}
 			Afin de prouver l'algorithme du quicksort, deux biblioth\`eques ont \'et\'e cr\'ees. La premi\`ere concerne les tableaux et la deuxi\`eme les multi-ensembles.
-			
+
 			\subsubsection{Preuve de quicksort}
-			Il n'y avait pas de preuve du quicksort dans verifast. \par Prouver l'algorithme permettait \`a la fois d'enrichir les preuves de verifast mais aussi de v\'erifier l'int\'egration de la th\'eorie des tableaux.
-			
-			
+			Il n'y avait pas de preuve du quicksort dans \verifast{}. \par Prouver l'algorithme permettait \`a la fois d'enrichir les preuves de \verifast{} mais aussi de v\'erifier l'int\'egration de la th\'eorie des tableaux.
+
+
 \chapter{Logique du premier ordre}
 	\section{Logique du premier ordre}
 		\subsection{Syntaxe}
@@ -177,65 +181,65 @@ o\`u I est l'invariant de boucle.
 		\begin{itemize}
 		\item $\sum^s = \{ \sigma_{1}, \sigma_{2},...\}$ un ensemble de symboles de type. On suppose l'existence du type $Bool = \{ \top , \bot \}$.
 		\end{itemize}
-		
+
 	    Signature : un ensemble non vide de sort, un ensemble de symboles de fonction et un ensemble de symboles de relation non logique.\par
 		Il existe une r\'eduction vers one-sorted logic (logique du premier ordre classique).
  	\section{D\'ecidabilit\'e des th\'eories}
  		Une th\'eorie est un ensemble d'axiomes accompagn\'es de r\`egles de la logique. \par
-		Sous une signature $\sigma$ et une th\'eorie $\tau_{\sigma}$, une formule $\phi$, construite dans $\sigma$, est satisfaisable in $\tau_{\sigma}$, si $\phi$ est \'evalu\'e \`a vrai sous toutes les interpr\'etations de $\tau_{\sigma}$. 
+		Sous une signature $\sigma$ et une th\'eorie $\tau_{\sigma}$, une formule $\phi$, construite dans $\sigma$, est satisfaisable in $\tau_{\sigma}$, si $\phi$ est \'evalu\'e \`a vrai sous toutes les interpr\'etations de $\tau_{\sigma}$.
  		Certaines th\'eories sont d\'ecidables. Une th\'eorie est d\'ecidable s'il existe un algorithme qui peut r\'epondre par oui ou par non \`a la question de savoir si un \'enonc\'e donn\'e est d\'emontrable dans cette th\'eorie. \par
  		Une th\'eorie est coh\'erente s'il existe des propositions non d\'emontrable. \par
- 		Une th\'eorie est compl\`ete si toute proposition ou sa 
+ 		Une th\'eorie est compl\`ete si toute proposition ou sa
  		n\'egation est d\'emontrable.
  		\subsection{Presburger}
  			L'arithm\'etique de Presburger est la th\'eorie  d\'ecidable du premier ordre des nombres entiers naturels muni de l'addition. En 1929, Mojzesz Presburger a d\'emontr\'e que son arithm\'etique est coh\'erente et compl\`ete.
  		\subsection{Array}
  			Les tableaux sont une data-structure pr\'esentes dans la plupart des langages de programmation. Il est donc int\'eressant de savoir quelles sont les propri\'et\'es d\'ecidable. \par
- 			
- 			En logique, contrairement aux programmes, un tableau est de dimension infini. \par 
+
+ 			En logique, contrairement aux programmes, un tableau est de dimension infini. \par
  			Les tableaux sont \'equivalent \`a une fonction de type index vers range et nous allons leurs associ\'ees quatre op\'erations et un axiome propos\'e par McCarthy. \par
  			\subsubsection{Select}
  			Select(array a, index i) renvoie la valeur du tableau a \`a l'index i.\par
 			 \subsubsection{Store}
 			Store(array a, index i, range e) renvoie un nouveau tableau avec les m\^emes valeurs que le tableau a et la valeur e \`a l'index i.
-			   
+
  			\subsubsection{Extensionality}
- 			Extensionality(array a, array b) renvoie un index i tel que    
-\par select$(a,i) = $ select$(b,i)\rightarrow a = b $ 
- 			
+ 			Extensionality(array a, array b) renvoie un index i tel que
+\par select$(a,i) = $ select$(b,i)\rightarrow a = b $
+
  			\subsubsection{Constant\_array}
  			Constant\_array(range v) renvoie un tableau a tel que \par
  			($\forall i$ : index) select(constant\_array$(v),i$) $= v$.
- 			
+
 			\subsubsection{Axiome}
 			L'axiome principal est : \par
- 			($\forall a$ : array) ($\forall e$ : range)($\forall i,j$ : index) $i=j \rightarrow$ select(store($a,i,e$)$,j$) $ = e$  
+ 			($\forall a$ : array) ($\forall e$ : range)($\forall i,j$ : index) $i=j \rightarrow$ select(store($a,i,e$)$,j$) $ = e$
 			\par $\land$ $i\neq j \rightarrow$ select(store($a,i,e$)$,j$) $=$ select($a,j$).
  		\subsection{Multiset}
  		Repr\'esentation des multiset en array(index, nat)
- 		
+
  	\section{Combinaison de th\'eories d\'ecidables}
  		La combinaison de th\'eories d\'ecidables est omni-pr\'esent dans la v\'erification de programme et il n'est pas \'evident que la combinaison reste d\'ecidable. Pour \'eviter d'avoir \`a produire une proc\'edure de d\'ecision pour chaque combinaison, on peut faire appel \`a des techniques de combinaison de proc\'edures de d\'ecisions.
- 		
+
  		En 1979, la m\'ethode de combinaison de Nelson-Oppen est pr\'esent\'e pour la premi\`ere fois. 20 ans plus tard, cette m\'ethode est adopt\'ee dans la plupart des solvers SMT. Cette m\'ethode se base sur le fait que si deux th\'eories $\tau$1 et $\tau$2 sont disjointes et stablement infinies alors la satisfaisabilit\'e de $\tau$1 $\lor$ $\tau$2 peut \^etre d\'eduite de la satisfaisabilit\'e de $\tau$1 $\lor \Lambda$ et $\tau$2 $\lor \Lambda$, o\`u $\Lambda$ est un ensemble d'informations partag\'ees. De ce fait, si on a deux proc\'edures de d\'ecision, une pour $\tau$1, et une autre pour $\tau$2, l'effort suppl\'ementaire pour v\'erifier la satisfaisabilit\'e de l'union est de trouver $\Lambda$. Ceci peut \^etre \'etendu \`a plus de deux th\'eories. \par
  		Deux th\'eories sont disjointes si aucun symbole n'appara\^it dans les deux th\'eories \`a la fois, except\'e des variables et le symbole d'\'egalit\'e. \par
  		Une th\'eorie est stablement infinie si toute formule sans quantificateur satisfaisable dans la \th\'eorie a un mod\`ele fini.
- 		
+
  		\par Les techniques de combinaison de d\'ecision sont essentielles \`a la construction des SMT solvers.
- 		
+
  	\section{SMT-solver}
- 		Il existe de nombreux SMT-solver permettant de r\'esoudre des \'enonc\'es math\'ematiques. Tous ne r\'esolvent pas les \'enonc\'es des m\^emes th\'eories et ne sont aussi rapide. Verifast utilise deux SMT-solver, redux et Z3. Redux est plus rapide mais Z3 peut r\'esoudre des \'enonc\'es d'un plus grand nombre de th\'eorie.
- 		
+ 		Il existe de nombreux SMT-solver permettant de r\'esoudre des \'enonc\'es math\'ematiques. Tous ne r\'esolvent pas les \'enonc\'es des m\^emes th\'eories et ne sont aussi rapide. \verifast{} utilise deux SMT-solver, redux et Z3. Redux est plus rapide mais Z3 peut r\'esoudre des \'enonc\'es d'un plus grand nombre de th\'eorie.
+
  		- th\'eorie avec fonction non interpr\'et\'e \par
  		- Communication entre les th\'eories et un sat-solver \par
  		- Communication pour les axiomes "infini" entre le quantifier instantiation et le sat.
- 		
-\chapter{V\'erification d\'eductive avec VeriFast}
+
+\chapter{V\'erification d\'eductive avec \verifast{}}
 	\section{V\'erification d\'eductive de programmes}
 		La v\'erification d\'eductive se base sur l'annotation des programmes. Le programme est annot\'e avec des formules logiques. Il y a les pr\'econditions (exigences sur les arguments de fonctions), les postconditions (garanties sur les r\'esultats de fonctions) et les invariants de boucle. Il restera \`a v\'erifier que pour chaque fonction, la fonction, accompagn\'ee de ces pr\'econditions, implique les postconditions et qu'\`a chaque appel de fonction, les pr\'econditions sont respect\'ees. Ces v\'erifications se feront \`a l'aide des SMT-solvers.
 		\subsection{Logique de s\'eparation}
 			swap(int*x, int*y)
-	\section{Logique de sp\'ecification en VeriFast}
+	\section{Logique de sp\'ecification en \verifast{}}
 		La sp\'ecification d'un programme est indiqu\'e en commentaires \`a l'aide de formules logiques. Ces formules logiques peuvent \^etre dans des pr\'edicats (objets logiques) ou dans des lemmes (fonctions logiques).
 		\subsubsection{Predicats inductifs}
 			Il est souvent utile d'utiliser des pr\'edicats inductifs pour repr\'esenter des propri\'et\'es. Par exemple, si on veut parler d'un tableau d'entier tri\'e entre deux bornes b et e, on peut construire le pr\'edicat suivant :
@@ -259,80 +263,80 @@ int mean(int x, int y)
 		\subsubsection{Appel de lemme et Ouverture/Fermeture de pr\'edicat}
 			En plus des pre et post conditions, il est possible de faire appel \`a des lemmes ou d'ouvrir/fermer des pr\'edicats au milieu du programme.
 		\subsubsection{Invariant de boucle}
-			
+
 		\subsection{Decreases pour assurer la terminaison des boucles}
-		
+
 \chapter{Impl\'ementation}
-	L'objectif de l'impl\'ementation est d'int\'egrer les fonctions de la th\'eorie des tableaux dans verifast pour qu'elles soient directement retransmis \`a Z3. Ces fonctions manipulent un type tableau qui \'etait absent dans la logique de verifast. La premi\`ere \'etape fut donc d'ajouter un type primitif array dans la logique de verifast. 
+	L'objectif de l'impl\'ementation est d'int\'egrer les fonctions de la th\'eorie des tableaux dans \verifast{} pour qu'elles soient directement retransmis \`a Z3. Ces fonctions manipulent un type tableau qui \'etait absent dans la logique de \verifast{}. La premi\`ere \'etape fut donc d'ajouter un type primitif array dans la logique de \verifast{}.
 	\section{Cr\'eation du type array}
 		La syntaxe du type array est "array(a,b)", a \'etant le domaine et b le range.
 		\subsection{R\`egle de typage}
 			\subsubsection{G\'en\'ericit\'e}
-			En logique, le domaine et le range du type tableau sont deux type g\'en\'erique, c'est \`a dire, ils peuvent \^etre de n'importe quel type. Un objectif \'etait donc d'impl\'ementer un type tableau tout aussi g\'en\'erique. Toutes les fonctions ont \'et\'e implement\'ees ainsi mais verifast a pos\'e une limite. Il n'y a pas de fonction g\'en\'erique pour repr\'esenter les pointeurs d\'efinis. En effet, il y a seulement des fonctions "integer(int*,int)", "character(char*,char)", etc... qui repr\'esente des pointeurs d'entier, de char, etc. Il n'est donc pas possible actuellement de compl\'eter la biblioth\`eque des tableaux avec uniquement des lemmes g\'en\'erique. Il est, par exemple, impossible de dire qu'un tableau est bien d\'efini g\'en\'eriquement. La fonction array\_model, ci-dessous, indique qu'un tableau d'entier est bien d\'efini entre (a+b) et (a+e) si un entier est bien d\'efini en (a+b) et qu'un tableau est bien d\'efini entre (a+b+1) et (a+e).
+			En logique, le domaine et le range du type tableau sont deux type g\'en\'erique, c'est \`a dire, ils peuvent \^etre de n'importe quel type. Un objectif \'etait donc d'impl\'ementer un type tableau tout aussi g\'en\'erique. Toutes les fonctions ont \'et\'e implement\'ees ainsi mais \verifast{} a pos\'e une limite. Il n'y a pas de fonction g\'en\'erique pour repr\'esenter les pointeurs d\'efinis. En effet, il y a seulement des fonctions "integer(int*,int)", "character(char*,char)", etc... qui repr\'esente des pointeurs d'entier, de char, etc. Il n'est donc pas possible actuellement de compl\'eter la biblioth\`eque des tableaux avec uniquement des lemmes g\'en\'erique. Il est, par exemple, impossible de dire qu'un tableau est bien d\'efini g\'en\'eriquement. La fonction array\_model, ci-dessous, indique qu'un tableau d'entier est bien d\'efini entre (a+b) et (a+e) si un entier est bien d\'efini en (a+b) et qu'un tableau est bien d\'efini entre (a+b+1) et (a+e).
 \begin{lstlisting}
 .predicate array_model (int* a, int b, int e, array(int,int) arr) =
-  (b >= e) ? true : (integer(a+b,?v) &*& select(arr, b) == v 
+  (b >= e) ? true : (integer(a+b,?v) &*& select(arr, b) == v
   &*& array_model(a, b+1, e, arr));
 \end{lstlisting}
 			\subsubsection{Limite du domaine}
 			S'il existe un type t de type : t $\rightarrow$ p, p \'etant un type quelconque, des termes tel que $(\lambda x. \neg(xx))(\lambda x.\neg(xx))$ 	deviennent typable alors qu'ils ne sont pas coh\'erent. Or, un tableau est comme fonction de type : domain $\rightarrow$ range. Je n'ai pas de preuve qu'avec les axiomes et les fonctions sur les tableaux le syst\`eme devient incoh\'erent, mais dans le doute, les tableaux de ce type ont \'et\'e interdit.
 			\subsubsection{Type habit\'e}
-				Dans verifast, tous les types doivent \^etre habit\'e, c'est \`a dire, tous les types doivent avoir au moins un \'el\'ement. En effet, il existe cet axiome dans verifast :  
+				Dans \verifast{}, tous les types doivent \^etre habit\'e, c'est \`a dire, tous les types doivent avoir au moins un \'el\'ement. En effet, il existe cet axiome dans \verifast{} :
 		\begin{lstlisting}
 		fixpoint t default_value<t>();
 		\end{lstlisting}
 		Cet axiome retourne un \'el\'ement du type t. Donc s'il existe un type non-habit\'e alors le syst\`eme n'est plus coh\'erent. \par
-		Par exemple, avec le type stream : 
+		Par exemple, avec le type stream :
 \begin{lstlisting}
 inductive stream = Cons (int, stream);
 \end{lstlisting}
 Il est possible de prouver faux avec ces deux fonctions :
-\begin{lstlisting}	
+\begin{lstlisting}
 lemma void no_stream (stream x)
 	//@ requires true;
 	//@ ensures false;
 	{ switch (x) : {
 		case Cons(_,s) { no_stream(s); }
 	}
-				
+
 lemma void absurd()
 	//@ requires true
 	//@ ensures false
 	{ no_stream(default_value<stream>())}
-				
+
 		\end{lstlisting}
-\par De plus, l'implication 
-				$\forall x. P(x) \rightarrow \exists x. P(x)$ est utilis\'e dans la logique de verifast et n'est vrai que si le type de $x$ est habit\'e.
+\par De plus, l'implication
+				$\forall x. P(x) \rightarrow \exists x. P(x)$ est utilis\'e dans la logique de \verifast{} et n'est vrai que si le type de $x$ est habit\'e.
 			\subsubsection{Type infini}
 				Exemple : utilisation de l'in\'egalit\'e pour montrer l'\'egalit\'e. si x peut \^etre a, b ou c. x!= a et x!= b -> x == c.
-				
+
 	\section{ProverArray}
-		La logique multi-sorted de verifast \'etait compos\'e des types int, boolean, real et inductive. Le type inductive est un type g\'en\'erique, c'est \`a dire, il existe des fonctions de boxing/unboxing pour transformer un type vers le type inductive et inversement. \par
-		Les sorts de la logique de verifast sont les types qui pourront \^etre transmis au solver Z3. Or, pour utiliser les fonctions sur les tableaux, le type primitif array est n\'ecessaire. Une \'etape fut donc de cr\'eer un nouveau type primitif array qui pourra \^etre transmis \`a Z3.\par
+		La logique multi-sorted de \verifast{} \'etait compos\'e des types int, boolean, real et inductive. Le type inductive est un type g\'en\'erique, c'est \`a dire, il existe des fonctions de boxing/unboxing pour transformer un type vers le type inductive et inversement. \par
+		Les sorts de la logique de \verifast{} sont les types qui pourront \^etre transmis au solver Z3. Or, pour utiliser les fonctions sur les tableaux, le type primitif array est n\'ecessaire. Une \'etape fut donc de cr\'eer un nouveau type primitif array qui pourra \^etre transmis \`a Z3.\par
 		\subsection{Int\^eret du type Inductive}
-			Le type inductive a un r\^ole tr\`es particulier dans verifast. En plus de repr\'esenter les types g\'en\'eriques, le type inductive est un moyen de communiquer \`a la fois \`a des solvers multi-sorted et \`a des solvers one-sorted. En effet, Verifast utilise deux solvers qui sont Redux et Z3. Redux n'a pas de type alors que Z3 en a. Comme indiqu\'e en (2.1), il existe une r\'eduction de la logique multi-sorted vers la one-sorted. Verifast peut donc ais\'ement communiquer \`a Redux m\^eme s'il n'utilise pas directement la m\^eme logique. Pour transformer tous les sorts vers un seul sort, verifast utilise des fonctions de boxing.
+			Le type inductive a un r\^ole tr\`es particulier dans \verifast{}. En plus de repr\'esenter les types g\'en\'eriques, le type inductive est un moyen de communiquer \`a la fois \`a des solvers multi-sorted et \`a des solvers one-sorted. En effet, \verifast{} utilise deux solvers qui sont Redux et Z3. Redux n'a pas de type alors que Z3 en a. Comme indiqu\'e en (2.1), il existe une r\'eduction de la logique multi-sorted vers la one-sorted. \verifast{} peut donc ais\'ement communiquer \`a Redux m\^eme s'il n'utilise pas directement la m\^eme logique. Pour transformer tous les sorts vers un seul sort, \verifast{} utilise des fonctions de boxing.
 			\subsubsection{Fonctions de boxing}
 			Une fonction de boxing est une fonction qui transforme une valeur d'un certain type vers le type inductive. Il existe, par dualit\'e, des fonctions d'unboxing afin de retrouver la valeur initiale. Donc si $f$ est la fonction de boxing des entiers et $g$ la fonction d'unboxing alors $f(g(2)) = 2$ et $g(f(2)) = 2$.
 		\subsection{Repr\'esentation du type array dans le solver Z3}
 			Dans le Z3, le type array de Z3 est un type avec deux arguments. Ces arguments repr\'esentent le domaine et le range du tableau. Une premi\`ere impl\'ementation consista donc \`a r\'ecup\'erer les deux types et de les transmettre \`a Z3 au moment de la cr\'eation d'un tableau.
 			\subsubsection{Pourquoi array inductive inductive dans z3}
 			\subsubsection{Communication avec Z3}
-			\subsubsection{Repr\'esentation dans verifast}
+			\subsubsection{Repr\'esentation dans \verifast{}}
 	\section{Ajout des fonctions}
-	Pour terminer l'impl\'ementation, il faut maintenant ajouter les fonctions select, store, constant\_array et array\_ext (extensionalit\'e). Il y a deux \'etapes, la premi\`ere est de d\'efinir comment ces fonctions vont \^etre communiqu\'e \`a Z3. La deuxi\`eme est de choisir comment repr\'esenter  et r\'ecup\'erer ces fonctions dans le code de verifast.
+	Pour terminer l'impl\'ementation, il faut maintenant ajouter les fonctions select, store, constant\_array et array\_ext (extensionalit\'e). Il y a deux \'etapes, la premi\`ere est de d\'efinir comment ces fonctions vont \^etre communiqu\'e \`a Z3. La deuxi\`eme est de choisir comment repr\'esenter  et r\'ecup\'erer ces fonctions dans le code de \verifast{}.
 		\subsection{Communication avec les SMT-solvers}
-		Dans verifast, tous les solvers ont une api commune. Ainsi, si on veut ajouter de nouvelles fonctions pour communiquer avec Z3, on doit s'assurer que Redux sera aussi s'en occuper.
+		Dans \verifast{}, tous les solvers ont une api commune. Ainsi, si on veut ajouter de nouvelles fonctions pour communiquer avec Z3, on doit s'assurer que Redux sera aussi s'en occuper.
 			\subsubsection{Redux}
 			Redux consid\`ere les fonctions de la th\'eorie des tableaux commme des fonctions non-primitives et donc comme des fonctions d\'efini par l'utilisateur. Lors d'un appel d'une de ces fonctions, Redux fait donc un appel de fonction classique. Peu de choses sont possibles avec Redux et il faut donc \'eviter d'utiliser Redux si on veut utiliser la th\'eorie des tableaux.
 			\subsubsection{Z3}
 			Les fonctions sont des primitives de Z3. L'impl\'ementation consiste donc \`a appeler les fonctions avec les informations que nous fournira l'utilisateur.
-		\subsection{Repr\'esentation dans verifast}
-		Verifast interdit \`a deux fonctions ou pr\'edicats d'avoir un nom identique. Cette r\`egle est primordiale car elle permet \`a verifast de d\'efinir toutes les primitives dans des biblioth\`eques annexes. Les fonctions de la th\'eorie des tableaux ont \'et\'e d\'efini dans une nouvelle biblioth\`eque sous la forme de fonctions pures. Ainsi, tous les programmes ant\'erieurs sont rest\'es correct et les noms restent disponibles si la biblioth\`eque n'est pas incluse.\par
-		Les fonctions de la th\'eorie sont donc, dans le code de verifast, des fonctions comme des autres. Il faut maintenant savoir comment les rep\'erer pour utiliser les fonctions primitives de Z3. \par
+		\subsection{Repr\'esentation dans \verifast{}}
+		\verifast{} interdit \`a deux fonctions ou pr\'edicats d'avoir un nom identique. Cette r\`egle est primordiale car elle permet \`a \verifast{} de d\'efinir toutes les primitives dans des biblioth\`eques annexes. Les fonctions de la th\'eorie des tableaux ont \'et\'e d\'efini dans une nouvelle biblioth\`eque sous la forme de fonctions pures. Ainsi, tous les programmes ant\'erieurs sont rest\'es correct et les noms restent disponibles si la biblioth\`eque n'est pas incluse.\par
+		Les fonctions de la th\'eorie sont donc, dans le code de \verifast{}, des fonctions comme des autres. Il faut maintenant savoir comment les rep\'erer pour utiliser les fonctions primitives de Z3. \par
 		Une possibilit\'e aurait \'et\'e de modifier le parser et ainsi savoir directement quand est-ce qu'elles sont appel\'ees. Avec l'impl\'ementation actuelle, l'ajout des fonctions aurait n\'ecessit\'e un nombre injustifi\'e de modification dans plusieurs fichiers pour recopier, une seconde fois, ce qui est d\'ej\`a \'ecrit. Du coup, une autre solution a \'et\'e choisi. \par
 		L'autre solution consiste \`a trouver un point pr\'ecis du code o\`u toutes les fonctions vont \^etre appel\'ees et o\`u un maximum de v\'erification auront d\'ej\`a \'et\'e fait. Ainsi, le moins possible d'\'etapes seront impl\'ement\'ees et donc produira un code propre et concis.\par
 		Lors de la derni\`ere v\'erification int\'eressante pour les fonctions pures, un matching sur le nom des fonctions permet aux primitives de la th\'eorie d'\^etre rep\'er\'e et ainsi d'\^etre trait\'e comme les fonctions de la th\'eorie des tableaux.
-				
+
 \chapter{Quicksort}
 \chapter{Conclusion}
 \tableofcontents

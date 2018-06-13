@@ -4,165 +4,37 @@
 \usepackage[francais]{babel}
 \usepackage{listings}
 \usepackage{tikz}
+\usepackage{syntax}
+\usepackage{relsize,exscale}
+
 \newcommand{\verifast}{VeriFast}
+
 \lstset{language={C}}
 \lstset{alsoletter={&},morekeywords={predicate,array,true,false,lemma,&*&}}
 
+\newtheorem{definition}{D\'efinition}[section]
+
 \setcounter{tocdepth}{2}
+
 \begin{document}
-\chapter{Introduction}
-	\section{Objectif du TRE}
-		\subsection{Int\'er\^et de prouver des programmes}
+\addcontentsline{toc}{chapter}{Introduction}
+\chapter*{Introduction}
+	\section*{Objectif du TRE}
+		\subsection*{Int\'er\^et de prouver des programmes}
 		Aujourd'hui, les programmes informatiques sont de plus en plus pr\'esents dans notre quotidien et ont certaines fois notre vie entre leurs lignes. En effet, si un bug informatique emp\^eche le m\'etro de s'arr\^eter ou fait exploser une fus\'ee, il risque d'y avoir des pertes humaines. \par
 		Malheureusement, v\'erifier qu'un programme est correct est ind\'ecidable. Du coup, la m\'ethode la plus courante est de tester un programme dans diff\'erents environnements. Cependant, on ne peut pas tester le nombre infini de vols possibles d'une fus\'ee. Les m\'ethodes de test permettent de conna\^itre le comportement r\'eel du programme dans un environnement pr\'ecis; \`a l'inverse, d'autres m\'ethodes utilisent un mod\`ele de l'ex\'ecution du programme pour d\'eterminer une approximation du comportement du programme dans de nombreux environnements. M\^eme si le r\'esultat est une approximation, cette m\'ethode d\'etectera si le programme se comporte correctement. Par contre, elle peut indiquer qu'un programme n'est pas correct alors qu'il l'est. Mais ceci n'apporte aucun pr\'ejudice \`a la s\'ecurit\'e.
-
-		\subsection{Logique de Hoare}
-		Les m\'ethodes d\'eductives qui vont prouver qu'un programme suit sa sp\'ecification utilise la logique de Hoare.\par
-		Cette logique se base sur le triplet de Hoare muni d'axiomes et r\`egles pour toutes le instructions de base d'un langage imp\'eratif. Le triplet est constitu\'e d'une pr\'econdition $B$, d'une postcondition $A$ et d'un programme $P$ repr\'esent\'e ainsi : $\{B\}P\{A\}$. Deux types de correction peuvent \^etre prouv\'ees :
-		\begin{itemize}
-			\item Une correction partielle : le triplet est vrai si pour tout valuation qui rend $B$ vraie et telle que $P$ s'arr\^ete, alors, apr\`es l'ex\'ecution et l'arr\^et de $P$, $A$ est vraie.
-			\item Une correction totale : le triplet est vrai si pour tout valuation qui rend $B$ vraie, $P$ s'arr\^ete et, apr\`es sont ex\'ecution, $A$ est vraie.
-		\end{itemize}
-		En pratique, une programme calcule la plus faible pr\'econdition n\'ecessaire pour que la postcondition soit respect\'e. On la notera $wp(P,A)$ et on aura donc\\ $\forall B'$ tel que $\{B'\}P\{A\}$, $B' \rightarrow wp(P,A)$
-		\subsubsection{Axiome de skip}
-
-
-
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
-
-\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
-
-\draw    (50,53) -- (119.6,53) ;
-
-
-
-\draw (83,63) node  [align=left] {\{P\}\textbf{skip}\{P\}};
-
-
-\end{tikzpicture}\par
-Un programme vide ne change pas l'\'etat du programme.
-		\subsubsection{Axiome de l'affectation}
-		L'affectation est l'instruction $x := E$, associant \`a la variable $x$ la valeur de l'expression $E$. $P[ E/x]$ d\'esigne l'expression $P$ dans laquelle les occurrences de la variable $x$ ont \'et\'e remplac\'ees par l'expression $E$.
-
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
-
-\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
-
-\draw    (20,90) -- (165,90) ;
-
-
-
-\draw (96,101) node   {$\{P[ E/x]\} \ x\ :=\ E\{P\}$};
-
-
-\end{tikzpicture}\par
- $wp(x := E, P) = P[E/x]$
-\subsubsection{R\`egle de composition}
-
-La r\`egle de composition pour les programmes S et T s'ils sont ex\'ecut\'es s\'equentiellement, o\`u S s'ex\'ecute avant T.
-
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
-
-\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
-
-\draw    (18,90) -- (173.6,90.47) ;
-
-
-
-\draw (91,105) node   {$\{P\} \ S;T\ \{R\}$};
-\draw (93,77) node   {$\{P\} S\{Q\} ,\ \{Q\} T\{R\}$};
-
-
-\end{tikzpicture} \par
-	$wp(S;T, R) = wp(S,wp(T,R))$
-
-\subsubsection{R\`egle de la conditionnelle}
-
-La r\`egle de la conditionnelle a une postcondition $R$ qui doit \^etre commun \`a \textbf{alors} et \textbf{sinon}.
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
-
-\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
-
-\draw    (22.6,90) -- (237.6,90) ;
-
-
-
-\draw (132,106) node   {$\{P\} \ \textbf{si}\ B\ \textbf{alors}\ S\ \textbf{sinon}\ T\ \{R\}$};
-\draw (129,78) node   {$\{B\ \land \ P\} S\{Q\} ,\ \{\neg B\ \land P\} T\{Q\}$};
-
-
-\end{tikzpicture}\par
-	$wp($ si $B$ then $S$ else $T, R) =( B \rightarrow wp(S,R) \land \neg B \rightarrow wp(T,R))$
-\subsubsection{R\`egle de la cons\'equence}
-
-
-La r\`egle de la cons\'equence permet d'affailblir les pr\'econditions et postconditions en les rempla\c{c}ant par des cons\'equences logiques.
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
-
-\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
-
-\draw    (22.6,92) -- (237.6,92) ;
-
-
-
-\draw (132,106) node   {$\{P\} S\{R\}$};
-\draw (129,78) node   {$P\ \rightarrow P',\ \{P'\} S\{R'\} ,\ R'\ \rightarrow R$};
-
-
-\end{tikzpicture}
-
-
-\subsubsection{R\`egle de l'it\'eration}
-Dans une boucle, on doit s'assurer qu'\`a chaque it\'eration des propri\'et\'es sont respect\'es, ce sont les invariants de boucle.
-Cette r\`egle n'assure pas la terminaison de la boucle.
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
-
-\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
-
-\draw    (22.6,90.47) -- (237.6,90.47) ;
-
-
-
-\draw (132,106) node   {$\{I\} \textbf{tant\ que}\ B\ \textbf{faire}\ S\{\neg B\land I\}$};
-\draw (129,78) node   {$\{I\land B\} S\{I\}$};
-
-
-\end{tikzpicture}
-o\`u I est l'invariant de boucle.
-
-			\par
-\subsubsection{Correction totale}
-			La logique de Hoare peut permettre d'assurer la terminaison. La r\`egle de l'it\'eration doit \^etre enrichi avec le notion de variant : une fonction des \'etats dans un ensemble bien fond\'e dont la valeur d\'ecroit strictement \`a chaque tour de boucle. L'absence de cha\^ine infinie d\'ecroissante dans un ensemble bien fond\'e garantie donc la terminaison du programme. La r\`egle devient alors :
-
-
-\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
-
-\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
-%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
-
-\draw    (51.6,91.47) -- (367.6,91.47) ;
-
-
-
-\draw (209,102) node   {$\{I\land t\in V\} tant\ que\ B\ faire\ S\{\neg B\land I\land t\in V\}$};
-\draw (208,78) node   {$\{I\land B\land t\in V\land t=z\} S\{I\land t\in V\land t< z\}$};
-
-
-\end{tikzpicture}
-
-		\subsection{Les outils}
+\par Les m\'ethodes d\'eductives qui vont prouver qu'un programme suit sa sp\'ecification utilise la logique de Hoare.\\
+		Cette logique se base sur le triplet de Hoare muni d'axiomes et r\`egles pour toutes les instructions de base d'un langage imp\'eratif. Le triplet est constitu\'e d'une pr\'econdition $B$, d'une postcondition $A$ et d'un programme $P$ repr\'esent\'e ainsi : $\{B\}P\{A\}$. Le triplet est vrai si pour tout valuation qui rend $B$ vraie et telle que $P$ s'arr\^ete, alors, apr\`es l'ex\'ecution et l'arr\^et de $P$, $A$ est vraie.
+		
+		
+
+		\subsection*{Les outils}
 		Ils existent diff\'erents outils pour prouver ou certifier des programmes. Il y a des assistants de preuve tel que Coq ou Isabelle qui permettent de d\'emontrer des th\'eor\`emes math\'ematiques. En mod\'elisant math\'ematiquement le comportement du programme, il est donc possible de prouver sa correction. \par
 	D'autres logiciels permettent la preuve de programme en se sp\'ecialisant dans des langages pr\'ecis. Par exemple, \verifast{} a \'et\'e con\c{c}u pour le C et le java.
-		\subsection{Courte description de \verifast{}}
+		\subsection*{Courte description de \verifast{}}
 			\verifast{} est un outil de v\'erification d\'eductive de programme, C ou Java, avec un seul ou plusieurs threads. L'outil vous assure qu'il n'y a pas d'acc\`es ill\'egaux \`a la m\'emoire, que les pr\'econditions et postconditions sont bien respect\'ees et qu'il n'y est pas de probl\`eme de concurrence. Il est principalement con\c{c}u par Bart Jabocs, Jan Smans et Frank Piessens \`a l'universit\'e de Leuven en Belgique. \verifast{} est bas\'e sur la logique de s\'eparation, la logique multi-sorted et r\'esout les \'enonces math\'ematiques avec les SMT-solvers Redux et Z3.
-		\subsection{Exemple : Quicksort avec \verifast{} et d'autres....}
-		\subsection{Contributions}
+		\subsection*{Exemple : Quicksort avec \verifast{} et d'autres....}
+		\subsection*{Contributions}
 		Il y a eu trois contributions concernant \verifast{}. Pour des raisons pratiques, les trois contributions ont \'et\'e fait simultan\'ement.
 			\subsubsection{Integrer la theorie des tableaux}
 				Z3 a des fonctions primitives pour la th\'eorie des tableaux mais \verifast{} ne les utilise pas. La premi\`ere contribution a \'et\'e d'enrichir la logique de \verifast{} en y ajoutant des fonctions repr\'esentant la th\'eories des tableaux afin de les relier aux fonctions primitives de Z3. \par
@@ -177,13 +49,57 @@ o\`u I est l'invariant de boucle.
 \chapter{Logique du premier ordre}
 	\section{Logique du premier ordre}
 		\subsection{Syntaxe}
-		On introduit la syntaxe de la logique du premier ordre dans le contexte d'une paire $\sum = (\sum^s,\sum^f)$, que nous appelerons la signature tel que :
+		On introduit la syntaxe de la logique du premier ordre (FOL) dans le contexte d'une paire $\sum = (\sum^s,\sum^f)$, que nous appelerons la signature tel que :
 		\begin{itemize}
-		\item $\sum^s = \{ \sigma_{1}, \sigma_{2},...\}$ un ensemble de symboles de type. On suppose l'existence du type $Bool = \{ \top , \bot \}$.
+		\item $\sum^s = \{ \sigma_{1}, \sigma_{2},...\}$ est un ensemble de symboles de type. On suppose l'existence du type $Bool = \{ \top , \bot \}$, o\`u nous \'ecrirons $\top$ et $\bot$ pour les constantes, respectivement, true et false.
+		\item $\sum^f = \{ f, g, h,...\}$ est un ensemble de symbole de fonctions. Pour un symbole de fonction $f^{\sigma_{1}\sigma_{2}... \sigma_{n}\sigma}$, $n \geq 0$ est son arit\'e et $\sigma_{1}\sigma_{2}... \sigma_{n}\sigma$ est sa signature o\`u $\sigma_{1}\sigma_{2}... \sigma_{n} \in \sum^{s}$ sont les types des arguments et $\sigma$ est le type du r\'esultat. Un symbole de fonctions d'arit\'e 0 est un symbole de constante $c^{\sigma}$ de type $\sigma \in \sum^{s}$. Nous ne pr\'eciserons pas la signature du symbole de fonctions lorsque c'est inutile.
 		\end{itemize}
 
-	    Signature : un ensemble non vide de sort, un ensemble de symboles de fonction et un ensemble de symboles de relation non logique.\par
-		Il existe une r\'eduction vers one-sorted logic (logique du premier ordre classique).
+	   Posons $Var = {x,y,z,...}$ un ensemble d\'enombrable de variable du premi\`ere ordre. Chaque variable $x^{\sigma} \in Var$ est associ\'e \`a un type $\sigma \in \sum^{s}$.
+	   
+\begin{definition} (Terme).
+Un terme $t$ de type $\sigma \in \sum^{s}$, not\'e $t^{\sigma}$, sur une signature $\sum$ est d\'efini r\'ecrusivement par la grammaire :\\
+$t^{\sigma} ::= x,$ ~~~~~~~~~~~~~~$x^{\sigma} \in Var$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (variable) \par
+$|$~~ $c,$ ~~~~~~~~~~~~~~$c^{\sigma} \in \sum^{f}$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(constant) \par
+$|$~~$\langle t_{1},...,t_{n}\rangle,$~~~~ $t_{1}^{\sigma_{1}},...,t_{n}^{\sigma_{n}} terms, \sigma = \sigma_{1} \times ... \times \sigma_{n}$~~~~(tuple) \par
+$|$~~$f(t_{1},...,t_{n}),$~~~$f^{\sigma_{1} ...\sigma_{n} \sigma} \in \sum^{f}, t_{1}^{\sigma_{1}},...,t_{n}^{\sigma_{n}} ~terms$~~~~(function application)
+\end{definition}
+	Tout symbole de constante ou variable de type $\sigma$ est un terme de type $\sigma$. Si $t_{1},...,t_{n}$ sont des termes de types $\sigma_{1},...,\sigma_{n}$ et $f^{\sigma_{1} ...\sigma_{n} \sigma} \in \sum^{f}$ alors $\langle t_{1},...,t_{n}\rangle$ est un terme de type $\sigma_{1} \times ... \times \sigma_{n}$ et $f(t_{1},...,t_{n})$ est un terme de type $\sigma$.\par
+
+Nous noterons $\tau_{\mathsmaller\sum}$ $(\textbf{x})$ l'ensemble de tous les termes construit utilisant les symboles de fonctions dans $\sum^{f}$ et les variables dans l'ensemble \textbf{x}. Nous \'ecrivons $\tau_{\mathsmaller\sum}$ pour l'ensemble $\tau_{\mathsmaller\sum}$ $(\emptyset)$ de termes ne contenant aucune variable.
+\begin{definition} 
+(Formule du premier ordre). Une formule du premier ordre une signature $\sum$ est d\'efini r\'ecursivement par la grammaire :\\
+\\$\phi^{FOL} ::= \top$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(true)\par
+~~~~~$|$~~$\bot$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(false)
+\par
+~~~~~$|$~~$t,$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$t^{Bool}$ $term$~~~~~~~~~~~~~~~~~~~~~~~~(termes bool\'een)\par
+~~~~~$|$~~ $t_{1} = t_{2},$~~~~~~~~~~~~~~~~~~~~~~~~$t_{1}^{\sigma},t_{2}^{\sigma}$ $terms$~~~~~~~~~~~~~~~~~~~~~~~~~~(\'egalit\'e)\par
+~~~~~$|$~~$\phi^{FOL}$,~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(n\'egation)\par
+~~~~~$|$~~$\phi_{1}^{FOL} \land \phi_{2}^{FOL},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(conjonction)\par
+~~~~~$|$~~$\phi_{1}^{FOL} \lor \phi_{2}^{FOL},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(disjonction)\par
+~~~~~$|$~~$\exists x.\phi^{FOL},$~~~~~~~~~~~~$x\in FV(\phi^{FOL})$~~~~~~~~~~~~~~~(quantificateur existentiel)\par
+~~~~~$|$~~$\forall x.\phi^{FOL},$~~~~~~~~~~~~$x\in FV(\phi^{FOL})$~~~~~~~~~~~~~~~(quantificateur universel)
+\end{definition}
+Les constantes $\top$ et $\bot$, des termes bool\'een, et l'\'egalit\'e entre deux termes de m\^eme type sont des formules du premi\`ere ordre. La n\'egation, conjonction, disjonction, les quantificateurs existentiel et universelle de la logique du premi\`ere ordre sont aussi des formules de la logique du premi\`ere ordre.
+\begin{definition}
+(Taille d'un terme). La taille d'un terme $t$, not\'e $|t|$, est le nombre de variables et de symbole de fonctions dedans : \par
+$|x| = 1$~~$|c| = 1$~~$|\langle t_{1},...,t_{n}\rangle| = |t_{1}| + ... + |t_{n}|$~~$|f(t_{1},...,t_{n})| = 1 + |t_{1}| + ... + |t_{n}|$
+\end{definition}
+
+\begin{definition}
+(Taille d'une formule du premi\`ere ordre). La taille d'une formule $\phi$, not\'e $|\phi|$, est la somme des tailles de tous les termes dedans :
+\end{definition}
+
+\begin{definition}
+(Substitution). Soit un ensemble de variables \textbf{x} et \textbf{y}, une substitution $\theta :$ \textbf{x} $\rightarrow \tau_{\mathsmaller\sum}(\textbf{y})$ associe chaque variable dans \textbf{x} \`a un terme dans $\tau_{\mathsmaller\sum}(\textbf{y})$.
+\end{definition}
+	\subsection{S\'emantique}
+	Les s\'emantiques des FOL formules sont d\'efinis en utilisant l'interpr\'etation des types et des fonctions dans une signature $\sum$ et l'\'evaluation des variables dans $Var$.
+\begin{definition}
+(Interpr\'etation). Une interpr\'etation $I$ pour $\sum$ associe chaque symbole de type $\sigma \in \sum^{s}$ \`a un ensemble non-vide $\sigma^{I}$, chaque symbole de fonction $f^{\sigma_{1},...,\sigma_{n}\sigma} \in \sum^{f}$ avec $n > 0$ \`a une fonction totale $f^{I} : \sigma_{1}^{I}\times ... \times \sigma_{n}^{I}$ et chaque symbole de constante $c^{\sigma} \in \sum^{f}$ \`a un \'el\'ement de $\sigma^{I}$.
+\end{definition}
+	\section{Hoare}
+	En pratique, une programme calcule soit la plus faible pr\'econdition n\'ecessaire pour que la postcondition soit respect\'e soit la plus forte postcondition. On les notera respectivement la plus $wp(P,A)$ et $sp(P, B)$. On aura donc \\$\forall B'$ tel que $\{B'\}P\{A\}$, $B' \rightarrow wp(P,A)$ et $\forall A'$ tel que $\{B\}P\{A'\}$, $sp(P,B) \rightarrow A'$. 
  	\section{D\'ecidabilit\'e des th\'eories}
  		Une th\'eorie est un ensemble d'axiomes accompagn\'es de r\`egles de la logique. \par
 		Sous une signature $\sigma$ et une th\'eorie $\tau_{\sigma}$, une formule $\phi$, construite dans $\sigma$, est satisfaisable in $\tau_{\sigma}$, si $\phi$ est \'evalu\'e \`a vrai sous toutes les interpr\'etations de $\tau_{\sigma}$.

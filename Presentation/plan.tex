@@ -6,8 +6,10 @@
 \usepackage{tikz}
 \usepackage{syntax}
 \usepackage{relsize,exscale}
+\usepackage{MnSymbol}
 
 \newcommand{\verifast}{VeriFast}
+\newcommand\sepimp{\mathrel{-\mkern-6mu*}}
 
 \lstset{language={C}}
 \lstset{alsoletter={&},morekeywords={predicate,array,true,false,lemma,&*&}}
@@ -51,11 +53,11 @@
 		\subsection{Syntaxe}
 		On introduit la syntaxe de la logique du premier ordre (FOL) dans le contexte d'une paire $\sum = (\sum^s,\sum^f)$, que nous appelerons la signature tel que :
 		\begin{itemize}
-		\item $\sum^s = \{ \sigma_{1}, \sigma_{2},...\}$ est un ensemble de symboles de type. On suppose l'existence du type $Bool = \{ \top , \bot \}$, o\`u nous \'ecrirons $\top$ et $\bot$ pour les constantes, respectivement, true et false.
+		\item $\sum^s = \{ \sigma_{1}, \sigma_{2},...\}$ est un ensemble de symboles de type. On suppose l'existence d'un type location $Loc \in \sum^{s}$ et d'un type $Bool = \{ \top , \bot \}$, o\`u nous \'ecrivons $\top$ et $\bot$ pour les constantes, respectivement, true et false.
 		\item $\sum^f = \{ f, g, h,...\}$ est un ensemble de symbole de fonctions. Pour un symbole de fonction $f^{\sigma_{1}\sigma_{2}... \sigma_{n}\sigma}$, $n \geq 0$ est son arit\'e et $\sigma_{1}\sigma_{2}... \sigma_{n}\sigma$ est sa signature o\`u $\sigma_{1}\sigma_{2}... \sigma_{n} \in \sum^{s}$ sont les types des arguments et $\sigma$ est le type du r\'esultat. Un symbole de fonctions d'arit\'e 0 est un symbole de constante $c^{\sigma}$ de type $\sigma \in \sum^{s}$. Nous ne pr\'eciserons pas la signature du symbole de fonctions lorsque c'est inutile.
 		\end{itemize}
 
-	   Posons $Var = {x,y,z,...}$ un ensemble d\'enombrable de variable du premi\`ere ordre. Chaque variable $x^{\sigma} \in Var$ est associ\'e \`a un type $\sigma \in \sum^{s}$.
+	   Posons $Var = {x,y,z,...}$ un ensemble d\'enombrable de variable du premier ordre. Chaque variable $x^{\sigma} \in Var$ est associ\'e \`a un type $\sigma \in \sum^{s}$.
 	   
 \begin{definition} (Terme).
 Un terme $t$ de type $\sigma \in \sum^{s}$, not\'e $t^{\sigma}$, sur une signature $\sum$ est d\'efini r\'ecrusivement par la grammaire :\\
@@ -73,21 +75,22 @@ Nous noterons $\tau_{\mathsmaller\sum}$ $(\textbf{x})$ l'ensemble de tous les te
 ~~~~~$|$~~$\bot$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(false)
 \par
 ~~~~~$|$~~$t,$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$t^{Bool}$ $term$~~~~~~~~~~~~~~~~~~~~~~~~(termes bool\'een)\par
-~~~~~$|$~~ $t_{1} = t_{2},$~~~~~~~~~~~~~~~~~~~~~~~~$t_{1}^{\sigma},t_{2}^{\sigma}$ $terms$~~~~~~~~~~~~~~~~~~~~~~~~~~(\'egalit\'e)\par
-~~~~~$|$~~$\phi^{FOL}$,~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(n\'egation)\par
+~~~~~$|$~~ $t_{1} \approx t_{2},$~~~~~~~~~~~~~~~~~~~~~~~~$t_{1}^{\sigma},t_{2}^{\sigma}$ $terms$~~~~~~~~~~~~~~~~~~~~~~~~~~(\'egalit\'e)\par
+~~~~~$|$~~$\neg\psi^{FOL}$,~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(n\'egation)\par
 ~~~~~$|$~~$\phi_{1}^{FOL} \land \phi_{2}^{FOL},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(conjonction)\par
 ~~~~~$|$~~$\phi_{1}^{FOL} \lor \phi_{2}^{FOL},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(disjonction)\par
 ~~~~~$|$~~$\exists x.\phi^{FOL},$~~~~~~~~~~~~$x\in FV(\phi^{FOL})$~~~~~~~~~~~~~~~(quantificateur existentiel)\par
 ~~~~~$|$~~$\forall x.\phi^{FOL},$~~~~~~~~~~~~$x\in FV(\phi^{FOL})$~~~~~~~~~~~~~~~(quantificateur universel)
 \end{definition}
-Les constantes $\top$ et $\bot$, des termes bool\'een, et l'\'egalit\'e entre deux termes de m\^eme type sont des formules du premi\`ere ordre. La n\'egation, conjonction, disjonction, les quantificateurs existentiel et universelle de la logique du premi\`ere ordre sont aussi des formules de la logique du premi\`ere ordre.
+Les constantes $\top$ et $\bot$, des termes bool\'een, et l'\'egalit\'e entre deux termes de m\^eme type sont des formules du premier ordre. La n\'egation, conjonction, disjonction, les quantificateurs existentiel et universelle de la logique du premier ordre sont aussi des formules de la logique du premier ordre.\par
+	Pour une formule $\phi$, nous noterons $FV(\phi)$ l'ensemble des variables n'apparaissant pas dans la port\'ee d'un quantificateur de $\phi$.
 \begin{definition}
 (Taille d'un terme). La taille d'un terme $t$, not\'e $|t|$, est le nombre de variables et de symbole de fonctions dedans : \par
 $|x| = 1$~~$|c| = 1$~~$|\langle t_{1},...,t_{n}\rangle| = |t_{1}| + ... + |t_{n}|$~~$|f(t_{1},...,t_{n})| = 1 + |t_{1}| + ... + |t_{n}|$
 \end{definition}
 
 \begin{definition}
-(Taille d'une formule du premi\`ere ordre). La taille d'une formule $\phi$, not\'e $|\phi|$, est la somme des tailles de tous les termes dedans :
+(Taille d'une formule du premier ordre). La taille d'une formule $\phi$, not\'e $|\phi|$, est la somme des tailles de tous les termes dedans :
 \end{definition}
 
 \begin{definition}
@@ -98,9 +101,104 @@ $|x| = 1$~~$|c| = 1$~~$|\langle t_{1},...,t_{n}\rangle| = |t_{1}| + ... + |t_{n}
 \begin{definition}
 (Interpr\'etation). Une interpr\'etation $I$ pour $\sum$ associe chaque symbole de type $\sigma \in \sum^{s}$ \`a un ensemble non-vide $\sigma^{I}$, chaque symbole de fonction $f^{\sigma_{1},...,\sigma_{n}\sigma} \in \sum^{f}$ avec $n > 0$ \`a une fonction totale $f^{I} : \sigma_{1}^{I}\times ... \times \sigma_{n}^{I}$ et chaque symbole de constante $c^{\sigma} \in \sum^{f}$ \`a un \'el\'ement de $\sigma^{I}$.
 \end{definition}
+	Posons $I$ une interpr\'etation, $f^{\sigma_{1} ...\sigma_{n} \sigma}$ un symbole de fonction et $\alpha^{\sigma_{1}^{I},...,\sigma_{n}^{I}\sigma^{I}}$ une fonction. Nous \'ecrivons $I[f \leftarrow \alpha]$ pour une interpr\'etation tel que : \\(i) $I[f\leftarrow\alpha](\sigma) = I(\sigma)$, (ii) $I[f\leftarrow\alpha](f) = \alpha$, et (iii) $\nu[f\leftarrow\alpha](g) = g^{I}$ pour tout $g \in \sum^{f}$ avec $g\neq f$.
+	
+\begin{definition}
+(Evaluation). Soit une interpr\'etation $I$, une \'evaluation $\nu$ chaque variable $x^{\sigma} \in Var$ \`a un \'el\'ement de $\sigma^{I}$.
+\end{definition}
+Notons $V_{I}$ l'ensemble des \'evaluation possible sous $I$.
+Posons $I$ une interpr\'etation, $\nu \in V_{I}$ une \'evaluation, $x^{\sigma} \in Var$ une variable et $\alpha \in \sigma^{I}$ une valeur. Nous noterons $\nu[x\leftarrow\alpha]$ pour une \'evaluation tel que: (i) $\nu[x\leftarrow\alpha](x) = \alpha$, et (ii) $\nu[x\leftarrow\alpha](y)=\nu(y)$ pour tout $y\in Var$ avec $y\neq x$.
+
+\begin{definition}
+(Interpr\'etation d'un terme). L'interpr\'etation de t relative \`a $I$ et $\nu$ est obtenu en repla\c{c}ant chaque symbole de fonction $f$ apparaissant dans $t$ par son interpr\'etation $f^{I}$ et chaque variable $x$ apparaissant dans $t$ par son \'evaluation $\nu(x)$.
+\end{definition}
+Maintenant que l'on sait comment interpr\'eter les termes avec une \'evaluation donn\'e, nous pouvons \'etendre la notion d'interpr\'etation aux formules du premier ordre.
+\begin{definition}
+(S\'emantique d'une formule du premier ordre). Soit une interpr\'etation $I$ et une \'evaluation $\nu \in V_{I}$, nous \'ecrivons $I,\nu\models\phi$ si la formule du premier ordre $\phi$ est interpr\'et\'e par true sous $I$ et $\nu$. La relation est d\'efini inductivement sur la structure de $\phi$ :\par
+$I,\nu\models\top$~~~~~~~~~~~~toujours vrai\par
+$I,\nu\models\bot$~~~~~~~~~~~~jamais vrai\par
+$I,\nu\models t$~~~~~~~~~~~~ ssi $t^{I}_{\nu}=\top,t^{Bool}$ term\par
+$I,\nu\models t_{1}\approx t_{2},$~~~~~ssi $t^{I}_{1_{\nu}}=t^{I}_{2_{\nu}},t^{\sigma}_{1}=t^{\sigma}_{2}$ terms\par
+$I,\nu\models\neg\psi$~~~~~~~~~~ssi $I,\nu\models\psi$ doesn't hold\par
+$I,\nu\models\phi_{1}\land\phi_{2}$~~~~~ssi $I,\nu\models\phi_{1}$ et $I,\nu\models\phi_{2}$\par
+$I,\nu\models\phi_{1}\lor\phi_{2}$~~~~~ssi $I,\nu\models\phi_{1}$ ou $I,\nu\models\phi_{2}$\par
+$I,\nu\models\exists x.\psi$~~~~~~~~~ssi $I,\nu[x\leftarrow\alpha]\models\psi, x^{\sigma}\in FV(\psi),$ pour certains $\alpha\in\sigma^{I}$\par
+$I,\nu\models\forall x.\psi$~~~~~~~~~ssi $I,\nu[x\leftarrow\alpha]\models\psi, x^{\sigma}\in FV(\psi),$ pour tout $\alpha\in\sigma^{I}$
+\end{definition}
+
+En utilisant leurs s\'emantiques, nous pouvons d\'efinir les notions de satisfaisabilit\'e  et d'implication des FOL formules sous une interpr\'etation $I$.
+
+\begin{definition}
+(Satisfaisable et valide). Une formule du premier ordre $\phi$ est satisfaisable dans l'interpr\'etation $I$ s'il existe une \'evaluation $\nu$ tel que $I,\nu\models\phi$ et insatisfaisable sinon. Si $I,\nu\models\phi$ pour tout $\nu$, alors $\phi$ est valide et $\neg\phi$ est insatisfaisable.
+\end{definition}
+
+\begin{definition}
+(Implication et \'equivalence). Soit deux formules du premier ordre $\phi_{1}$ et $\phi_{2}$, nous \'ecrivons $\phi_{1}\models^{I}\phi_{2}$ et posons que $\phi_{1}$ implique $\phi_{2}$ dans l'interpr\'etation de $I$ ssi $I,\nu\models\phi_{1}$ implique $I,\nu\models\phi_{2}$ pour tout \'evaluation $\nu$. Nous appelerons $\phi_{1}$  et $\phi_{2}$  \'equivalent si $\phi_{1}\models^{I}\phi_{2}$ et $\phi_{2}\models^{I}\phi_{1}$.
+\end{definition}\par
+Nous encapsulerons toutes les notions se rapportant \`a FOL dans les th\'eories du premier ordre.
+
+\begin{definition}
+(Th\'eorie du premier ordre). Une th\'eorie du premier ordre est une paire $T=(\mathsmaller \sum,M)$ tel que $\mathsmaller \sum$ est une signature et $M$ est un ensemble non vide de paire ($I,\nu$), appel\'e un mod\`ele de $T$, o\`u $I$ est une interpr\'etation et $\nu\in V_{I}$ est une \'evaluation.
+\end{definition}
+
+Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$, tout $\mathsmaller \sum$-terme t est aussi appel\'e un $T$-terme et tout $\mathsmaller \sum$-formule $\phi$ est aussi appel\'e une $T$-formule. Une paire ($T,\nu$)$\in M$ tel que $T,\nu\models\phi$ est un $T$-mod\`ele de $\phi$. Nous noterons l'ensemble de tout les $T$-mod\`ele de $\phi$ par $[\![\phi]\!]_{T} = \{(T,\nu)\in M | I,\nu\models\phi\}$.
+
+\begin{definition}
+($T$-satisfaisable et $T$-valide). Soit $T = (\mathsmaller\sum,M)$ une th\'eorie du premier ordre, une $T$-formule $\phi$ est $T$-satisfaisable si $[\![\phi]\!]_{T} \neq \emptyset$ sinon $T$-insatisfaisable. Si $\phi$ est $T$-satisfaisable si et seulement si $\psi$ est $T$-satisfaisable alors $\phi$ et $\psi$ sont \'equisatisfaisable dans T. Si $[\![\phi]\!]_{T} = M$ alors $\phi$ est $T$-valide et $\neg\phi$ est $T$-insatisfaisable.
+\end{definition}
+
+\begin{definition}
+($T$-mplication et $T$-\'equivalence). Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$ et deux $T$-formule $\phi$ et $\psi$, nous \'ecrivons $\phi\models^{T}\psi$ et posons que $\phi$ $T$-implique $\psi$ si et seulement si $[\![\phi]\!]_{T}\subseteq [\![\psi]\!]_{T}$. Nous appelerons $\phi$  et $\psi$  $T$-\'equivalent si $\phi\models^{T}\psi$ et $\psi\models^{T}\phi$.
+\end{definition}\par
+	\section{Logique de s\'eparation}
+		\subsection{Syntaxe}
+	La syntaxe de la logique de logique de s\'eparation (SL) est construit sur la syntaxe de FOL, d\'efini \`a la section 1.1.1. Nous consid\'erons une th\'eorie du premier ordre $T=(\mathsmaller\sum,M)$ tel que $\sum^{s}$ contiennent les types $Loc$ et $Data$ et $\sum^{f}$ contient une constante $nil^{Loc}$.
+	\begin{definition}
+	(Formule de la logique de s\'eparation). Une formule SL s'\'ecrit avec les m\^emes r\`egles qu'une formule FOL en ajoutant ces r\`egles :
+	\\$\phi^{SL} ::= \top$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(true)\par
+~~~~~$|$~~$\bot$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(false)
+\par
+~~~~~$|$~~$t,$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$t^{Bool}$ $term$~~~~~~~~~~~~~~~~~~~~~~~~(termes bool\'een)\par
+~~~~~$|$~~ $t_{1} \approx t_{2},$~~~~~~~~~~~~~~~~~~~$t_{1}^{\sigma},t_{2}^{\sigma}$ $termes$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(\'egalit\'e)\par
+~~~~~$|$~~emp~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(empty heap)\par
+~~~~~$|$~~$t\mapsto u,$~~~~~~~~~~~~~~~~~~~~~$t^{Loc},u^{Data}$ $T$-termes ~~~~~~~~~~(singleton heap)\par 
+~~~~~$|$~~$\neg\psi^{SL}$,~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(n\'egation)\par
+~~~~~$|$~~$\phi_{1}^{SL} \land \phi_{2}^{SL},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(conjonction)\par
+~~~~~$|$~~$\phi_{1}^{SL} \lor \phi_{2}^{SL},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(disjonction)\par
+~~~~~$|$~~$\phi_{1}^{SL} * \phi_{2}^{SL},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(conjonction s\'eparation)\par
+~~~~~$|$~~$\phi_{1}^{SL} \sepimp \phi_{2}^{SL},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(implication s\'eparation)\par
+~~~~~$|$~~$\exists x.\psi^{SL},$~~~~~~~~~~~~$x\in FV(\psi^{SL})$~~~~~~~~~~~~~~~(quantificateur existentiel)\par
+~~~~~$|$~~$\forall x.\psi^{SL},$~~~~~~~~~~~~$x\in FV(\psi^{SL})$~~~~~~~~~~~~~~~(quantificateur universel)
+	\end{definition}
+	Les constantes $\top$ et $\bot$, des termes bool\'een, et l'\'egalit\'e entre deux termes de m\^eme type sont des formules SL($T$). La n\'egation, conjonction, disjonction, les quantificateurs existentiel et universelle sont aussi des formules SL($T$).
+	Les deux nouveaux atomes d\'ecrivant le vide et le singleton de la heap sont des formules SL($T$).\par
+	Si une SL($T$)-formule contient au moins une fois emp, $\mapsto$, $*$ ou $\sepimp$ alors c'est une formule \textit{spatial} sinon c'est une formule \textit{pure}.
+	\subsection{S\'emantique}
+	\begin{definition}
+	(Heap).Soit une interpr\'etation $I$, la heap est une partie fini associant une location avec une data, $h : Loc^{I} \rightarrow_{fin} Data^{I}$. Nous utiliserons $Heaps^{I}$ pour repr\'esenter l'ensemble de toutes les heaps sous l'interpr\'etation de $I$.
+	\end{definition}
+	Deux heaps $h_{1}$ et $h_{2}$ sont disjointes si dom($h_{1}$)$\cap$dom($h_{2}$) $= \emptyset$ et nous l'\'ecrivons $h_{1}\#h_{2}$. L'union disjointes sera symbolis\'e par $h_{1}\cupdot h_{2}$ qui est ind\'efini if $h_{1}$ et $h_{2}$ ne sont pas disjoints. Nous \'ecrivons $\bigcupdot H$ pour l'union disjointes des heaps dans l'ensemble $H \subseteq Heaps$.
+	\begin{definition}
+	(S\'emantique de formule SL). Soit une interpr\'etation $I$, une \'evaluation $\nu\in V_{I}$ et une heap $h\in Heaps$, nous \'ecrivons $I,\nu,h\models^{SL}\phi$ si une formule SL $\phi$ est interpr\'et\'e \`a true sous $I,\nu$ et $h$. Cette relation est d\'efini par induction  dans la structure de $\phi$ :\par
+	$I,\nu,h\models^{SL}\top$~~~~~~~~~~~toujours vrai\par
+$I,\nu,h\models^{SL}\bot$~~~~~~~~~~jamais vrai\par
+$I,\nu,h\models^{SL} t$~~~~~~~~~~ ssi $t^{I}_{\nu}=\top,t^{Bool}$ $T$-terme\par
+$I,\nu,h\models^{SL} t_{1}\approx t_{2},$~~~ssi $t^{I}_{1_{\nu}}=t^{I}_{2_{\nu}},t^{\sigma}_{1}=t^{\sigma}_{2}$ $T$-termes\par
+$I,\nu,h\models^{SL}$emp ~~~~~~ssi dom($h$)=$\emptyset$\par
+$I,\nu,h\models^{SL}t\mapsto u$~~~~~ssi $t^{I}_{\nu}\neq nil^{I}$ et $h = \{(t^{I}_{\nu},u^{I}_{\nu} )\}, t^{Loc}, u^{Loc}_{i}$ $T$-termes \par
+$I,\nu,h\models^{SL}\neg\psi$~~~~~~~~ssi $I,\nu,h\models^{SL}\psi$ doesn't hold\par
+$I,\nu,h\models^{SL}\phi_{1}\land\phi_{2}$~~~ssi $I,\nu,h\models^{SL}\phi_{1}$ et $I,\nu,h\models^{SL}\phi_{2}$\par
+$I,\nu,h\models^{SL}\phi_{1}\lor\phi_{2}$~~~ssi $I,\nu,h\models^{SL}\phi_{1}$ ou $I,\nu,h\models^{SL}\phi_{2}$\par
+$I,\nu,h\models^{SL}\phi_{1}*\phi_{2}$~~~~~~ssi $\exists h_{1}\exists h_{2}.h=h_{1}\cupdot h_{2}$ et $I,\nu,h_{1}\models^{SL}\phi_{1}$ et $I,\nu,h_{2}\models^{SL}\phi_{2}$\par
+$I,\nu,h\models^{SL}\phi_{1}\sepimp\phi_{2}$~~ssi $\forall h_{0}.h\#h_{0}$ et $I,\nu,h_{1}\models^{SL}\phi_{1}$ implique \\$I,\nu,h\cupdot h_{0}\models^{SL}\phi_{2}$\par
+$I,\nu,h\models^{SL}\exists x.\psi$~~~~~ssi $I,\nu[x\leftarrow\alpha],h\models^{SL}\psi, x^{\sigma}\in FV(\psi),$ \\pour certains $\alpha\in\sigma^{I}$\par
+$I,\nu,h\models^{SL}\forall x.\psi$~~~~~~~ssi $I,\nu[x\leftarrow\alpha],h\models^{SL}\psi, x^{\sigma}\in FV(\psi),$ pour tout $\alpha\in\sigma^{I}$
+	\end{definition}
 	\section{Hoare}
 	En pratique, une programme calcule soit la plus faible pr\'econdition n\'ecessaire pour que la postcondition soit respect\'e soit la plus forte postcondition. On les notera respectivement la plus $wp(P,A)$ et $sp(P, B)$. On aura donc \\$\forall B'$ tel que $\{B'\}P\{A\}$, $B' \rightarrow wp(P,A)$ et $\forall A'$ tel que $\{B\}P\{A'\}$, $sp(P,B) \rightarrow A'$. 
  	\section{D\'ecidabilit\'e des th\'eories}
+ 	
+
  		Une th\'eorie est un ensemble d'axiomes accompagn\'es de r\`egles de la logique. \par
 		Sous une signature $\sigma$ et une th\'eorie $\tau_{\sigma}$, une formule $\phi$, construite dans $\sigma$, est satisfaisable in $\tau_{\sigma}$, si $\phi$ est \'evalu\'e \`a vrai sous toutes les interpr\'etations de $\tau_{\sigma}$.
  		Certaines th\'eories sont d\'ecidables. Une th\'eorie est d\'ecidable s'il existe un algorithme qui peut r\'epondre par oui ou par non \`a la question de savoir si un \'enonc\'e donn\'e est d\'emontrable dans cette th\'eorie. \par

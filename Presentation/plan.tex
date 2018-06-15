@@ -25,15 +25,15 @@
 \begin{document}
 \addcontentsline{toc}{chapter}{Introduction}
 \chapter*{Introduction}
-		Aujourd'hui, les programmes informatiques sont de plus en plus pr\'esents dans notre quotidien et ont certaines fois notre vie entre leurs lignes. En effet, si un bug informatique emp\^eche le m\'etro de s'arr\^eter ou fait exploser une fus\'ee, il risque d'y avoir des pertes humaines. \par
-		Malheureusement, v\'erifier qu'un programme est correct est ind\'ecidable. Du coup, la m\'ethode la plus courante est de tester un programme dans diff\'erents environnements. Cependant, on ne peut pas tester le nombre infini de vols possibles d'une fus\'ee. Les m\'ethodes de test permettent de conna\^itre le comportement r\'eel du programme dans un environnement pr\'ecis; \`a l'inverse, d'autres m\'ethodes utilisent un mod\`ele de l'ex\'ecution du programme pour d\'eterminer une approximation du comportement du programme dans de nombreux environnements. M\^eme si le r\'esultat est une approximation, ces m\'ethodes d\'etecteront si le programme se comporte correctement. Par contre, elle peut indiquer qu'un programme n'est pas correct alors qu'il l'est. Mais ceci n'apporte aucun pr\'ejudice \`a la s\'ecurit\'e.
+		Aujourd'hui, les programmes informatiques sont de plus en plus pr\'esents dans notre quotidien et ont certaines fois notre vie entre leurs lignes. En effet, si un bug informatique entra\^ine un accident dans le m\'etro ou fait exploser une fus\'ee, il risque d'y avoir des pertes humaines. \par
+		Malheureusement, v\'erifier qu'un programme est correct est ind\'ecidable. Par cons\'equent, la m\'ethode la plus courante est de tester un programme dans diff\'erents environnements. Cependant, on ne peut pas tester le nombre infini de vols possibles d'une fus\'ee. Les m\'ethodes de test permettent de conna\^itre le comportement r\'eel du programme dans un environnement pr\'ecis; \`a l'inverse, d'autres m\'ethodes utilisent un mod\`ele de l'ex\'ecution du programme pour d\'eterminer une approximation du comportement du programme dans de nombreux environnements. M\^eme si le r\'esultat est une approximation, ces m\'ethodes d\'etecteront si le programme se comporte correctement. Par contre, elle peut indiquer qu'un programme n'est pas correct alors qu'il l'est, mais ceci n'apporte aucun pr\'ejudice \`a la s\'ecurit\'e.
 \par 
 
 		Pour nous aider \`a prouver qu'un programme est correct, ils existent diff\'erents outils. Il y a des assistants de preuve tel que Coq ou Isabelle qui permettent de d\'emontrer des th\'eor\`emes math\'ematiques. En mod\'elisant math\'ematiquement le comportement du programme, il est donc possible de prouver sa correction. \par
 		
-	D'autres logiciels permettent la v\'erification d\'eductive de programme en se sp\'ecialisant dans des langages pr\'ecis. \\Les m\'ethodes d\'eductives qui vont prouver qu'un programme suit sa sp\'ecification utilise la logique de Hoare. Cette logique se base sur le triplet de Hoare muni d'axiomes et r\`egles pour toutes les instructions de base d'un langage imp\'eratif. Le triplet est constitu\'e d'une pr\'econdition $B$, d'une postcondition $A$ et d'un programme $P$ repr\'esent\'e ainsi : $\{B\}P\{A\}$. Le triplet est vrai si pour tout valuation qui rend $B$ vraie et telle que $P$ s'arr\^ete, alors, apr\`es l'ex\'ecution et l'arr\^et de $P$, $A$ est vraie.\par Par exemple, \verifast{} est un outil de v\'erification d\'eductive de programme, C ou Java, avec un seul ou plusieurs threads. L'outil vous assure qu'il n'y a pas d'acc\`es ill\'egaux \`a la m\'emoire, que les pr\'econditions et postconditions sont bien respect\'ees et qu'il n'y est pas de probl\`eme de concurrence. Il est principalement con\c{c}u par Bart Jabocs, Jan Smans et Frank Piessens \`a l'universit\'e de Leuven en Belgique. \verifast{} est bas\'e sur la logique de s\'eparation et r\'esout les \'enonces math\'ematiques avec les SMT-solvers Redux et Z3.\par
+	D'autres logiciels permettent la v\'erification d\'eductive de programme en se sp\'ecialisant dans des langages pr\'ecis. \\Les m\'ethodes d\'eductives qui vont prouver qu'un programme suit sa sp\'ecification utilise la logique de Hoare. Cette logique se base sur le triplet de Hoare muni d'axiomes et r\`egles pour toutes les instructions de base d'un langage imp\'eratif. Le triplet est constitu\'e d'une pr\'econdition $B$, d'une postcondition $A$ et d'un programme $P$ repr\'esent\'e ainsi : $\{B\}P\{A\}$. Le triplet est vrai si pour tout \'evaluation qui rend $B$ vraie et telle que $P$ s'arr\^ete, alors, apr\`es l'ex\'ecution et l'arr\^et de $P$, $A$ est vraie.\par Par exemple, \verifast{} est un outil de v\'erification d\'eductive de programme, C ou Java, avec un seul ou plusieurs threads. L'outil assure qu'il n'y a pas d'acc\`es ill\'egaux \`a la m\'emoire, que les pr\'econditions et postconditions sont bien respect\'ees et qu'il n'y ait pas de probl\`eme de concurrence. Il est principalement con\c{c}u par Bart Jabocs, Jan Smans et Frank Piessens \`a l'universit\'e de Leuven en Belgique. \verifast{} est bas\'e sur la logique de s\'eparation et r\'esout les \'enonc\'es math\'ematiques avec les SMT-solvers Redux et Z3.\par
 	
-	L'objectif principal du TRE \'etait d'int\'egrer la th\'eorie des tableaux dans la logique de \verifast{}. Les contributions se sont s\'epar\'ees en plusieurs parties d\'ependantes les unes des autres. Une partie \'etait d'int\'egrer la th\'eorie des tableaux dans la logique de sp\'ecification de \verifast. L'int\'er\^et d'ajouter cette th\'eorie est de faciliter certaines preuves, par exemple les tris. En plus, elle est d\'ej\`a int\'egr\'ee dans Z3. En parall\`ele, une preuve de l'algorithme quicksort, absente dans \verifast, a \'et\'e \'ecrite. La preuve et l'ajout de la th\'eorie ont conduit \`a la cr\'eation des biblioth\`eque de la th\'eorie des tableaux et des multi-ensembles.
+	 Les contributions du TRE se sont s\'epar\'ees en plusieurs parties d\'ependantes les unes des autres. Une partie \'etait d'int\'egrer la th\'eorie des tableaux dans la logique de sp\'ecification de \verifast. L'int\'er\^et d'ajouter cette th\'eorie est de faciliter certaines preuves, comme par exemple, les tris. De plus, elle est d\'ej\`a int\'egr\'ee dans Z3. En parall\`ele, une preuve de l'algorithme quicksort, absente dans \verifast, a \'et\'e \'ecrite. La preuve et l'ajout de la th\'eorie ont conduit \`a la cr\'eation des biblioth\`eques de la th\'eorie des tableaux et des multi-ensembles.
 
 
 
@@ -49,7 +49,7 @@
 	   Posons $Var = {x,y,z,...}$ un ensemble d\'enombrable de variable du premier ordre. Chaque variable $x^{\sigma} \in Var$ est associ\'e \`a un type $\sigma \in \sum^{s}$.
 	   
 \begin{definition} (Terme).
-Un terme $t$ de type $\sigma \in \sum^{s}$, not\'e $t^{\sigma}$, sur une signature $\sum$ est d\'efini r\'ecrusivement par la grammaire :\\
+Un terme $t$ de type $\sigma \in \sum^{s}$, not\'e $t^{\sigma}$, sur une signature $\sum$ est d\'efinie r\'ecrusivement par la grammaire :\\
 $t^{\sigma} ::= x,$ ~~~~~~~~~~~~~~$x^{\sigma} \in Var$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (variable) \par
 $|$~~ $c,$ ~~~~~~~~~~~~~~$c^{\sigma} \in \sum^{f}$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(constant) \par
 $|$~~$\langle t_{1},...,t_{n}\rangle,$~~~~ $t_{1}^{\sigma_{1}},...,t_{n}^{\sigma_{n}} terms, \sigma = \sigma_{1} \times ... \times \sigma_{n}$~~~~(tuple) \par
@@ -59,7 +59,7 @@ $|$~~$f(t_{1},...,t_{n}),$~~~$f^{\sigma_{1} ...\sigma_{n} \sigma} \in \sum^{f}, 
 
 Nous noterons $\tau_{\mathsmaller\sum}$ $(\textbf{x})$ l'ensemble de tous les termes construit utilisant les symboles de fonctions dans $\sum^{f}$ et les variables dans l'ensemble \textbf{x}. Nous \'ecrivons $\tau_{\mathsmaller\sum}$ pour l'ensemble $\tau_{\mathsmaller\sum}$ $(\emptyset)$ de termes ne contenant aucune variable.
 \begin{definition} 
-(Formule du premier ordre). Une formule du premier ordre une signature $\sum$ est d\'efini r\'ecursivement par la grammaire :\\
+(Formule du premier ordre). Une formule du premier ordre une signature $\sum$ est d\'efinie r\'ecursivement par la grammaire :\\
 \\$\phi^{FOL} ::= \top$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(true)\par
 ~~~~~$|$~~$\bot$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(false)
 \par
@@ -78,7 +78,7 @@ Les constantes $\top$ et $\bot$, des termes bool\'een, et l'\'egalit\'e entre de
 (Substitution). Soit un ensemble de variables \textbf{x} et \textbf{y}, une substitution $\theta :$ \textbf{x} $\rightarrow \tau_{\smallsum}(\textbf{y})$ associe chaque variable dans \textbf{x} \`a un terme dans $\tau_{\mathsmaller\sum}(\textbf{y})$.
 \end{definition}
 	\subsection{S\'emantique}
-	Les s\'emantiques des FOL formules sont d\'efinis en utilisant l'interpr\'etation des types et des fonctions dans une signature $\sum$ et l'\'evaluation des variables dans $Var$.
+	Les s\'emantiques des FOL formules sont d\'efinies en utilisant l'interpr\'etation des types et des fonctions dans une signature $\sum$ et l'\'evaluation des variables dans $Var$.
 \begin{definition}
 (Interpr\'etation). Une interpr\'etation $I$ pour $\sum$ associe chaque symbole de type $\sigma \in \sum^{s}$ \`a un ensemble non-vide $\sigma^{I}$, chaque symbole de fonction $f^{\sigma_{1},...,\sigma_{n}\sigma} \in \sum^{f}$ avec $n > 0$ \`a une fonction totale $f^{I} : \sigma_{1}^{I}\times ... \times \sigma_{n}^{I}$ et chaque symbole de constante $c^{\sigma} \in \sum^{f}$ \`a un \'el\'ement de $\sigma^{I}$.
 \end{definition}
@@ -95,7 +95,7 @@ Posons $I$ une interpr\'etation, $\nu \in V_{I}$ une \'evaluation, $x^{\sigma} \
 \end{definition}
 Maintenant que l'on sait comment interpr\'eter les termes avec une \'evaluation donn\'e, nous pouvons \'etendre la notion d'interpr\'etation aux formules du premier ordre.
 \begin{definition}
-(S\'emantique d'une formule du premier ordre). Soit une interpr\'etation $I$ et une \'evaluation $\nu \in V_{I}$, nous \'ecrivons $I,\nu\models\phi$ si la formule du premier ordre $\phi$ est interpr\'et\'e par true sous $I$ et $\nu$. La relation est d\'efini inductivement sur la structure de $\phi$ :\par
+(S\'emantique d'une formule du premier ordre). Soit une interpr\'etation $I$ et une \'evaluation $\nu \in V_{I}$, nous \'ecrivons $I,\nu\models\phi$ si la formule du premier ordre $\phi$ est interpr\'et\'e par true sous $I$ et $\nu$. La relation est d\'efinie inductivement sur la structure de $\phi$ :\par
 $I,\nu\models\top$~~~~~~~~~~~~toujours vrai\par
 $I,\nu\models\bot$~~~~~~~~~~~~jamais vrai\par
 $I,\nu\models t$~~~~~~~~~~~~ ssi $t^{I}_{\nu}=\top,t^{Bool}$ term\par
@@ -122,7 +122,7 @@ Nous encapsulerons toutes les notions se rapportant \`a FOL dans les th\'eories 
 (Th\'eorie du premier ordre). Une th\'eorie du premier ordre est une paire $T=(\mathsmaller \sum,M)$ tel que $\mathsmaller \sum$ est une signature et $M$ est un ensemble non vide de paire ($I,\nu$), appel\'e un mod\`ele de $T$, o\`u $I$ est une interpr\'etation et $\nu\in V_{I}$ est une \'evaluation.
 \end{definition}
 
-Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$, tout $\mathsmaller \sum$-terme t est aussi appel\'e un $T$-terme et tout $\mathsmaller \sum$-formule $\phi$ est aussi appel\'e une $T$-formule. Une paire ($T,\nu$)$\in M$ tel que $T,\nu\models\phi$ est un $T$-mod\`ele de $\phi$. Nous noterons l'ensemble de tout les $T$-mod\`ele de $\phi$ par $\phibra_{T} = \{(T,\nu)\in M | I,\nu\models\phi\}$.
+Une th\'eorie du premier ordre est coh\'erente s'il existe des formules non-d\'emontrables. Nous supposons que toutes les th\'eories, dont nous parleront, sont coh\'erentes. Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$, tout $\mathsmaller \sum$-terme t est aussi appel\'e un $T$-terme et tout $\mathsmaller \sum$-formule $\phi$ est aussi appel\'e une $T$-formule. Une paire ($T,\nu$)$\in M$ tel que $T,\nu\models\phi$ est un $T$-mod\`ele de $\phi$. Nous noterons l'ensemble de tout les $T$-mod\`ele de $\phi$ par $\phibra_{T} = \{(T,\nu)\in M | I,\nu\models\phi\}$.
 
 \begin{definition}
 ($T$-satisfaisable et $T$-valide). Soit $T = (\mathsmaller\sum,M)$ une th\'eorie du premier ordre, une $T$-formule $\phi$ est $T$-satisfaisable si $\phibra_{T} \neq \emptyset$ sinon $T$-insatisfaisable. Si $\phi$ est $T$-satisfaisable si et seulement si $\psi$ est $T$-satisfaisable alors $\phi$ et $\psi$ sont \'equisatisfaisable dans T. Si $\phibra_{T} = M$ alors $\phi$ est $T$-valide et $\neg\phi$ est $T$-insatisfaisable.
@@ -133,7 +133,7 @@ Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$, tout $\mathsmal
 \end{definition}\par
 	\section{Logique de s\'eparation}
 		\subsection{Syntaxe}
-	La syntaxe de la logique de logique de s\'eparation (SL) est construit sur la syntaxe de FOL, d\'efini \`a la section 1.1.1. Nous consid\'erons une th\'eorie du premier ordre $T=(\mathsmaller\sum,M)$ tel que $\sum^{s}$ contiennent les types $Loc$ et $Data$ et $\sum^{f}$ contient une constante $nil^{Loc}$.
+	La syntaxe de la logique de logique de s\'eparation (SL) est construit sur la syntaxe de FOL, d\'efinie \`a la section 1.1.1. Nous consid\'erons une th\'eorie du premier ordre $T=(\mathsmaller\sum,M)$ tel que $\sum^{s}$ contiennent les types $Loc$ et $Data$ et $\sum^{f}$ contient une constante $nil^{Loc}$.
 	\begin{definition}
 	(Formule de la logique de s\'eparation). Une formule SL s'\'ecrit avec les m\^emes r\`egles qu'une formule FOL en ajoutant ces r\`egles :
 	\\$\phi^{SL} ::= \top$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(true)\par
@@ -156,7 +156,7 @@ Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$, tout $\mathsmal
 	Si une SL($T$)-formule contient au moins une fois emp, $\mapsto$, $*$ ou $\sepimp$ alors c'est une formule \textit{spatial} sinon c'est une formule \textit{pure}.\par
 	La plupart des d\'efinition de data structure, tel que des listes ou des arbres, utilise un fragment restreint sans quantificateur appel\'e \textit{symbolic heaps}.
 \begin{definition}
-(Formule de symbolic heap). Une formule de \textit{symbolic heap} est une conjonction $\Pi\land\Theta$ entre une pure $(\Pi)$ et une spatiale $(\Theta)$ partie, d\'efini ainsi :\\
+(Formule de symbolic heap). Une formule de \textit{symbolic heap} est une conjonction $\Pi\land\Theta$ entre une pure $(\Pi)$ et une spatiale $(\Theta)$ partie, d\'efinies ainsi :\\
 $\Pi ::= \top$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(true)\par
 $|$ $\bot$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(false)\par
 $|$ $t,$~~~~~~~~~~~~~$t^{Bool}$ $T$-terme~~~~~~~~~~~~(boolean variable)\par
@@ -172,9 +172,9 @@ $|$ $\Theta_{1}*\Theta_{2},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(conjonction s\'epar
 	\begin{definition}
 	(Heap).Soit une interpr\'etation $I$, la heap est une partie fini associant une location avec une data, $h : Loc^{I} \rightarrow_{fin} Data^{I}$. Nous utiliserons $Heaps^{I}$ pour repr\'esenter l'ensemble de toutes les heaps sous l'interpr\'etation de $I$.
 	\end{definition}
-	Deux heaps $h_{1}$ et $h_{2}$ sont disjointes si dom($h_{1}$)$\cap$dom($h_{2}$) $= \emptyset$ et nous l'\'ecrivons $h_{1}\#h_{2}$. L'union disjointes sera symbolis\'e par $h_{1}\cupdot h_{2}$ qui est ind\'efini if $h_{1}$ et $h_{2}$ ne sont pas disjoints. Nous \'ecrivons $\bigcupdot H$ pour l'union disjointes des heaps dans l'ensemble $H \subseteq Heaps$.
+	Deux heaps $h_{1}$ et $h_{2}$ sont disjointes si dom($h_{1}$)$\cap$dom($h_{2}$) $= \emptyset$ et nous l'\'ecrivons $h_{1}\#h_{2}$. L'union disjointes sera symbolis\'e par $h_{1}\cupdot h_{2}$ qui est ind\'efinie si $h_{1}$ et $h_{2}$ ne sont pas disjoints. Nous \'ecrivons $\bigcupdot H$ pour l'union disjointes des heaps dans l'ensemble $H \subseteq Heaps$.
 	\begin{definition}
-	(S\'emantique de formule SL). Soit une interpr\'etation $I$, une \'evaluation $\nu\in V_{I}$ et une heap $h\in Heaps$, nous \'ecrivons $I,\nu,h\models^{SL}\phi$ si une formule SL $\phi$ est interpr\'et\'e \`a true sous $I,\nu$ et $h$. Cette relation est d\'efini par induction  dans la structure de $\phi$ :\par
+	(S\'emantique de formule SL). Soit une interpr\'etation $I$, une \'evaluation $\nu\in V_{I}$ et une heap $h\in Heaps$, nous \'ecrivons $I,\nu,h\models^{SL}\phi$ si une formule SL $\phi$ est interpr\'et\'e \`a true sous $I,\nu$ et $h$. Cette relation est d\'efinie par induction  dans la structure de $\phi$ :\par
 	$I,\nu,h\models^{SL}\top$~~~~~~~~~~~toujours vrai\par
 $I,\nu,h\models^{SL}\bot$~~~~~~~~~~jamais vrai\par
 $I,\nu,h\models^{SL} t$~~~~~~~~~~ ssi $t^{I}_{\nu}=\top,t^{Bool}$ $T$-terme\par
@@ -205,44 +205,105 @@ $I,\nu,h\models^{SL}\forall x.\psi$~~~~~~~ssi $I,\nu[x\leftarrow v],h\models^{SL
 \begin{definition}
 (Implication et \'equivalence). Soit une formule SL $\phi$ et $\psi$, nous \'ecrivons $\phi\models^{SL}\psi$ et disons que $\phi$ implique $\psi$ si et seulement si $\nu,h\models^{SL}\phi$ implique $\nu,h\models^{SL}\psi$, pour tout \'evaluation $\nu$ et heap $h$. Nous appelons $\phi$ et $\psi$ \'equivelent quand $\phi\models^{SL}_{T}\psi$ et $\psi\models^{SL}_{T}\phi$. 
 \end{definition}
-	\section{Hoare}
-	En pratique, une programme calcule soit la plus faible pr\'econdition n\'ecessaire pour que la postcondition soit respect\'e soit la plus forte postcondition. On les notera respectivement la plus $wp(P,A)$ et $sp(P, B)$. On aura donc \\$\forall B'$ tel que $\{B'\}P\{A\}$, $B' \rightarrow wp(P,A)$ et $\forall A'$ tel que $\{B\}P\{A'\}$, $sp(P,B) \rightarrow A'$. 
- 	\section{D\'ecidabilit\'e des th\'eories}
- 	
+ 	\section{Proc\'edures de d\'ecision}
+ 	\begin{definition}
+ 	(Probl\`eme de d\'ecision). Le probl\`eme de d\'ecision pour un formule $\phi$ est de d\'eterminer si $\phi$ est valide.
+ 	\end{definition}
+ 	Soit une th\'eorie $T$, il existe des proc\'edures de d\'ecision qui d\'etermine si une $T$-formule est valide.
+ 	\begin{definition}
+ 	(Solidit\'e d'une proc\'edure). Une proc\'edure pour un probl\`eme de d\'ecision est solide si quand elle retourne \textit{Valide}, alors la formule en entr\'ee est valide.
+ 	\end{definition}
+ 	\begin{definition}
+ 		(Compl\'etude d'une proc\'edure). Une proc\'edure pour un probl\`eme de d\'ecision est complet si elle s'arr\^ete toujours et si elle est solide.
+ 	\end{definition}
+ 	\begin{definition}
+ 	(Proc\'edure de d\'ecision). Soit $T$ une th\'eorie, une proc\'edure est appel\'e \textit{proc\'edure de d\'ecision pour $T$} si elle est compl\`ete pour toutes les formules de $T$. 
+ 	\end{definition} 	
+ 	Un aspect important, pour prouver des programmes avec l'aide de la logique, est d'utiliser des th\'eories d\'ecidables.
+	\begin{definition}
+	(Th\'eorie d\'ecidable). Soit $T$ une th\'eorie logique du premier ordre, $T$ est d\'ecidable si et seulement s'il existe une proc\'edure de d\'ecision.
+	\end{definition}
+Beaucoup de th\'eories doivent \^etre syntaxiquement restreintes pour devenir d\'ecidable. On parle alors de fragment de la logique.		\		\subsection{Presburger}
+		L'arithm\'etique de Presburger est muni de la signature : $\smallsum^{f}=\{0,1,+,=\}$ et est accompagn\'ee des axiomes suivant :
+		\begin{enumerate}
+		\item $\forall x.$ $\neg(0=x+1)$
+		\item $\forall x,y.$ $x + 1=y+1\leftarrow x=y$
+		\item $\forall x.$ $x+0=x$
+		\item $\forall x,y.$ $x+(y+1)=(x+y)+1$
+		\item Soit $P(x)$ une formule du premier ordre dans le langage de l'arithm\'etique de Presburger avec la variable libre $x$,\\
+		$(P(0)\land\forall x.(P(x)\rightarrow P(x+1)))\rightarrow\forall y. P(y)$
+		\end{enumerate}
+		L'arithm\'etique de Presburger est d\'ecidable.
+		
+		
+		
+		
+		
+		
+	\subsection{Th\'eorie des tableaux}	
+	Un tableau logique est une expression qui associe un index \`a un \'el\'ement. Nous notons le type de l'index $T_{I}$ et le type de l'\'el\'ement $T_{E}$. Le type du tableau est not\'e $T_{A}$, un raccourci de $T_{I}\rightarrow T_{E}$, i.e., l'ensemble des fonctions qui associe un \'el\'ement de $T_{I}$ \`a un \'el\'ement de $T_{E}$.\\
+	Posons $a\in T_{A}$ un tableau, il y a 4 fonctions \'el\'ementaire \`a la th\'eorie :
+	\begin{enumerate}
+	\item \textit{Select} : Soit $i\in T_{I}$, \textit{Select(a,i)} renvoie la valeur de l'\'el\'ement \`a l'index $i$, not\'e $a[i]$.
+	\item \textit{Store} :  Soit $i\in T_{I}$ et $e\in T_{E}$, \textit{Store(a,i,e)} renvoie un nouveau tableau avec les m\^emes valeurs que le tableau $a$ et la valeur $e$ \`a l'index $i$, not\'e $a\{i\leftarrow e\}$.
+	\item \textit{Constant_array} : Soit $e\in T_{E}$, \textit{constant\_array}($e$) renvoie un tableau tel que $\forall i\in T_{I}$  \textit{constant\_array}$(e)[i]$ $= e$.
+	\item \textit{Extensionalit\'e} : Soit $a,b\in T_{A}$, \textit{array_ext}($a,b$) renvoie un index $i$ tel que $a[i] = b[i]\rightarrow a = b $
+	\end{enumerate}
+	Nous appelons les th\'eories utilis\'ees pour raisonner sur les indices et les \'el\'ements, \textit{index th\'eorie} et \textit{\'el\'ement th\'eorie}.\par
+La logique de l'index autorise les quantificateurs pour mod\'eliser des propri\'et\'es tel que "Il existe un \'el\'ement du tableau qui est \'egal \`a z\'ero" ou "tout \'el\'ement du tableau est sup\'erieur ou \'egal \`a z\'ero". Un exemple de th\'eorie adapt\'ee est l'arithm\'etique de Presburger.
+	
+	\begin{definition}
+(Tableau logique). La syntaxe d'un tableau logique est d\'efinie par extension des r\`egles de syntaxe de la logique de l'index et la logique de l'\'el\'ement. Nous notons $form_{I}$/$term_{I}$ et $form_{E}$/$term_{E}$ les formules/termes de, respectivement, la logique de l'index et la logique de l'\'el\'ement :\par
+$form : form_{I}$ $|$ $form_{E}$ $|$ $\neg form$ $|$ $form\land form$ $|$ $\forall$ array-identifier$. form$\par
+$term_{A} :$ array-identifier $|$ $term_{A}\{term_{I}\leftarrow term_{E}\}$ $|$ $constant\_array(term_{E})$\par
+$term_{E} :$ $term_{A}[term_{I}]$\par
+$term_{I} :$ $array\_ext(term_{A},term_{A})$
 
- 		Une th\'eorie est un ensemble d'axiomes accompagn\'es de r\`egles de la logique. \par
-		Sous une signature $\sigma$ et une th\'eorie $\tau_{\sigma}$, une formule $\phi$, construite dans $\sigma$, est satisfaisable in $\tau_{\sigma}$, si $\phi$ est \'evalu\'e \`a vrai sous toutes les interpr\'etations de $\tau_{\sigma}$.
- 		Certaines th\'eories sont d\'ecidables. Une th\'eorie est d\'ecidable s'il existe un algorithme qui peut r\'epondre par oui ou par non \`a la question de savoir si un \'enonc\'e donn\'e est d\'emontrable dans cette th\'eorie. \par
- 		Une th\'eorie est coh\'erente s'il existe des propositions non d\'emontrable. \par
- 		Une th\'eorie est compl\`ete si toute proposition ou sa
- 		n\'egation est d\'emontrable.
- 		\subsection{Presburger}
- 			L'arithm\'etique de Presburger est la th\'eorie  d\'ecidable du premier ordre des nombres entiers naturels muni de l'addition. En 1929, Mojzesz Presburger a d\'emontr\'e que son arithm\'etique est coh\'erente et compl\`ete.
- 		\subsection{Array}
- 			Les tableaux sont une data-structure pr\'esentes dans la plupart des langages de programmation. Il est donc int\'eressant de savoir quelles sont les propri\'et\'es d\'ecidable. \par
-
- 			En logique, contrairement aux programmes, un tableau est de dimension infini. \par
- 			Les tableaux sont \'equivalent \`a une fonction de type index vers range et nous allons leurs associ\'ees quatre op\'erations et un axiome propos\'e par McCarthy. \par
- 			\subsubsection{Select}
- 			Select(array a, index i) renvoie la valeur du tableau a \`a l'index i.\par
-			 \subsubsection{Store}
-			Store(array a, index i, range e) renvoie un nouveau tableau avec les m\^emes valeurs que le tableau a et la valeur e \`a l'index i.
-
- 			\subsubsection{Extensionality}
- 			Extensionality(array a, array b) renvoie un index i tel que
-\par select$(a,i) = $ select$(b,i)\rightarrow a = b $
-
- 			\subsubsection{Constant\_array}
- 			Constant\_array(range v) renvoie un tableau a tel que \par
- 			($\forall i$ : index) select(constant\_array$(v),i$) $= v$.
-
-			\subsubsection{Axiome}
-			L'axiome principal est : \par
- 			($\forall a$ : array) ($\forall e$ : range)($\forall i,j$ : index) $i=j \rightarrow$ select(store($a,i,e$)$,j$) $ = e$
-			\par $\land$ $i\neq j \rightarrow$ select(store($a,i,e$)$,j$) $=$ select($a,j$).
+\end{definition}
+	Nous pouvons observer que la grammaire n'autorise pas l'\'egalit\'e entre les tableaux. L'\'egalit\'e se fait avec la fonction d'extensionalit\'e, en supposant que l'\'egalit\'e est autoris\'e entre les \'el\'ements du tableaux.\par
+	L'axiome principal utilis\'e pour d\'efinir les fonctions \textit{select} et \textit{store} est l'axiome \textbf{read-over-write} :\\
+	$\forall a\in T_{A}.$ $\forall e\in T_{E}.$ $\forall i,j\in T_{I}.$ $i=j \rightarrow$ \textit{select(store($a,i,e$)$,j$) $ = e$
+			\\ $\land$ $i\neq j \rightarrow$ select(store($a,i,e$)$,j$) $=$ select($a,j$)}.\par
+	La th\'eorie des tableaux actuelle n'est pas d\'ecidable, m\^eme si la combinaison entre la logique de l'index et la logique de l'\'el\'ement est d\'ecidable. Il faut limiter la syntaxe de la th\'eorie pour la rendre d\'ecidable.
+	\subsubsection{Tableaux comme des fonctions non-interpr\'et\'es}
+	Consid\'erons le fragment de la logique qui n'autorise pas les quantificateur sur les tableaux. Un chemin \'evident est de r\'eduire chaque formule en une combinaison d'autres th\'eories qui tra\^ite les tableaux comme des fonctions non-interpr\'et\'es.\par
+	Les fonctions non-interpr\'et\'es sont utilis\'ees pour abstra\^ire, ou g\'en\'eralis\'e, des th\'eor\`emes. Contrairement aux autres symboles de fonctions, elles ne devraient pas \^etre interpr\'et\'es comme une partie de la formule. Dans la formule suivante, par exemple, $F$ et $G$ sont non-interpr\'et\'ees alors que le symbole de fonction binaire "+" est interpr\'et\'e comme la fonction addition :\par
+$F(x) = F(G(y)) \lor x+1=y$\par
+Remplacer une fonction avec une fonction non-interpr\'et\'e est une technique courante pour simplifier le raisonnement.	En contre-partie, une formule valide peut devenir invalide. Pour que ce remplacement soit correct, il faut que les fonctions non-interpr\'et\'es suivent un axiome. Si on leur donne une entr\'ee identique, la sortie sera identique. C'est ce qu'on appelle une \textbf{coh\'erence fonctionnel} ou encore \textbf{congruence fonctionnelle}.\par
+Quand le tableau est une fonction non-interpr\'et\'ee, l'index devient le seul argument de la fonction. La fonction \textit{Store} peut \^etre manipul\'e en rempla\c{c}ant chaque expression de la forme $a\{i\leftarrow e\}$ par une nouvelle variable $a'\in T_{A}$ et en ajoutant deux contraintes qui correspondent directement \`a l'axiome \textbf{read-over-write} :\par
+\begin{enumerate}
+\item $a'[i]=e$ pour la valeur qui est \'ecrite,
+\item $\forall j\neq i. a'[j]=a[j]$ pour les valeurs qui sont inchang\'ees.
+\end{enumerate}	
+	
+C'est appel\'e la r\'egle d'\'ecriture et est une transformation \'equivalente dans les formules des tableaux logiques.\par
+Maintenant, la logique des tableaux peut \^etre r\'eduite \`a la combinaison entre la logique de l'index et les fonctions non-interpr\'et\'es. La combinaison de l'arithm\'etique de Presburger et des fonctions non-interpr\'et\'es est ind\'ecidable. Or, dans un programme, les tableaux sont index\'es par des entiers. Il est donc int\'eressant conna\^itre la restriction n\'ecessaire de l'ensemble des formules.\par
+	
+	D\'efinissons maintenant une classe r\'eduite des formules de la logique des tableaux pour obtenir la d\'ecidabilit\'e. Nous consid\'erons les formules qui sont des combinaisons bool\'eennes de \textbf{propri\'et\'es de tableau}.
+	
+	\begin{definition}
+		(Propri\'et\'e de tableau). Une formule de la logique des tableaux est appel\'e \textbf{propri\'et\'e de tableau} si et seulement si elle est de la forme :\par
+$\forall i_{1},...,i_{k}\in T_{I}.\phi_{I}(i_{1},...,i_{k})\Longrightarrow\phi_{V}(i_{1},...,i_{k})$, et satisfait les conditions suiventes :
+\begin{enumerate}
+\item La fonctioon bool\'eennes, appel\'e \textbf{index guard}, doit suivre la grammaire suivante :\par
+$iguard : iguard\land iguard$ $|$ $iguard\lor iguard$ $|$ $iterm\leq iterm$ $|$ $iterm = iterm$\par
+$iterm :$ $i_{1}$ $|$ $...$ $|$ $i_{k}$ $|$ $term$\par
+$term :$ integer-constant $|$ integer-constant $\cdot$ index-identifier $|$ term+term\par
+Le "index-identifier" utilis\'e dans "term" ne doit pas \^etre l'un des $i_{1}...i_{k}$.
+\item L'index des variables $i_{1}...i_{k}$ ne peut \^etre utilis\'e que dans une expressions de la forme $a[i_{j}]$.
+\end{enumerate}\par
+La fonction bool\'eennes $\phi_{V}$ est appel\'e \textbf{value constraint}.
+	\end{definition}
+	Il existe un algorithme, que nous ne pr\'eciseront pas, acceptant le fragment des propri\'et\'es de tableau et le r\'eduisant \`a une formule \'equisatisfaisable qui utilise la th\'eorie des \'el\'ements et la th\'eorie des indexs.\par
+	Nous supposons que les op\'erations suivantes sont d\'efinies dans les th\'eories des indexs et des \'el\'ements, et que nous avons une proc\'edure de d\'ecision pour la combinaison de th\'eories: 
+	\begin{itemize}
+	\item Pour le type des indexs, nous supposons que l'arithm\'etique lin\'eaire sur les indices est permise.
+	\item Pour le type des \'el\'ements, nous supposons seulement que l'\'egalit\'e entre deux \'el\'ement est permise.
+	\end{itemize}
  		\subsection{Multiset}
  		Repr\'esentation des multiset en array(index, nat)
 
+	
  	\section{Combinaison de th\'eories d\'ecidables}
  		La combinaison de th\'eories d\'ecidables est omni-pr\'esent dans la v\'erification de programme et il n'est pas \'evident que la combinaison reste d\'ecidable. Pour \'eviter d'avoir \`a produire une proc\'edure de d\'ecision pour chaque combinaison, on peut faire appel \`a des techniques de combinaison de proc\'edures de d\'ecisions.
 
@@ -260,6 +321,8 @@ $I,\nu,h\models^{SL}\forall x.\psi$~~~~~~~ssi $I,\nu[x\leftarrow v],h\models^{SL
  		- Communication pour les axiomes "infini" entre le quantifier instantiation et le sat.
 
 \chapter{V\'erification d\'eductive avec \verifast{}}
+	\section{Hoare}
+	En pratique, une programme calcule soit la plus faible pr\'econdition n\'ecessaire pour que la postcondition soit respect\'e soit la plus forte postcondition. On les notera respectivement la plus $wp(P,A)$ et $sp(P, B)$. On aura donc \\$\forall B'$ tel que $\{B'\}P\{A\}$, $B' \rightarrow wp(P,A)$ et $\forall A'$ tel que $\{B\}P\{A'\}$, $sp(P,B) \rightarrow A'$. 
 	\section{V\'erification d\'eductive de programmes}
 		La v\'erification d\'eductive se base sur l'annotation des programmes. Le programme est annot\'e avec des formules logiques. Il y a les pr\'econditions (exigences sur les arguments de fonctions), les postconditions (garanties sur les r\'esultats de fonctions) et les invariants de boucle. Il restera \`a v\'erifier que pour chaque fonction, la fonction, accompagn\'ee de ces pr\'econditions, implique les postconditions et qu'\`a chaque appel de fonction, les pr\'econditions sont respect\'ees. Ces v\'erifications se feront \`a l'aide des SMT-solvers.
 		\subsection{Logique de s\'eparation}
@@ -352,11 +415,11 @@ lemma void absurd()
 		\subsection{Communication avec les SMT-solvers}
 		Dans \verifast{}, tous les solvers ont une api commune. Ainsi, si on veut ajouter de nouvelles fonctions pour communiquer avec Z3, on doit s'assurer que Redux sera aussi s'en occuper.
 			\subsubsection{Redux}
-			Redux consid\`ere les fonctions de la th\'eorie des tableaux commme des fonctions non-primitives et donc comme des fonctions d\'efini par l'utilisateur. Lors d'un appel d'une de ces fonctions, Redux fait donc un appel de fonction classique. Peu de choses sont possibles avec Redux et il faut donc \'eviter d'utiliser Redux si on veut utiliser la th\'eorie des tableaux.
+			Redux consid\`ere les fonctions de la th\'eorie des tableaux commme des fonctions non-primitives et donc comme des fonctions d\'efinies par l'utilisateur. Lors d'un appel d'une de ces fonctions, Redux fait donc un appel de fonction classique. Peu de choses sont possibles avec Redux et il faut donc \'eviter d'utiliser Redux si on veut utiliser la th\'eorie des tableaux.
 			\subsubsection{Z3}
 			Les fonctions sont des primitives de Z3. L'impl\'ementation consiste donc \`a appeler les fonctions avec les informations que nous fournira l'utilisateur.
 		\subsection{Repr\'esentation dans \verifast{}}
-		\verifast{} interdit \`a deux fonctions ou pr\'edicats d'avoir un nom identique. Cette r\`egle est primordiale car elle permet \`a \verifast{} de d\'efinir toutes les primitives dans des biblioth\`eques annexes. Les fonctions de la th\'eorie des tableaux ont \'et\'e d\'efini dans une nouvelle biblioth\`eque sous la forme de fonctions pures. Ainsi, tous les programmes ant\'erieurs sont rest\'es correct et les noms restent disponibles si la biblioth\`eque n'est pas incluse.\par
+		\verifast{} interdit \`a deux fonctions ou pr\'edicats d'avoir un nom identique. Cette r\`egle est primordiale car elle permet \`a \verifast{} de d\'efinir toutes les primitives dans des biblioth\`eques annexes. Les fonctions de la th\'eorie des tableaux ont \'et\'e d\'efinies dans une nouvelle biblioth\`eque sous la forme de fonctions pures. Ainsi, tous les programmes ant\'erieurs sont rest\'es correct et les noms restent disponibles si la biblioth\`eque n'est pas incluse.\par
 		Les fonctions de la th\'eorie sont donc, dans le code de \verifast{}, des fonctions comme des autres. Il faut maintenant savoir comment les rep\'erer pour utiliser les fonctions primitives de Z3. \par
 		Une possibilit\'e aurait \'et\'e de modifier le parser et ainsi savoir directement quand est-ce qu'elles sont appel\'ees. Avec l'impl\'ementation actuelle, l'ajout des fonctions aurait n\'ecessit\'e un nombre injustifi\'e de modification dans plusieurs fichiers pour recopier, une seconde fois, ce qui est d\'ej\`a \'ecrit. Du coup, une autre solution a \'et\'e choisi. \par
 		L'autre solution consiste \`a trouver un point pr\'ecis du code o\`u toutes les fonctions vont \^etre appel\'ees et o\`u un maximum de v\'erification auront d\'ej\`a \'et\'e fait. Ainsi, le moins possible d'\'etapes seront impl\'ement\'ees et donc produira un code propre et concis.\par

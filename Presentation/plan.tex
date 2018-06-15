@@ -25,31 +25,16 @@
 \begin{document}
 \addcontentsline{toc}{chapter}{Introduction}
 \chapter*{Introduction}
-	\section*{Objectif du TRE}
-		\subsection*{Int\'er\^et de prouver des programmes}
 		Aujourd'hui, les programmes informatiques sont de plus en plus pr\'esents dans notre quotidien et ont certaines fois notre vie entre leurs lignes. En effet, si un bug informatique emp\^eche le m\'etro de s'arr\^eter ou fait exploser une fus\'ee, il risque d'y avoir des pertes humaines. \par
-		Malheureusement, v\'erifier qu'un programme est correct est ind\'ecidable. Du coup, la m\'ethode la plus courante est de tester un programme dans diff\'erents environnements. Cependant, on ne peut pas tester le nombre infini de vols possibles d'une fus\'ee. Les m\'ethodes de test permettent de conna\^itre le comportement r\'eel du programme dans un environnement pr\'ecis; \`a l'inverse, d'autres m\'ethodes utilisent un mod\`ele de l'ex\'ecution du programme pour d\'eterminer une approximation du comportement du programme dans de nombreux environnements. M\^eme si le r\'esultat est une approximation, cette m\'ethode d\'etectera si le programme se comporte correctement. Par contre, elle peut indiquer qu'un programme n'est pas correct alors qu'il l'est. Mais ceci n'apporte aucun pr\'ejudice \`a la s\'ecurit\'e.
-\par Les m\'ethodes d\'eductives qui vont prouver qu'un programme suit sa sp\'ecification utilise la logique de Hoare.\\
-		Cette logique se base sur le triplet de Hoare muni d'axiomes et r\`egles pour toutes les instructions de base d'un langage imp\'eratif. Le triplet est constitu\'e d'une pr\'econdition $B$, d'une postcondition $A$ et d'un programme $P$ repr\'esent\'e ainsi : $\{B\}P\{A\}$. Le triplet est vrai si pour tout valuation qui rend $B$ vraie et telle que $P$ s'arr\^ete, alors, apr\`es l'ex\'ecution et l'arr\^et de $P$, $A$ est vraie.
-		
-		
+		Malheureusement, v\'erifier qu'un programme est correct est ind\'ecidable. Du coup, la m\'ethode la plus courante est de tester un programme dans diff\'erents environnements. Cependant, on ne peut pas tester le nombre infini de vols possibles d'une fus\'ee. Les m\'ethodes de test permettent de conna\^itre le comportement r\'eel du programme dans un environnement pr\'ecis; \`a l'inverse, d'autres m\'ethodes utilisent un mod\`ele de l'ex\'ecution du programme pour d\'eterminer une approximation du comportement du programme dans de nombreux environnements. M\^eme si le r\'esultat est une approximation, ces m\'ethodes d\'etecteront si le programme se comporte correctement. Par contre, elle peut indiquer qu'un programme n'est pas correct alors qu'il l'est. Mais ceci n'apporte aucun pr\'ejudice \`a la s\'ecurit\'e.
+\par 
 
-		\subsection*{Les outils}
-		Ils existent diff\'erents outils pour prouver ou certifier des programmes. Il y a des assistants de preuve tel que Coq ou Isabelle qui permettent de d\'emontrer des th\'eor\`emes math\'ematiques. En mod\'elisant math\'ematiquement le comportement du programme, il est donc possible de prouver sa correction. \par
-	D'autres logiciels permettent la preuve de programme en se sp\'ecialisant dans des langages pr\'ecis. Par exemple, \verifast{} a \'et\'e con\c{c}u pour le C et le java.
-		\subsection*{Courte description de \verifast{}}
-			\verifast{} est un outil de v\'erification d\'eductive de programme, C ou Java, avec un seul ou plusieurs threads. L'outil vous assure qu'il n'y a pas d'acc\`es ill\'egaux \`a la m\'emoire, que les pr\'econditions et postconditions sont bien respect\'ees et qu'il n'y est pas de probl\`eme de concurrence. Il est principalement con\c{c}u par Bart Jabocs, Jan Smans et Frank Piessens \`a l'universit\'e de Leuven en Belgique. \verifast{} est bas\'e sur la logique de s\'eparation, la logique multi-sorted et r\'esout les \'enonces math\'ematiques avec les SMT-solvers Redux et Z3.
-		\subsection*{Exemple : Quicksort avec \verifast{} et d'autres....}
-		\subsection*{Contributions}
-		Il y a eu trois contributions concernant \verifast{}. Pour des raisons pratiques, les trois contributions ont \'et\'e fait simultan\'ement.
-			\subsubsection{Integrer la theorie des tableaux}
-				Z3 a des fonctions primitives pour la th\'eorie des tableaux mais \verifast{} ne les utilise pas. La premi\`ere contribution a \'et\'e d'enrichir la logique de \verifast{} en y ajoutant des fonctions repr\'esentant la th\'eories des tableaux afin de les relier aux fonctions primitives de Z3. \par
-				La th\'eorie des tableaux permet de simplifier certaines preuves comme celle du quicksort.
-			\subsubsection{Biblioth\`eque sur les tableaux et les multi-ensembles}
-			Afin de prouver l'algorithme du quicksort, deux biblioth\`eques ont \'et\'e cr\'ees. La premi\`ere concerne les tableaux et la deuxi\`eme les multi-ensembles.
+		Pour nous aider \`a prouver qu'un programme est correct, ils existent diff\'erents outils. Il y a des assistants de preuve tel que Coq ou Isabelle qui permettent de d\'emontrer des th\'eor\`emes math\'ematiques. En mod\'elisant math\'ematiquement le comportement du programme, il est donc possible de prouver sa correction. \par
+		
+	D'autres logiciels permettent la v\'erification d\'eductive de programme en se sp\'ecialisant dans des langages pr\'ecis. \\Les m\'ethodes d\'eductives qui vont prouver qu'un programme suit sa sp\'ecification utilise la logique de Hoare. Cette logique se base sur le triplet de Hoare muni d'axiomes et r\`egles pour toutes les instructions de base d'un langage imp\'eratif. Le triplet est constitu\'e d'une pr\'econdition $B$, d'une postcondition $A$ et d'un programme $P$ repr\'esent\'e ainsi : $\{B\}P\{A\}$. Le triplet est vrai si pour tout valuation qui rend $B$ vraie et telle que $P$ s'arr\^ete, alors, apr\`es l'ex\'ecution et l'arr\^et de $P$, $A$ est vraie.\par Par exemple, \verifast{} est un outil de v\'erification d\'eductive de programme, C ou Java, avec un seul ou plusieurs threads. L'outil vous assure qu'il n'y a pas d'acc\`es ill\'egaux \`a la m\'emoire, que les pr\'econditions et postconditions sont bien respect\'ees et qu'il n'y est pas de probl\`eme de concurrence. Il est principalement con\c{c}u par Bart Jabocs, Jan Smans et Frank Piessens \`a l'universit\'e de Leuven en Belgique. \verifast{} est bas\'e sur la logique de s\'eparation et r\'esout les \'enonces math\'ematiques avec les SMT-solvers Redux et Z3.\par
+	
+	L'objectif principal du TRE \'etait d'int\'egrer la th\'eorie des tableaux dans la logique de \verifast{}. Les contributions se sont s\'epar\'ees en plusieurs parties d\'ependantes les unes des autres. Une partie \'etait d'int\'egrer la th\'eorie des tableaux dans la logique de sp\'ecification de \verifast. L'int\'er\^et d'ajouter cette th\'eorie est de faciliter certaines preuves, par exemple les tris. En plus, elle est d\'ej\`a int\'egr\'ee dans Z3. En parall\`ele, une preuve de l'algorithme quicksort, absente dans \verifast, a \'et\'e \'ecrite. La preuve et l'ajout de la th\'eorie ont conduit \`a la cr\'eation des biblioth\`eque de la th\'eorie des tableaux et des multi-ensembles.
 
-			\subsubsection{Preuve de quicksort}
-			Il n'y avait pas de preuve du quicksort dans \verifast{}. \par Prouver l'algorithme permettait \`a la fois d'enrichir les preuves de \verifast{} mais aussi de v\'erifier l'int\'egration de la th\'eorie des tableaux.
 
 
 \chapter{Logique du premier ordre}

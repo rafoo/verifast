@@ -30,7 +30,14 @@ lemma void select_store<t,u> (array(t,u) arr, t x, u y, t z)
 lemma void array_extensionality<t, u>(array(t, u) a, array(t, u) b)
 requires select(a, array_ext<t, u>(a, b)) == select(b, array_ext<t, u>(a, b));
 ensures a == b;
-{}
+{assume(false);}
+
+fixpoint bool same_array<a> (array(int, a) arr1, array(int, a) arr2, int b, nat n) {
+  switch(n) {
+    case zero: return true;
+    case succ(pred): return select(arr1, b) == select(arr2, b) && same_array(arr1, arr2, b+1, pred);
+  }
+}
 
 predicate array_model (int* a, int b, int e, array(int,int) arr) =
   (b >= e) ? true : (integer(a+b,?v) &*& select(arr, b) == v &*& array_model(a, b+1, e, arr));
@@ -59,10 +66,10 @@ lemma void array_model_out_of_range_diff(int* a, int b, int e, array(int,int) ar
 }
 
 lemma void array_model_out_of_range(int* a, int b, int e, array(int,int) arr, int i, int v)
-  requires (i < b || i >= e) &*& array_model(a, b, e, arr);
+  requires (i < b || i >= e) &*& array_model(a, b, e, arr) &*& b <= e;
   ensures array_model(a, b, e, store(arr, i, v));
 {
-  nat n = int_diff_always(b, e);
+  nat n = int_diff_make(b, e);
   array_model_out_of_range_diff(a, b, e, arr, i, v, n);
 }
 
@@ -128,8 +135,8 @@ lemma void array_model_init(int* a, int length)
 requires ints((void*)a, length, _) &*& length >= 0;
 ensures array_model(a, 0, length, _);
 {
-  nat n = int_diff_always(0, length);
-  array_model_init_diff(a, length, n);
+  int_diff_nat_of_int(0, length);
+  array_model_init_diff(a, length, nat_of_int(length));
 }
 
 lemma void array_model_delete(int* a, int length, nat len)
@@ -172,8 +179,8 @@ lemma void array_model_select_unfold(int* a, int b, int e, array(int,int) arr, i
 requires array_model(a, b, e, arr) &*& b <= i &*& i < e;
 ensures array_model(a, b, i, arr) &*& a[i] |-> select(arr, i) &*& array_model(a, i+1, e, arr);
 {
-  nat n = int_diff_always(b, i+1);
-  array_model_select_unfold_diff(a, b, e, arr, i, n);
+  int_diff_nat_of_int(b, i+1);
+  array_model_select_unfold_diff(a, b, e, arr, i, nat_of_int(i+1-b));
 }
 
 lemma void array_model_store_fold_diff(int* a, int b, int e, array(int,int) arr, int i, nat n)
@@ -199,8 +206,8 @@ lemma void array_model_store_fold(int* a, int b, int e, array(int,int) arr, int 
 requires array_model(a, b, i, arr) &*& a[i] |-> ?v &*& array_model(a, i+1, e, arr) &*& b <= i &*& i < e;
 ensures array_model(a, b, e, store(arr, i, v));
 {
-  nat n = int_diff_always(b, i+1);
-  array_model_store_fold_diff(a, b, e, arr, i, n);
+  int_diff_nat_of_int(b, i+1);
+  array_model_store_fold_diff(a, b, e, arr, i, nat_of_int(i+1-b));
 }
 
 lemma void array_model_select_fold(int* a, int b, int e, array(int,int) arr, int i)
@@ -208,6 +215,113 @@ requires array_model(a, b, i, arr) &*& a[i] |-> select(arr, i) &*& array_model(a
 ensures array_model(a, b, e, arr);
 {
    array_model_store_fold(a, b, e, arr, i);
+}
+
+
+fixpoint bool array_forall<a>(array(int, a) arr, fixpoint(a, bool) p, int b, nat n) {
+  switch(n) {
+    case zero: return true;
+    case succ(pred): return (p(select(arr, b)) && array_forall(arr, p, b+1, pred));
+  }
+}
+
+lemma void array_forall_store<a> (array(int, a) arr, fixpoint(a, bool) p, int b, nat n, int i, a v)
+requires array_forall(arr, p, b, n) == true;
+ensures array_forall(store(arr, i, v), p, b, n) == (i < b ? true : i >= b + int_of_nat(n) ? true : p(v));
+{
+  switch(n) {
+    case zero:
+    case succ(pred): array_forall_store(arr, p, b+1, pred, i, v);
+  }
+}
+
+lemma void array_forall_close_right<a> (array(int, a) arr, fixpoint(a, bool) p, int b, int e, nat n)
+requires array_forall(arr, p, b, n) == true &*& p(select(arr, e)) == true &*& b <= e &*& int_diff(b, e, n) == true;
+ensures array_forall(arr, p, b, succ(n)) == true;
+{
+  switch(n) {
+    case zero:
+    case succ(pred): array_forall_close_right(arr, p, b+1, e, pred);
+  }
+
+}
+
+lemma void array_forall_in<a>(array(int, a) arr, fixpoint(a, bool) p, int b, int e, nat n, int i)
+requires array_forall(arr, p, b, n) == true &*& b <= i &*& i < e &*& int_diff(b, e, n) == true;
+ensures p(select(arr, i)) == true;
+{
+  switch(n) {
+    case zero: assert false;
+    case succ(pred): {
+      if (b != i) array_forall_in(arr, p, b+1, e, pred, i);
+    }
+  }
+}
+lemma void same_array_refl<a>(array(int, a) arr, int b, nat n)
+requires true;
+ensures same_array(arr, arr, b, n) == true;
+{
+  switch(n) {
+    case zero:
+    case succ(pred): same_array_refl(arr, b+1, pred);
+  }
+}
+
+lemma void same_array_sym<a>(array(int, a) arr1, array(int, a) arr2, int b, nat n)
+requires same_array(arr1, arr2, b, n) == true;
+ensures same_array(arr2, arr1, b, n) == true;
+{
+  switch(n) {
+    case zero:
+    case succ(pred): same_array_sym(arr1, arr2, b+1, pred);
+  }
+}
+
+lemma void same_array_trans<a>(array(int, a) arr1, array(int, a) arr2, array(int, a) arr3, int b, nat n)
+requires same_array(arr1, arr2, b, n) == true &*& same_array(arr2, arr3, b, n) == true;
+ensures same_array(arr1, arr3, b, n) == true;
+{
+  switch(n) {
+    case zero:
+    case succ(pred): same_array_trans(arr1, arr2, arr3, b+1, pred);
+  }
+}
+
+lemma void same_array_out<a>(array(int, a) arr, int b, int e, nat n, int i, a v)
+requires int_diff(b, e, n) == true &*& b <= e &*& (i < b || e <= i);
+ensures same_array(arr, store(arr, i, v), b, n) == true;
+{
+  switch(n) {
+    case zero:
+    case succ(pred): same_array_out(arr, b+1, e, pred, i, v);
+  }
+}
+
+lemma array(int, int) array_model_concat(int* a, array(int, int) arr1, array(int, int) arr2, int b, nat n, int p, int e)
+requires array_model(a, b, p, arr1) &*& array_model(a, p, e, arr2) &*& int_diff(b, p, n) == true &*& b <= p &*& p <= e;
+ensures array_model(a, b, e, result) &*& same_array(arr1, result, b, n) == true &*& same_array(arr2, result, p, nat_of_int(e-p)) == true;
+{
+  switch(n) {
+    case zero: {
+      open array_model(a, b, p, arr1);
+      same_array_refl(arr2, p, nat_of_int(e-p));
+      return arr2;
+    }
+    case succ(pred): {
+      open array_model(a, b, p, arr1);
+      array(int, int) arr = array_model_concat(a, arr1, arr2, b+1, pred, p, e);
+      array(int, int) res = store(arr, b, select(arr1, b));
+      array_model_out_of_range(a, b+1, e, arr, b, select(arr1, b));
+      close array_model(a, b, e, res);
+      int_diff_nat_of_int(b+1, p);
+      same_array_out(arr, b+1, p, pred, b, select(arr1, b));
+      same_array_trans(arr1, arr, res, b+1, pred);
+      int_diff_nat_of_int(p, e);
+      same_array_out(arr, p, e, nat_of_int(e-p), b, select(arr1, b));
+      same_array_trans(arr2, arr, res, p, nat_of_int(e-p));
+      return res;
+    }
+  }
 }
 
 #endif

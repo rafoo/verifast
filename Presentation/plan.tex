@@ -300,26 +300,71 @@ La fonction bool\'eennes $\phi_{V}$ est appel\'e \textbf{value constraint}.
 	\item Pour le type des indexs, nous supposons que l'arithm\'etique lin\'eaire sur les indices est permise.
 	\item Pour le type des \'el\'ements, nous supposons seulement que l'\'egalit\'e entre deux \'el\'ement est permise.
 	\end{itemize}
- 		\subsection{Multiset}
- 		Repr\'esentation des multiset en array(index, nat)
+\par
+ 		Nous repr\'esentons les multisets comme un tableau avec des \'el\'ement de type nat : $ type$ $nat = O$ $|$ $S(nat)$ et $type$ $multiset = array(index,nat)$. L'\'egalit\'e entre deux nat est bien d\'efini et donc la contrainte sur le type des \'el\'ements de la proc\'edure de d\'ecision pr\'ec\'edente est respect\'ee.
 
 	
  	\section{Combinaison de th\'eories d\'ecidables}
- 		La combinaison de th\'eories d\'ecidables est omni-pr\'esent dans la v\'erification de programme et il n'est pas \'evident que la combinaison reste d\'ecidable. Pour \'eviter d'avoir \`a produire une proc\'edure de d\'ecision pour chaque combinaison, on peut faire appel \`a des techniques de combinaison de proc\'edures de d\'ecisions.
-
- 		En 1979, la m\'ethode de combinaison de Nelson-Oppen est pr\'esent\'e pour la premi\`ere fois. 20 ans plus tard, cette m\'ethode est adopt\'ee dans la plupart des solvers SMT. Cette m\'ethode se base sur le fait que si deux th\'eories $\tau$1 et $\tau$2 sont disjointes et stablement infinies alors la satisfaisabilit\'e de $\tau$1 $\lor$ $\tau$2 peut \^etre d\'eduite de la satisfaisabilit\'e de $\tau$1 $\lor \Lambda$ et $\tau$2 $\lor \Lambda$, o\`u $\Lambda$ est un ensemble d'informations partag\'ees. De ce fait, si on a deux proc\'edures de d\'ecision, une pour $\tau$1, et une autre pour $\tau$2, l'effort suppl\'ementaire pour v\'erifier la satisfaisabilit\'e de l'union est de trouver $\Lambda$. Ceci peut \^etre \'etendu \`a plus de deux th\'eories. \par
- 		Deux th\'eories sont disjointes si aucun symbole n'appara\^it dans les deux th\'eories \`a la fois, except\'e des variables et le symbole d'\'egalit\'e. \par
- 		Une th\'eorie est stablement infinie si toute formule sans quantificateur satisfaisable dans la \th\'eorie a un mod\`ele fini.
-
- 		\par Les techniques de combinaison de d\'ecision sont essentielles \`a la construction des SMT solvers.
+ 	Avant de parler de combinaison de th\'eories d\'ecidables, nous allons d\'efinir quelques notions.
+ 	\begin{definition}
+ 	(Combinsaion de th\'eorie).
+ 		Soit $T_{1}=(\smallsum_{1},M_{1})$ et $T_{2}=(\smallsum_{2},M_{2})$ deux th\'eories, la combinaison de th\'eorie $T_{1} + T_{2}$ est une $(\smallsum_{1}\cup\smallsum_{2})$-th\'eorie d\'efinie par les ensembles $(M_{1}\cup M_{2})$.
+	\end{definition}
+	
+	\begin{definition}
+	(Probl\`eme de combinaison de th\'eorie). Soit $\phi$ une $(\smallsum_{1}\cup\smallsum_{2})$-formule. Le probl\`eme de combinaison de th\'eorie est de d\'ecider si $\phi$ est $T_{1}+T_{2}$-valide.
+	\end{definition}\par
+	La combinaison des th\'eories est, en g\'en\'eral, ind\'ecidable m\^eme si les th\'eories sont d\'ecidables. Ainsi, pour rendre les combinaisons d\'ecidables, il est n\'ecessaire de les restreindre.	La proc\'edure de Nelson-Oppen est une proc\'edure de d\'ecision pour la combinaison de th\'eories suivants des restrictions pr\'ecises. Nous n'allons pas aborder son fonctionnement mais seulement ces restrictions.
+	\begin{definition}
+		Pour que la proc\'edure de Nelson-Oppen soit applicable, les th\'eories $T_{1},...,T_{n}$ doivent suivre les restrictions suivantes :
+		\begin{enumerate}
+		\item $T_{1},...,T_{n}$ sont des th\'eories du premier ordre, sans quantificateur et avec l'\'egalit\'e.
+		\item Il y a une proc\'edure de d\'ecision pour chaque th\'eorie $T_{1},...,T_{n}$.
+		\item Les signatures sont disjointes, c'est \`a dire, $\forall 1\leq i<j\leq n,$ $\smallsum_{i}\cap\smallsum_{j}=\emptyset$.
+		\item $T_{1},...,T_{n}$ sont des th\'eories qui sont interpr\'et\'es sur un domaine infini.
+		\end{enumerate}
+	\end{definition}
+	Il existe des extensions de la proc\'edure de Nelson-Oppen pouvant surmonter chacune des restrictions. Les techniques de combinaison de d\'ecision sont essentielles \`a la construction des SMT solvers.
 
  	\section{SMT-solver}
- 		Il existe de nombreux SMT-solver permettant de r\'esoudre des \'enonc\'es math\'ematiques. Tous ne r\'esolvent pas les \'enonc\'es des m\^emes th\'eories et ne sont aussi rapide. \verifast{} utilise deux SMT-solver, redux et Z3. Redux est plus rapide mais Z3 peut r\'esoudre des \'enonc\'es d'un plus grand nombre de th\'eorie.
+	 		Un SMT-solver permet de r\'esoudre des formules logique \`a l'aide de proc\'edure de d\'ecision. Nous allons discuter d'une m\'ethode g\'en\'eral sur laquelle se base la plupart des SMT-solvers.\\ \par Soit $T=(\smallsum,M)$ une th\'eorie du premier ordre sans quantificateur et $DP_{T}$ une proc\'edure pour le fragment des conjonctions de $T$ ($DP_{T}$ peut d\'ecider une conjonction de $T$-lit\'eral). La m\'ethode combine $DP_{T}$ avec un SAT-solver  de diverses mani\`eres afin de construire une proc\'edure de d\'ecision pour T. Cette approche a en pratique de gros avantages, car elle est tr\`es modulaire et tr\`es efficace. Les deux principaux outils de cette m\'ethode travaillent en collaboration : le SAT-solver choisit la valeur des litt\'eraux afin de satisfaire la structure bool\'eennes de la formule et $DP_{T}$ v\'erifie que le choix est coh\'erent dans $T$.\par
+	 		Soit un $T$-litt\'eral $l$, nous lui associons une variable bool\'eenne unique $e(l)$, que nous l'appelons l'\textbf{encodeur} bool\'een de ce litt\'eral. \'Etendons l'id\'ee aux formules, soit une $T$-formule $\phi$, $e(\phi)$ correspond \`a la formule bool\'eenne o\`u chaque litt\'eral a \'et\'e substitu\'e par son encodeur bool\'een. $e(\phi)$ est appel\'ee le \textbf{squelette propositionnel} de $\phi$. En utilisant ces notations, nous allons \'etudier un aper\c{c}u de cette m\'ethode.\par 
+	 		Soit $T$ la th\'eorie de l'\'egalit\'e, une formule	$\phi :=$ $x=y$ $\land$ $((y=z\land x\neq z)\lor x=z)$.\\
+	 		Nous transformons cette formule en son squelette propositionnel,\par $e(\phi):= e(x=y)\land (e(y=z)\land e(x\neq z))\lor e(x=z)$.\\
+Soit $B$ une formule bool\'eenne, initialement $e(\phi)$. La seconde \'etape consiste \`a passer $B$ au SAT-solver. Supposons que le SAT-solver retourne l'affectation satisfaisante\par
+$\phi:=$ $\{e(x=y)\mapsto TRUE, $ $e(y=z)\mapsto TRUE,$ $e(x\neq z)\mapsto TRUE,$ $e(x=z)\mapsto FALSE\}$.\\
+La proc\'edure de d\'ecision $DP_{T}$ doit maintenant d\'ecider si la conjonction des litt\'eraux correspondant \`a cette affectation est satisfaisable. Nous notons cette conjonction $Th(\alpha)$, $Th(\alpha):=$ $x=y\land y=z\land x\neq z\land \neg(x=z)$.\par
+Cette formule n'est pas satisfaisable donc sa n\'egation est valide. Ainsi, nous ajoutons $e(\neg Th(\alpha))$ \`a $B$, l'encodeur bool\'een de cette tautologie :\par 
+ $e(\neg Th(\alpha)) := (\neg e(x=y)\lor\neg e(y=z)\lor\neg e(x\neq z)\lor e(x=z))$.\\
+Cette clause est contradictoire \`a l'affectation pr\'ec\'edente et donc emp\^eche le SAT-solver de se r\'ep\'eter. Apr\`es avoir ajouter la nouvelle clause, le SAT-solver est de nouveau appel\'e et sugg\`ere une autre affectation :\par
+$\phi:=$ $\{e(x=y)\mapsto TRUE, $ $e(y=z)\mapsto TRUE,$ $e(x\neq z)\mapsto FALSE,$ $e(x=z)\mapsto TRUE\}$.\\
+La $T$-formule suivante,\par $Th(\alpha ' ):=$ $x=y\land y=z\land x=z\land \neg(x\neq z)$\\
+est satisfaisable, ce qui prouve que $\phi$, la formule originelle, est satisfaisable.\\
 
- 		- th\'eorie avec fonction non interpr\'et\'e \par
- 		- Communication entre les th\'eories et un sat-solver \par
- 		- Communication pour les axiomes "infini" entre le quantifier instantiation et le sat.
 
+\tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt        
+
+\begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,300); %set diagram left start at 0, and has height of 300
+
+\draw    (164.8, 142.73) circle [x radius= 64.8, y radius= 33.73]  ;
+\draw    (504.8, 141.73) circle [x radius= 64.8, y radius= 33.73]  ;
+\draw    (224,127) -- (444.6,127.47) ;
+\draw [shift={(444.6,127.47)}, rotate = 180.12] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ]   (0,0) .. controls (3.31,-0.3) and (6.95,-1.4) .. (10.93,-3.29)(0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+\draw    (450,160) -- (222.6,159.47) ;
+\draw [shift={(222.6,159.47)}, rotate = 360.13] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ]   (0,0) .. controls (3.31,-0.3) and (6.95,-1.4) .. (10.93,-3.29)(0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+
+\draw (507,145) node  [align=left] {Decision \\Procedure};
+\draw (165,140) node  [align=left] {Sat-solver};
+\draw (256,113) node   {$\alpha $};
+\draw (408,115) node   {$Th( \alpha )$};
+\draw (251,172) node   {$e( t)$};
+\draw (429,172) node   {$t$};
+
+
+\end{tikzpicture}
 \chapter{V\'erification d\'eductive avec \verifast{}}
 	\section{Hoare}
 	En pratique, une programme calcule soit la plus faible pr\'econdition n\'ecessaire pour que la postcondition soit respect\'e soit la plus forte postcondition. On les notera respectivement la plus $wp(P,A)$ et $sp(P, B)$. On aura donc \\$\forall B'$ tel que $\{B'\}P\{A\}$, $B' \rightarrow wp(P,A)$ et $\forall A'$ tel que $\{B\}P\{A'\}$, $sp(P,B) \rightarrow A'$. 

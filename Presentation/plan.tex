@@ -22,6 +22,7 @@
 \newtheorem{definition}{D\'efinition}[section]
 \newtheorem{exemple}{Exemple}
 \newtheorem{lemme}{Lemme}
+\newtheorem{theorem}{Th\'eor\`eme}
 
 \setcounter{tocdepth}{2}
 
@@ -374,10 +375,10 @@ est satisfaisable, ce qui prouve que $\phi$, la formule originelle, est satisfai
 \end{tikzpicture}
 \chapter{V\'erification d\'eductive avec \verifast{}}
 	\section{Programme}
-		\verifast{} permet la v\'erification des programmes C-like. La s\'emantique d'un programme peut \^etre donn\'ee par l'ensemble de ces ex\'ecutions. Une ex\'ecution est d\'efini par un nombre fini ou infini de configurations, chacune li\'ee \`a la prochaine ex\'ecution. Une configuration est un \'etat et une continuation. Un \'etat est un \textit{store} et une \textit{heap}. Le \textit{store} sp\'ecifie la valeur des variables du programme. La \textit{heap} sp\'ecifie la valeur des cellules de m\'emoire. La continuation sp\'ecifie ce qu'il va se passer apr\`es.\\
+		\verifast{} permet la v\'erification des programmes C et Java. La s\'emantique d'un programme peut \^etre donn\'ee par l'ensemble de ces ex\'ecutions. Une ex\'ecution est d\'efini par un nombre fini ou infini de configurations, chacune li\'ee \`a la prochaine ex\'ecution. Une configuration est un \'etat et une continuation. Un \'etat est un \textit{store} et une \textit{heap}. Le \textit{store} sp\'ecifie la valeur des variables du programme. La \textit{heap} sp\'ecifie la valeur des cellules de m\'emoire. La continuation sp\'ecifie ce qu'il va se passer apr\`es. Une continuation est soit \textit{une continuation d'instructions}, soit une \textit{return continuation}, soit une \textit{done continuation}.\\
 	Dans un programme, \`a chaque instant, toutes les variables, pr\'ec\'edement d\'efinies, doivent avoir une valeur dans le \textit{store} et chaque espace m\'emoire doit \^etre r\'epr\'esent\'e dans la \textit{heap}.
 	\section{Annotation et ex\'ecution abstraite}
-		La v\'erification d\'eductive se base sur l'annotation des programmes. Chaque fonction est v\'erifi\'ee s\'epar\'ement, utilisant les contrats des autres fonctions et non leurs impl\'ementations. Le contrat d'une fonction consiste en une pr\'econdition et une postcondition. La pr\'econdition sp\'ecifie les attentes, concernant la heap et le store, au d\'ebut de la fonction. La postcondition sp\'ecifie les garanties offertes, concernant le store et la heap, \`a la sortie de la fonction. Les pr\'econditions et postconditions sont exprim\'ees sous forme d'\textit{assertions}. Une assertion est une formule SL. Appelons points-to assertion, l'assertion repr\'esentant la formule singleton heap (voir SL).
+		La v\'erification d\'eductive se base sur l'annotation des programmes. Chaque fonction est v\'erifi\'ee s\'epar\'ement, en utilisant les contrats des autres fonctions et non leurs impl\'ementations. Le contrat d'une fonction consiste en une pr\'econdition et une postcondition. La pr\'econdition sp\'ecifie les attentes, concernant la heap et le store, au d\'ebut de la fonction. La postcondition sp\'ecifie les garanties offertes, concernant le store et la heap, \`a la sortie de la fonction. Les pr\'econditions et postconditions sont exprim\'ees sous forme d'\textit{assertions}. Une assertion est une formule SL. Appelons points-to assertion, l'assertion repr\'esentant la formule singleton heap (voir SL).
 		\begin{exemple}
 		Exemple : Soit une fonction r,
 		\begin{lstlisting}
@@ -388,12 +389,17 @@ est satisfaisable, ce qui prouve que $\phi$, la formule originelle, est satisfai
 		\end{lstlisting}
 		La pr\'econdition de r a besoin que la valeur de a soit la m\^eme que la valeur de b. La postcondition de r assure que la valeur retourn\'ee par le programme est 0, en supposant que la pr\'econdition est respect\'ee.
 		\end{exemple}
-	L'une des notions les plus importantes dans \verifast{} est les pr\'edicats. En effet, le contrat des fonctions doit pouvoir \^etre exprim\'e dans la heap de mani\`ere abstraite. Un pr\'edicat est simplement une fonction bool\'eenne. La d\'efinition d'un pr\'edicat est de la forme\par
-\textbf{predicate} $p(x_1,...,x_n):=a$\\
-o\`u $p$ est le nom du pr\'edicat, $x_1,...,x_n$ sont les noms des variables et $a$ une assertion. $x_1,...,x_n$ sont appel\'ees les param\`etres de $p$ et $a$ le corps de $p$. $n$ est l'arit\'e de $p$. Nous disons que p est un pr\'edicat n-aire.\par
-	En utilisant les pr\'edicats, une heap abstraite peut \^etre d\'eriv\'ee depuis une heap concr\`ete. Une heap abstraite ne contient pas de cellules de m\'emoire mais des instances de pr\'edicats. Une heap abstraite est obtenue depuis une heap concr\`ete en fermant des instances de pr\'edicats. La fermeture d'une instance de pr\'edicat remplace la partie de la heap d\'ecrite par le corps de l'instance du pr\'edicat par l'instance du pr\'edicat elle-m\^eme. Inversement, l'ouverture d'une instance de pr\'edicat remplace l'occurence du pr\'edicat avec un fragment de la heap correspond au corps du pr\'edicat. Nous disons qu'une heap abstraite fait abstraction d'une heap concr\`ete si la heap concr\`ete peut \^etre obtenue \`a travers un nombre fini d'op\'eration \textit{open}.\\ \par
+	L'une des notions les plus importantes dans \verifast{} est les pr\'edicats. En effet, le contrat des fonctions doit pouvoir \^etre exprim\'e dans la heap de mani\`ere abstraite. Un pr\'edicat est simplement une fonction bool\'eenne. La d\'efinition d'un pr\'edicat est de la forme
+	\begin{center}
 	
-	Nous allons aborder les notions de consommation et de production d'assertion. Nous verrons, apr\`es, les concepts d'ex\'ecution abstraites d'instructions annot\'ees, fonctions et de programmes. Nous finirons par la relation entre les ex\'ecution abstraites et concr\`etes.\\
+\textbf{predicate} $p(x_1,...,x_n):=a$
+
+	\end{center}
+o\`u $p$ est le nom du pr\'edicat, $x_1,...,x_n$ sont les noms des variables et $a$ une assertion. $x_1,...,x_n$ sont appel\'ees les param\`etres de $p$ et $a$ le corps de $p$. $n$ est l'arit\'e de $p$. Nous disons que p est un pr\'edicat n-aire.\par
+	En utilisant les pr\'edicats, une heap abstraite peut \^etre d\'eriv\'ee depuis une heap concr\`ete. Une heap abstraite ne contient pas de cellules de m\'emoire mais des instances de pr\'edicats. Une heap abstraite est obtenue depuis une heap concr\`ete en fermant des instances de pr\'edicats. La fermeture d'une instance de pr\'edicat, \textit{close}, remplace la partie de la heap d\'ecrite par le corps de l'instance du pr\'edicat par l'instance du pr\'edicat elle-m\^eme. Inversement, l'ouverture d'une instance de pr\'edicat, \textit{open}, remplace l'occurence du pr\'edicat avec un fragment de la heap correspond au corps du pr\'edicat. Nous disons qu'une heap abstraite fait abstraction d'une heap concr\`ete si la heap concr\`ete peut \^etre obtenue \`a travers un nombre fini d'op\'eration \textit{open}.\\ 
+	Les instructions \textit{open} et \textit{close} sont les \textit{ghost instructions}. Nous appelons l'effacement d'un programme annot\'e, le fait, de supprimer toutes les annotations d'un programme.\\ \par
+	
+	Nous allons aborder les notions de consommation et de production d'assertion. Nous verrons, apr\`es, les concepts d'ex\'ecutions abstraites sur les instructions annot\'ees, les fonctions annot\'ees et les programmes annot\'es. Nous finirons par la relation entre les ex\'ecutions abstraites et concr\`etes.\\
 	\subsection{S\'emantique des assertions}
 	Les assertions sont interpr\'et\'ees par rapport \`a une heap abstraite. Nous d\'efinissons l'ensemble des \'el\'ements de la heap abstraite comme l'union des \'el\'ements points-to et des instances de pr\'edicat :\par
 	$AbsHeapElems$ $= \{l\mapsto v| l\in Addresses, v\in \mathbb{Z}\}\cup\{p(v_1,...v_n)|v_1,...,v_n\in\mathbb{Z}\}$\\
@@ -416,34 +422,34 @@ $\forall s,H,a,Q,Q'$ $consume(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Ri
 	\end{lemme}
 	
 	\begin{lemme}
-		(Encadrement de la consommation). Si la consommation d'une assertion r\'eussit, alors elle r\'eussit toujours si on ajoute des \'el\'ements \`a la heap abstraite, quand la postcondition stipule que la heap abstraite post-\'etat contient toujours ces \'el\'ements ajout\'es et qu'apr\`es la suppression des ces \'el\'ements ajout\'es, la postcondition d'origine est conserv\'ee.
+		(Encadrement de la consommation). Si la consommation d'une assertion r\'eussit, alors elle r\'eussit toujours si on ajoute des \'el\'ements \`a la heap abstraite, lorsque la postcondition stipule que la heap abstraite post-\'etat contient toujours ces \'el\'ements ajout\'es et qu'apr\`es la suppression des ces \'el\'ements ajout\'es, la postcondition d'origine est conserv\'ee.
 	\end{lemme}
-	Nous disons qu'un \'etat abstrait satisfait une assertion si la consommation de l'assertion dans l'\'etat abstrait r\'eussit et la heap abstraite r\'esultante r\'eussit.\\
+	Nous disons qu'un \'etat abstrait satisfait une assertion si la consommation de l'assertion dans l'\'etat abstrait r\'eussit et la heap abstraite r\'esultante r\'eussit aussi.\\
 	
 	\begin{lemme}
 		(Consommation solide). Si la consommation d'une assertion r\'eussit dans un \'etat abstrait, alors la heap abstraite peut \^etre s\'epar\'e en un fragment qui satisfait l'assertion et un fragment qui satisfait la postcondition.
 	\end{lemme}
-	\subsubsection{Production d'une assertion}
-		L'op\'erateur de production d'assertion est l'inverse de celui de consommation: produire une assertion dans un \'etat abstrait donn\'e, \'etend la heap avec un fragment arbitraire de la heap satisfiant l'assertion.\\
+		\subsubsection{Production d'une assertion}
+		L'op\'erateur de production d'assertion est l'inverse de celui de consommation: produire une assertion dans un \'etat abstrait donn\'e, \'etend la heap avec un fragment arbitraire de heap satisfiant l'assertion.\\
 		Sp\'ecifiquement, la fonction $produce(s,H,a,Q)$ signifie que la postcondition $Q$ est valable  dans tous les \'etats obtenus par l'extension de l'\'etat abstrait (s, H) avec un fragment de heap qui satisfait l'assertion $a$.\par
-		Une fonction auxiliaire $produce$_$pattern(s,\pi,Q)$ signifie que la postcondition $Q$ est valable pour chaque pair $(s',v)$ telle que la valeur $v$ match avec le pattern $\pi$ dans le store $s$ et $s'$ est $s$ mis \`a jour avec le pattern appropri\'e.\par 
+		La fonction auxiliaire $produce$_$pattern(s,\pi,Q)$ signifie que la postcondition $Q$ est valable pour chaque pair $(s',v)$ telle que la valeur $v$ match avec le pattern $\pi$ dans le store $s$ et $s'$ est $s$ mis \`a jour avec le pattern appropri\'e.\par 
 		\begin{lemme}
 			(Affaiblissement de la postcondition de production). Si la production d'une assertion r\'eussit, alors la production r\'eussit aussi avec une postcondition plus faible.\par
 $\forall s,H,a,Q,Q'$ $produce(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Rightarrow Q'(s',H'))\Rightarrow produce(s,H,a,Q')$
 		\end{lemme}	
 		
 		\begin{lemme}
-		(Production Heap Inutile). Produire une assertion dans un \'etat abstrait donn\'e est \'equivalent \`a produire la m\^eme assertion dans une heap vide et d'ajouter la heap initiale \`a la heap post-\'etat.
+		(Production Heap Inutile). Produire une assertion dans un \'etat abstrait $E = (s,H)$  est \'equivalent \`a produire la m\^eme assertion dans une heap vide $H'$ et d'ajouter la heap $H$ \`a la heap post-\'etat.
 		\end{lemme}
 	
 		\begin{lemme}
-		(Production solide). Si un \'etat abstrait satisfait une assertion et que la production de cette assertion r\'eussit dans une heap vide, alors la postcondition de la production est valable dans la heap donn\'e.
+		(Production solide). Si un \'etat abstrait $E=(s,H)$ satisfait une assertion et que la production de cette assertion r\'eussit dans une heap vide, alors la postcondition de la production est valable dans la heap $H$.
 		\end{lemme}
-	\subsubsection{Abstraction de la heap}
+		\subsubsection{Abstraction de la heap}
 		Nous disons qu'une heap abstraite $H$ \textit{abstrait directement} une heap abstraite $H'$, not\'e $H \rhd H'$, si $H'$ peut \^etre obtenu en supprimant une instance de pr\'edicat $p(v_1,...,v_n)$ depuis H et en ajoutant quelques ensembles d'\'el\'ements de heap abstraite qui satisfont le corps de $p(v_1,...,v_n)$.\\
 		Nous disons qu'une heap abstraite $H$ \textit{abstrait} une heap abstrait $H'$, not\'e $H\rhd^* H'$, s'il existe un entier naturel $n$ tel que $H\rhd^n H'$.
 		Nous disons qu'une heap abstraite $H$ \textit{abstrait} une heap concr\`ete $h$, not\'e $H\rhd^* h$, si $H$ abstrait la heap abstraite contenant au moins une fois tous les \'el\'ements points-to.\\
-	\subsubsection{Ex\'ecution abstraite}
+		\subsubsection{Ex\'ecution abstraite}
 		Nous d\'efinissons maintenant ce qu'est l'ex\'ecution abstraite d'une instruction, d'une fonction et d'un programme.\\
 		La fonction $valid(s,H,c,Q)$ repr\'esente une ex\'ecution abstraite  r\'eussite de $c$, dans un \'etat abstrait $(s,H)$, et que chaque post-\'etat satisfait la postcondition Q. Nous pouvons aussi dire que l'instruction $c$ est valide en ce qui concerne l'\'etat abstrait $(s,H)$ et la postcondition $Q$.
 		\begin{lemme}
@@ -459,11 +465,58 @@ $\forall s,H,a,Q,Q'$ $valid(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Righ
 		\end{lemme}
 		La fonction $valid$_$routine(def)$ stipule que l'ex\'ecution abstraite de la fonction d\'efinie par $def$ r\'eussit ou que cette fonction est valide. Nous disons qu'une ex\'ecution abstraite d'un programme r\'eussit, ou que le programme est valide, si l'ex\'ecution abstraite de chaque fonction r\'eussit, et que l'ex\'ecution de l'instruction \textit{main} r\'eussit dans un store initiale et une heap vide.\\
 		\subsubsection{Solidit\'e d'une ex\'ecution abstraite}
-		\`a faire\\ \\
+		Nous allons caract\'eriser la relation entre une ex\'ecution abstraite et une ex\'ecution concr\`ete. Posons qu'un programme se comporte bien, s'il n'a pas d'acc\`es ill\'egal \`a la m\'emoire. Nous \'enoncerons les lemmes et th\'eor\`emes importants permettant de prouver que si une execution abstraite d'un programme annot\'e r\'eussit alors le programme se comporte bien. Nous disons qu'une configuration est valide, si dans un programme est valide, sa configuration initiale est valide et les pas d'\'ex\'ecution pr\'eserve la validit\'e. Puisque la configuration d'erreur n'est pas une configuration valide, il s'ensuit directement que les programmes valides se comportent bien.\par
+		Nous d\'efinisson une configuration valide comme une configuration qui est abstraite par d'autres configurations abstraites valides. Les configurations abstraites sont des pairs, d'\'etat abstrait et de continuations annot\'ees, et une configuration d'erreur. \par 
+		Un ensemble $AnnConts$ de continuations annot\'ees est d\'efini inductivement ainsi :\par 
+		\begin{itemize}
+		\item \textbf{done} est une continuation annot\'ee.
+		\item si $c$ est une instruction annot\'ee et $K$ est une continuation annot\'ee, alors $c;K$ est une continuation annot\'ee.
+		\item Si $s$ est un store, $x$ est un nom de variable du programme valide et $K$ une continuation annot\'ee, alors \textbf{ret}$(s,x,K)$ est une continuation annot\'ee.
+		\end{itemize}
+		
+		\begin{center}
+		$AbsConfigs = AbsStates \times AnnConts \cup \{$\textbf{error}$\}$
+		\end{center}
+		
+		Une configuration abstraite est valide s'il n'y a pas de configuration d'erreur et que la continuation annot\'ee est valide par rapport \`a l'\'etat abstrait. La validit\'e des continuations annot\'ees est d\'efinie par les r\`egles suivantes :\\ \\  
+		$valid$_$ann$_$cont(s,H,$\textbf{done}$) \equiv$ \textbf{true}\\
+		$valid$_$ann$_$cont(s,H,c;K)\equiv$ \par
+		$valid(s,H,c,valid$_$ann$_$cont(s',H',K))$,\par $s'$ et $H'$ \'etant le store et la heap apr\`es l'ex\'ecution abstraite r\'eussi de $c$.\\
+		$valid$_$ann$_$cont(s,H,$\textbf{ret}$(s',x,K))\equiv$\par
+		$valid$_$ann$_$cont(s'[x:=s(result)],H,K)$\\ \\
+		$valid$_$abs$_$config(\langle (s,H),K\rangle)\equiv$ $valid$_$ann$_$cont(s,H,K)$\\
+		$valid$_$abs$_$config($\textbf{error}$)\equiv$ \textbf{false}\\ \par 
+		Nous disons qu'une configuration abstraite abstrait une configuration concr\`ete si les stores sont \'egaux, la heap abstraite abstrait le heap concr\`ete et la continuation concr\`ete est l'effacement de la continuation annot\'ee.
+		\begin{center}
+		$\langle (s,H),K\rangle\rhd\langle(s',h),\kappa\rangle\Leftrightarrow s=s'\land$ $H\rhd^*\land$ $\kappa = erasure(K)$
+		\end{center}
+		Une configuration concr\`ete est valide si elle est abstraite des configurations abstraites.
+		\begin{center}
+		$valid\_config(\gamma)\equiv\exists C\in AbsConfigs (C\rhd\gamma\land$ $valid\_abs\_config(C)$
+		\end{center}
+		\begin{lemme}
+			Soit $\gamma$ une configuration concr\`ete et une configuration abstraite valide $C$. Si $C$ abstrait $\gamma$, alors il existe une configuration abstraite $C'$ qui abstrait $\gamma$ et dont la continuation ne commence pas par une ghost instruction.
+		\end{lemme}
+		\begin{lemme}
+			La configuration initiale $\gamma_0$ d'un programme valide est une configuration valide.
+			\begin{center}
+			$valid\_program(program)\Rightarrow valid\_config(\gamma_0)$
+			\end{center}
+		\end{lemme}
+		\begin{lemme}
+			(Preservation). Si $\gamma$ est la configuration d'une ex\'ecution concr\`ete d'une programme valide, $\gamma$ est valide et qu'il y a une \'etape d'ex\'ecution de $\gamma$ vers $\gamma '$, alors $\gamma '$ est valide.
+			\begin{center}
+			$valid\_program(program)\Rightarrow valid\_config(\gamma)\Rightarrow \gamma\leadsto\gamma '\Rightarrow valid\_config(\gamma ')$
+			\end{center}
+		\end{lemme}
 	
-	
-	
-	
+		\begin{theorem}
+			(Solidit\'e d'une ex\'ecution abstraite).\\
+			Si un programme annot\'e est valide, alors l'effacement du programme annot\'e se comporte bien.
+			\begin{center}
+			$valid\_program(program)\Rightarrow\gamma_0 \not\leadsto^*$ \textbf{error}
+			\end{center}
+		\end{theorem}
 	
 	
 	

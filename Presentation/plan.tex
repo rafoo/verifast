@@ -219,10 +219,10 @@ $I,\nu,h\models^{SL}\forall x.\psi$~~~~~~~ssi $I,\nu[x\leftarrow v],h\models^{SL
  	\end{definition}
  	Soit une th\'eorie $T$, il existe des proc\'edures de d\'ecision qui d\'eterminent si une $T$-formule est valide.
  	\begin{definition}
- 	(Solidit\'e d'une proc\'edure). Une proc\'edure pour un probl\`eme de d\'ecision est solide si quand elle retourne \textit{Valide}, alors la formule en entr\'ee est valide.
+ 	(Suret\'e d'une proc\'edure). Une proc\'edure pour un probl\`eme de d\'ecision est s\^ur si quand elle retourne \textit{Valide}, alors la formule en entr\'ee est valide.
  	\end{definition}
  	\begin{definition}
- 		(Compl\'etude d'une proc\'edure). Une proc\'edure pour un probl\`eme de d\'ecision est complet si elle s'arr\^ete toujours et si elle est solide.
+ 		(Compl\'etude d'une proc\'edure). Une proc\'edure pour un probl\`eme de d\'ecision est complet si elle s'arr\^ete toujours et si elle est s\^ur.
  	\end{definition}
  	\begin{definition}
  	(Proc\'edure de d\'ecision). Soit $T$ une th\'eorie, une proc\'edure est appel\'ee \textit{proc\'edure de d\'ecision pour $T$} si elle est compl\`ete pour toutes les formules de $T$. 
@@ -406,7 +406,7 @@ o\`u $p$ est le nom du pr\'edicat, $x_1,...,x_n$ sont les noms des variables et 
 	Nous disons qu'une heap abstraite est bien-form\'e si elle ne contient pas deux \'el\'ements points-to qui ont la m\^eme adresse.\\
 	Nous d\'efinissons un \'etat abstrait comme une paire d'un store et d'une heap abstraite.
 	
-			\subsubsection{Consommation d'assertions}
+			\subsubsection{Consommation d'une assertion}
 			Nous d\'efinissons l'op\'eration de consommer une assertion. Consommer une assertion dans un \'etat abstrait revient \`a v\'erifier qu'il existe un fragment de heap qui match avec l'assertion et de supprimer l'assertion de la heap. La consommation effectue un pattern matching.\par
 	
 	Une points-to assertion et un pr\'edicat peuvent contenir des patterns de variables de la forme $?x$. Un pattern de variable match n'importe quelle valeur et associe la valeur \`a la variable.\\
@@ -427,7 +427,7 @@ $\forall s,H,a,Q,Q'$ $consume(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Ri
 	Nous disons qu'un \'etat abstrait satisfait une assertion si la consommation de l'assertion dans l'\'etat abstrait r\'eussit et la heap abstraite r\'esultante r\'eussit aussi.\\
 	
 	\begin{lemme}
-		(Consommation solide). Si la consommation d'une assertion r\'eussit dans un \'etat abstrait, alors la heap abstraite peut \^etre s\'epar\'e en un fragment qui satisfait l'assertion et un fragment qui satisfait la postcondition.
+		(Consommation s\^ure). Si la consommation d'une assertion r\'eussit dans un \'etat abstrait, alors la heap abstraite peut \^etre s\'epar\'e en un fragment qui satisfait l'assertion et un fragment qui satisfait la postcondition.
 	\end{lemme}
 			\subsubsection{Production d'une assertion}
 		L'op\'erateur de production d'assertion est l'inverse de celui de consommation: produire une assertion dans un \'etat abstrait donn\'e, \'etend la heap avec un fragment arbitraire de heap satisfiant l'assertion.\\
@@ -443,7 +443,7 @@ $\forall s,H,a,Q,Q'$ $produce(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Ri
 		\end{lemme}
 	
 		\begin{lemme}
-		(Production solide). Si un \'etat abstrait $E=(s,H)$ satisfait une assertion et que la production de cette assertion r\'eussit dans une heap vide, alors la postcondition de la production est valable dans la heap $H$.
+		(Production s\^ure). Si un \'etat abstrait $E=(s,H)$ satisfait une assertion et que la production de cette assertion r\'eussit dans une heap vide, alors la postcondition de la production est valable dans la heap $H$.
 		\end{lemme}
 			\subsubsection{Abstraction de la heap}
 		Nous disons qu'une heap abstraite $H$ \textit{abstrait directement} une heap abstraite $H'$, not\'e $H \rhd H'$, si $H'$ peut \^etre obtenu en supprimant une instance de pr\'edicat $p(v_1,...,v_n)$ depuis H et en ajoutant quelques ensembles d'\'el\'ements de heap abstraite qui satisfont le corps de $p(v_1,...,v_n)$.\\
@@ -464,7 +464,7 @@ $\forall s,H,a,Q,Q'$ $valid(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Righ
 			Si une instruction est valide dans un \'etat abstrait et une postcondition, alors elle est valide si des \'el\'ements sont ajout\'es \`a la heap abstraite, que ces \'el\'ements sont toujours pr\'esent dans chaque post-\'etat, et la postcondition originale est toujours valable apr\`es avoir supprimer les \'el\'ements ajout\'es.
 		\end{lemme}
 		La fonction $valid$_$routine(def)$ stipule que l'ex\'ecution abstraite de la fonction d\'efinie par $def$ r\'eussit ou que cette fonction est valide. Nous disons qu'une ex\'ecution abstraite d'un programme r\'eussit, ou que le programme est valide, si l'ex\'ecution abstraite de chaque fonction r\'eussit, et que l'ex\'ecution de l'instruction \textit{main} r\'eussit dans un store initiale et une heap vide.\\
-			\subsubsection{Solidit\'e d'une ex\'ecution abstraite}
+			\subsubsection{Suret\'e d'une ex\'ecution abstraite}
 		Nous allons caract\'eriser la relation entre une ex\'ecution abstraite et une ex\'ecution concr\`ete. Posons qu'un programme se comporte bien, s'il n'a pas d'acc\`es ill\'egal \`a la m\'emoire. Nous \'enoncerons les lemmes et th\'eor\`emes importants permettant de prouver que si une execution abstraite d'un programme annot\'e r\'eussit alors le programme se comporte bien. Nous disons qu'une configuration est valide, si dans un programme est valide, sa configuration initiale est valide et les pas d'\'ex\'ecution pr\'eserve la validit\'e. Puisque la configuration d'erreur n'est pas une configuration valide, il s'ensuit directement que les programmes valides se comportent bien.\par
 		Nous d\'efinisson une configuration valide comme une configuration qui est abstraite par d'autres configurations abstraites valides. Les configurations abstraites sont des pairs, d'\'etat abstrait et de continuations annot\'ees, et une configuration d'erreur. \par 
 		Un ensemble $AnnConts$ de continuations annot\'ees est d\'efini inductivement ainsi :\par 
@@ -511,7 +511,7 @@ $\forall s,H,a,Q,Q'$ $valid(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Righ
 		\end{lemme}
 	
 		\begin{theorem}
-			(Solidit\'e d'une ex\'ecution abstraite).\\
+			(Suret\'e d'une ex\'ecution abstraite).\\
 			Si un programme annot\'e est valide, alors l'effacement du programme annot\'e se comporte bien.
 			\begin{center}
 			$valid\_program(program)\Rightarrow\gamma_0 \not\leadsto^*$ \textbf{error}

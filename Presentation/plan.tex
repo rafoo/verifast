@@ -375,8 +375,8 @@ est satisfaisable, ce qui prouve que $\phi$, la formule originelle, est satisfai
 \end{tikzpicture}
 \chapter{V\'erification d\'eductive avec \verifast{}}
 	\section{Programme}
-		\verifast{} permet la v\'erification des programmes C et Java. La s\'emantique d'un programme peut \^etre donn\'ee par l'ensemble de ces ex\'ecutions. Une ex\'ecution est d\'efini par un nombre fini ou infini de configurations, chacune li\'ee \`a la prochaine ex\'ecution. Une configuration est un \'etat et une continuation. Un \'etat est un \textit{store} et une \textit{heap}. Le \textit{store} sp\'ecifie la valeur des variables du programme. La \textit{heap} sp\'ecifie la valeur des cellules de m\'emoire. La continuation sp\'ecifie ce qu'il va se passer apr\`es. Une continuation est soit \textit{une continuation d'instructions}, soit une \textit{return continuation}, soit une \textit{done continuation}.\\
-	Dans un programme, \`a chaque instant, toutes les variables, pr\'ec\'edement d\'efinies, doivent avoir une valeur dans le \textit{store} et chaque espace m\'emoire doit \^etre r\'epr\'esent\'e dans la \textit{heap}.
+		\verifast{} permet la v\'erification des programmes C et Java. La s\'emantique d'un programme peut \^etre donn\'ee par l'ensemble de ses ex\'ecutions. Une ex\'ecution est d\'efinie par un nombre fini ou infini de configurations, chacune li\'ee \`a la prochaine ex\'ecution. Une configuration est un \'etat et une continuation. Un \'etat est un \textit{store} et une \textit{heap}. Le \textit{store} sp\'ecifie la valeur des variables du programme. La \textit{heap} sp\'ecifie la valeur des cellules de m\'emoire. La continuation pr\'ecise ce qu'il va se passer apr\`es. Une continuation est soit \textit{une continuation d'instructions}, soit une \textit{return continuation}, soit une \textit{done continuation}.\\
+	Dans un programme, toutes les variables pr\'ec\'edement d\'efinies doivent toujours avoir une valeur dans le \textit{store} et chaque espace m\'emoire doit \^etre r\'epr\'esent\'e dans la \textit{heap}.
 	\section{Annotation et ex\'ecution abstraite}
 		La v\'erification d\'eductive se base sur l'annotation des programmes. Chaque fonction est v\'erifi\'ee s\'epar\'ement, en utilisant les contrats des autres fonctions et non leurs impl\'ementations. Le contrat d'une fonction consiste en une pr\'econdition et une postcondition. La pr\'econdition sp\'ecifie les attentes, concernant la heap et le store, au d\'ebut de la fonction. La postcondition sp\'ecifie les garanties offertes, concernant le store et la heap, \`a la sortie de la fonction. Les pr\'econditions et postconditions sont exprim\'ees sous forme d'\textit{assertions}. Une assertion est une formule SL. Appelons points-to assertion, l'assertion repr\'esentant la formule singleton heap (voir SL).
 		\begin{exemple}
@@ -389,13 +389,13 @@ est satisfaisable, ce qui prouve que $\phi$, la formule originelle, est satisfai
 		\end{lstlisting}
 		La pr\'econdition de r a besoin que la valeur de a soit la m\^eme que la valeur de b. La postcondition de r assure que la valeur retourn\'ee par le programme est 0, en supposant que la pr\'econdition est respect\'ee.
 		\end{exemple}
-	L'une des notions les plus importantes dans \verifast{} est les pr\'edicats. En effet, le contrat des fonctions doit pouvoir \^etre exprim\'e dans la heap de mani\`ere abstraite. Un pr\'edicat est simplement une fonction bool\'eenne. La d\'efinition d'un pr\'edicat est de la forme
+	L'une des notions de base de la v\'erification d\'eductive est les pr\'edicats. En effet, le contrat des fonctions doit pouvoir \^etre exprim\'e dans la heap de mani\`ere abstraite. Un pr\'edicat est simplement une fonction bool\'eenne. La d\'efinition d'un pr\'edicat est de la forme
 	\begin{center}
 	
 \textbf{predicate} $p(x_1,...,x_n):=a$
 
 	\end{center}
-o\`u $p$ est le nom du pr\'edicat, $x_1,...,x_n$ sont les noms des variables et $a$ une assertion. $x_1,...,x_n$ sont appel\'ees les param\`etres de $p$ et $a$ le corps de $p$. $n$ est l'arit\'e de $p$. Nous disons que p est un pr\'edicat n-aire.\par
+o\`u $p$ est le nom du pr\'edicat, $x_1,...,x_n$ sont les noms des variables et $a$ une assertion. $x_1,...,x_n$ sont appel\'ees les param\`etres de $p$ et $a$ le corps de $p$.\par
 	En utilisant les pr\'edicats, une heap abstraite peut \^etre d\'eriv\'ee depuis une heap concr\`ete. Une heap abstraite ne contient pas de cellules de m\'emoire mais des instances de pr\'edicats. Une heap abstraite est obtenue depuis une heap concr\`ete en fermant des instances de pr\'edicats. La fermeture d'une instance de pr\'edicat, \textit{close}, remplace la partie de la heap d\'ecrite par le corps de l'instance du pr\'edicat par l'instance du pr\'edicat elle-m\^eme. Inversement, l'ouverture d'une instance de pr\'edicat, \textit{open}, remplace l'occurence du pr\'edicat avec un fragment de la heap correspond au corps du pr\'edicat. Nous disons qu'une heap abstraite fait abstraction d'une heap concr\`ete si la heap concr\`ete peut \^etre obtenue \`a travers un nombre fini d'op\'eration \textit{open}.\\ 
 	Les instructions \textit{open} et \textit{close} sont les \textit{ghost instructions}. Nous appelons l'effacement d'un programme annot\'e, le fait, de supprimer toutes les annotations d'un programme.\\ \par
 	
@@ -403,35 +403,35 @@ o\`u $p$ est le nom du pr\'edicat, $x_1,...,x_n$ sont les noms des variables et 
 		\subsection{S\'emantique des assertions}
 	Les assertions sont interpr\'et\'ees par rapport \`a une heap abstraite. Nous d\'efinissons l'ensemble des \'el\'ements de la heap abstraite comme l'union des \'el\'ements points-to et des instances de pr\'edicat :\par
 	$AbsHeapElems$ $= \{l\mapsto v| l\in Addresses, v\in \mathbb{Z}\}\cup\{p(v_1,...v_n)|v_1,...,v_n\in\mathbb{Z}\}$\\
-	Nous disons qu'une heap abstraite est bien-form\'e si elle ne contient pas deux \'el\'ements points-to qui ont la m\^eme adresse.\\
+	Nous disons qu'une heap abstraite est bien-form\'ee si elle ne contient pas deux \'el\'ements points-to qui ont la m\^eme adresse.\\
 	Nous d\'efinissons un \'etat abstrait comme une paire d'un store et d'une heap abstraite.
 	
 			\subsubsection{Consommation d'une assertion}
-			Nous d\'efinissons l'op\'eration de consommer une assertion. Consommer une assertion dans un \'etat abstrait revient \`a v\'erifier qu'il existe un fragment de heap qui match avec l'assertion et de supprimer l'assertion de la heap. La consommation effectue un pattern matching.\par
+			Nous d\'efinissons l'op\'eration de consommer une assertion. Consommer une assertion dans un \'etat abstrait revient \`a v\'erifier qu'il existe un fragment de heap qui match avec l'assertion et de supprimer le fragment de la heap. La consommation effectue un pattern matching.\par
 	
 	Une points-to assertion et un pr\'edicat peuvent contenir des patterns de variables de la forme $?x$. Un pattern de variable match n'importe quelle valeur et associe la valeur \`a la variable.\\
 	D\'efinissons la fonction \textit{consume}, $consume(s,H,a,Q)$ indique que la consommation de l'assertion $a$ dans un \'etat abstrait $(s,H)$ r\'eussit, et le prochain \'etat satisfait la consommation de la postcondition $Q$, qui est une fonction des \'etats abstraits aux bool\'eens.\par
-	Pour la consommation des points-to et des pr\'edicats, la fonction $consume$ a deux fonctions auxiliaires, $match$_$pattern$ et $match$_$patterns$.\\ $match$_$pattern(s,v,\pi)$ tente de faire correspondre la valeur $v$ au pattern $\pi$ dans le store $s$. Si le match r\'eussit, la fonction retourne un singleton contenant le store r\'esultant, c'est-\`a-dire, le store $s$ apr\`es avoir associ\'e la valeur $v$ \`a $\pi$. Sinon, elle retourne l'ensemble vide.\\
-	Similairement, la fonction $match$_$patterns(s,\bar{v},\bar{\pi}$) tentent de faire correspondre une liste de valeur $\bar{v}$ et une liste de patterns $\bar{\pi}$. Si la match r\'eussit, la fonction retourne un singleton contenant le store r\'esultant, c'est-\`a-dire, le store $s$ apr\`es avoir associ\'e la liste de valeur $\bar{v}$ \`a la liste de patterns $\bar{\pi}$. Sinon, elle retourne l'ensemble vide.\par
+	Pour la consommation des points-to et des pr\'edicats, la fonction $consume$ a deux fonctions auxiliaires, $match$_$pattern$ et $match$_$patterns$.\\ $match$_$pattern(s,v,\pi)$ tente de faire correspondre la valeur $v$ au pattern $\pi$ dans le store $s$. Si le match r\'eussit, la fonction retourne un singleton contenant le store r\'esultant, c'est-\`a-dire, le store $s$ apr\`es avoir associ\'ee la valeur $v$ \`a $\pi$. Sinon, elle retourne l'ensemble vide.\\
+	De la m\^eme fa\c{c}on, la fonction $match$_$patterns(s,\bar{v},\bar{\pi}$) tente de faire correspondre une liste de valeur $\bar{v}$ et une liste de patterns $\bar{\pi}$. Si le match r\'eussit, la fonction retourne un singleton contenant le store r\'esultant, c'est-\`a-dire, le store $s$ apr\`es avoir associ\'ee la liste de valeurs $\bar{v}$ \`a la liste de patterns $\bar{\pi}$. Sinon, elle retourne l'ensemble vide.\par
 	
 	Nous avons les propri\'et\'es suivantes :	
 	
 	\begin{lemme}
-		(Affaiblissement de la postcondition de consommation). Si la consommation d'une assertion par rapport \`a une postcondition donn\'e r\'eussit, alors la consommation par rapport \`a une postcondition plus faible r\'eussit aussi.\par
+		(Affaiblissement de la postcondition de consommation). Si la consommation d'une assertion par rapport \`a une certaine postcondition  r\'eussit, alors la consommation par rapport \`a une postcondition plus faible r\'eussit aussi.\par
 $\forall s,H,a,Q,Q'$ $consume(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Rightarrow Q'(s',H'))\Rightarrow consume(s,H,a,Q')$
 	\end{lemme}
 	
 	\begin{lemme}
-		(Encadrement de la consommation). Si la consommation d'une assertion r\'eussit, alors elle r\'eussit toujours si on ajoute des \'el\'ements \`a la heap abstraite, lorsque la postcondition stipule que la heap abstraite post-\'etat contient toujours ces \'el\'ements ajout\'es et qu'apr\`es la suppression des ces \'el\'ements ajout\'es, la postcondition d'origine est conserv\'ee.
+		(Encadrement de la consommation). Si la consommation d'une assertion r\'eussit, alors elle r\'eussit lorsque des \'el\'ements sont ajout\'es  \`a la heap abstraite, que ces \'el\'ements sont toujours pr\'esents dans chaque post-\'etat et la postcondition d'origine est conserv\'ee apr\`es avoir supprim\'e les \'el\'ements ajout\'es.
 	\end{lemme}
-	Nous disons qu'un \'etat abstrait satisfait une assertion si la consommation de l'assertion dans l'\'etat abstrait r\'eussit et la heap abstraite r\'esultante r\'eussit aussi.\\
+	Nous disons qu'un \'etat abstrait satisfait une assertion si la consommation de l'assertion dans l'\'etat abstrait r\'eussit et la heap abstraite r\'esultante est vide.\\
 	
 	\begin{lemme}
-		(Consommation s\^ure). Si la consommation d'une assertion r\'eussit dans un \'etat abstrait, alors la heap abstraite peut \^etre s\'epar\'e en un fragment qui satisfait l'assertion et un fragment qui satisfait la postcondition.
+		(Consommation s\^ure). Si la consommation d'une assertion r\'eussit dans un \'etat abstrait, alors la heap abstraite peut \^etre s\'epar\'ee en un fragment qui satisfait l'assertion et un fragment qui satisfait la postcondition.
 	\end{lemme}
 			\subsubsection{Production d'une assertion}
 		L'op\'erateur de production d'assertion est l'inverse de celui de consommation: produire une assertion dans un \'etat abstrait donn\'e, \'etend la heap avec un fragment arbitraire de heap satisfiant l'assertion.\\
-		Plus pr\'ecisement, la fonction $produce(s,H,a,Q)$ signifie que la postcondition $Q$ est valable  dans tous les \'etats obtenus par l'extension de l'\'etat abstrait (s, H) avec un fragment de heap qui satisfait l'assertion $a$.\par
+		Plus pr\'ecisement, la fonction $produce(s,H,a,Q)$ signifie que la postcondition $Q$ est valable  dans tous les \'etats obtenus en \'etendant l'\'etat abstrait (s, H) avec un fragment de heap qui satisfait l'assertion $a$.\par
 		La fonction auxiliaire $produce$_$pattern(s,\pi,Q)$ signifie que la postcondition $Q$ est valable pour chaque pair $(s',v)$ telle que la valeur $v$ match avec le pattern $\pi$ dans le store $s$ et $s'$ est $s$ mis \`a jour avec le pattern appropri\'e.\par 
 		\begin{lemme}
 			(Affaiblissement de la postcondition de production). Si la production d'une assertion r\'eussit, alors la production r\'eussit aussi avec une postcondition plus faible.\par
@@ -439,7 +439,7 @@ $\forall s,H,a,Q,Q'$ $produce(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Ri
 		\end{lemme}	
 		
 		\begin{lemme}
-		(Production Heap Inutile). Produire une assertion dans un \'etat abstrait $E = (s,H)$  est \'equivalent \`a produire la m\^eme assertion dans une heap vide $H'$ et d'ajouter la heap $H$ \`a la heap post-\'etat.
+		(Production Heap Inutile). Produire une assertion dans un \'etat abstrait $E = (s,H)$  est \'equivalent \`a produire la m\^eme assertion dans une heap vide et d'ajouter la heap $H$ \`a la heap post-\'etat.
 		\end{lemme}
 	
 		\begin{lemme}
@@ -461,12 +461,12 @@ $\forall s,H,a,Q,Q'$ $valid(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Righ
 		
 		\begin{lemme}
 			(Encadrement d'une instruction valide).\\
-			Si une instruction est valide dans un \'etat abstrait et une postcondition, alors elle est valide si des \'el\'ements sont ajout\'es \`a la heap abstraite, que ces \'el\'ements sont toujours pr\'esent dans chaque post-\'etat, et la postcondition originale est toujours valable apr\`es avoir supprimer les \'el\'ements ajout\'es.
+			Si une instruction est valide dans un \'etat abstrait et une postcondition, alors elle est valide lorsque des \'el\'ements sont ajout\'es \`a la heap abstraite, que ces \'el\'ements sont toujours pr\'esents dans chaque post-\'etat, et la postcondition originale est toujours valable apr\`es avoir supprim\'e les \'el\'ements ajout\'es.
 		\end{lemme}
 		La fonction $valid$_$routine(def)$ stipule que l'ex\'ecution abstraite de la fonction d\'efinie par $def$ r\'eussit ou que cette fonction est valide. Nous disons qu'une ex\'ecution abstraite d'un programme r\'eussit, ou que le programme est valide, si l'ex\'ecution abstraite de chaque fonction r\'eussit, et que l'ex\'ecution de l'instruction \textit{main} r\'eussit dans un store initiale et une heap vide.\\
-			\subsubsection{Suret\'e d'une ex\'ecution abstraite}
-		Nous allons caract\'eriser la relation entre une ex\'ecution abstraite et une ex\'ecution concr\`ete. Posons qu'un programme se comporte bien, s'il n'a pas d'acc\`es ill\'egal \`a la m\'emoire. Nous \'enoncerons les lemmes et th\'eor\`emes importants permettant de prouver que si une execution abstraite d'un programme annot\'e r\'eussit alors le programme se comporte bien. Nous disons qu'une configuration est valide, si dans un programme est valide, sa configuration initiale est valide et les pas d'\'ex\'ecution pr\'eserve la validit\'e. Puisque la configuration d'erreur n'est pas une configuration valide, il s'ensuit directement que les programmes valides se comportent bien.\par
-		Nous d\'efinisson une configuration valide comme une configuration qui est abstraite par d'autres configurations abstraites valides. Les configurations abstraites sont des pairs, d'\'etat abstrait et de continuations annot\'ees, et une configuration d'erreur. \par 
+			\subsubsection{S\^uret\'e d'une ex\'ecution abstraite}
+		Nous allons caract\'eriser la relation entre une ex\'ecution abstraite et une ex\'ecution concr\`ete. Posons qu'un programme se comporte bien, s'il n'a pas d'acc\`es ill\'egal \`a la m\'emoire. Nous \'enoncerons les lemmes et th\'eor\`emes importants permettant de prouver que si une ex\'ecution abstraite d'un programme annot\'e r\'eussit alors le programme se comporte bien. Nous disons qu'une configuration est valide, si sa configuration initiale est valide et les pas d'ex\'ecution pr\'eservent la validit\'e. Puisque la configuration d'erreur n'est pas une configuration valide, il s'ensuit directement que les programmes valides se comportent bien.\par
+		Nous d\'efinissons une configuration valide comme une configuration qui est abstraite par d'autres configurations abstraites valides. Les configurations abstraites sont des pairs d'\'etats abstraits et de continuations annot\'ees, et une configuration d'erreur. \par 
 		Un ensemble $AnnConts$ de continuations annot\'ees est d\'efini inductivement ainsi :\par 
 		\begin{itemize}
 		\item \textbf{done} est une continuation annot\'ee.
@@ -490,7 +490,7 @@ $\forall s,H,a,Q,Q'$ $valid(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Righ
 		\begin{center}
 		$\langle (s,H),K\rangle\rhd\langle(s',h),\kappa\rangle\Leftrightarrow s=s'\land$ $H\rhd^*\land$ $\kappa = erasure(K)$
 		\end{center}
-		Une configuration concr\`ete est valide si elle est abstraite des configurations abstraites.
+		Une configuration concr\`ete est valide si elle est abstraite par des configurations abstraites.
 		\begin{center}
 		$valid\_config(\gamma)\equiv\exists C\in AbsConfigs (C\rhd\gamma\land$ $valid\_abs\_config(C)$
 		\end{center}
@@ -511,7 +511,7 @@ $\forall s,H,a,Q,Q'$ $valid(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Righ
 		\end{lemme}
 	
 		\begin{theorem}
-			(Suret\'e d'une ex\'ecution abstraite).\\
+			(S\^uret\'e d'une ex\'ecution abstraite).\\
 			Si un programme annot\'e est valide, alors l'effacement du programme annot\'e se comporte bien.
 			\begin{center}
 			$valid\_program(program)\Rightarrow\gamma_0 \not\leadsto^*$ \textbf{error}
@@ -520,7 +520,7 @@ $\forall s,H,a,Q,Q'$ $valid(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Righ
 	
 		
 	\section{Logique de sp\'ecification en \verifast{}}
-		Le logique de sp\'ecification en \verifast{} se base sur la logique de s\'eparation. La logique de s\'eparation ajoute une r\`egle \`a la logique de Hoare :
+		La logique de sp\'ecification en \verifast{} se base sur la logique de s\'eparation. La logique de s\'eparation ajoute une r\`egle \`a la logique de Hoare :
 		\begin{center}
 		
 
@@ -541,10 +541,10 @@ $\forall s,H,a,Q,Q'$ $valid(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Righ
 		\end{center}
 		Informellement, la r\`egle dit que la preuve de $C$ peut ignorer la partie de la heap ne con\c{c}ernant pas $C$ (ici $R$).\par
 		Les annotations de code dans \verifast{} sont entre les signes $/*@$ et $@*/$ ou sur une ligne de code apr\`es $//@$. L'avantage d'\'ecrire les annotations entre ces symboles est que le code reste compilable par n'importe quel compilateur. En effet, les annotations seront vu comme des commentaires.\par
-		Une notion, que nous n'avons pas abord\'e, et qui est primordial dans la logique de sp\'ecification de \verifast, est les invariants de boucles. Les invariants de boucles sont des assertions qui sont vraies avant, pendant et apr\`es la boucle. Ils permettent donc d'assurer que le code est correct pendant et apr\`es la boucle. Nous allons maintenant voir les annotations plus complexe, dont nous n'avons pas encore parler, dans \verifast.
+		Une notion, que nous n'avons pas abord\'ee, et qui est primordiale dans la logique de sp\'ecification de \verifast, est les invariants de boucles. Les invariants de boucles sont des assertions qui sont vraies avant, pendant et apr\`es la boucle. Ils permettent donc d'assurer que le code est correct pendant et apr\`es la boucle. Nous allons maintenant voir les annotations plus complexes, dont nous n'avons pas encore parl\'ees, dans \verifast.
 			\subsubsection{Types et predicats inductifs}
 		
-				Pour permettre des sp\'ecifications riches, \verifast{} supporte les types inductifs. Les types inductifs permettent \`a \verifast{} de repr\'esenter des structures inductives. Souvent, chaque \'el\'ement de la structure doit respecter certaines propri\'et\'es. Par exemple, dans une pile, chaque \'el\'ement doit avoir un espace allou\'e.	Pour repr\'esenter ces conditions, on utilise des pr\'edicats inductifs.\\ Dans l'exemple suivant, le pr\'edicat \textit{ints} repr\'esente la liste des \'el\'ements dans la pile. Le pr\'edicat nodes indique que de l'espace allou\'e pour chaque \'el\'ement et que les \'el\'ement de \textit{ints} correspondent bien aux \'el\'ement de la pile. \par
+				Pour permettre des sp\'ecifications riches, \verifast{} supporte les types inductifs. Les types inductifs permettent \`a \verifast{} de repr\'esenter des structures inductives. Souvent, chaque \'el\'ement de la structure doit respecter certaines propri\'et\'es. Par exemple, dans une pile, chaque \'el\'ement doit avoir un espace allou\'e.	Pour repr\'esenter ces conditions, on utilise des pr\'edicats inductifs.\\ Dans l'exemple suivant, le type \textit{ints} repr\'esente la liste des \'el\'ements dans la pile. Le pr\'edicat nodes indique que de l'espace allou\'e pour chaque \'el\'ement et que les \'el\'ements de \textit{ints} correspondent bien aux \'el\'ements de la pile. \par
 			
 			\begin{lstlisting}
 struct node {
@@ -564,7 +564,7 @@ struct node {
 	
 			\end{lstlisting}			
 			\subsubsection{Fixpoints}
-				En plus des types inductifs, \verifast{} permet aussi les fixpoints. Un fixpoint est une fonction avec au moins un argument de type inductif. Le corps du fixpoint doit \^etre un \textbf{switch} sur l'un de ces arguments inductifs. Pour s'assurer que les fixpoints sont bien d\'efinis, le corps d'un fixpoint $f$ peut utiliser un autre fixpoint $g$ seulement si $g$ appara\^it avant $f$ dans le programme ou que f est \'egal \`a g et que l'une des composantes d'un argument inductif de $f$ est utilis\'e \`a la place de cet argument. Par exemple, le fixpoint ci-dessous indique la longueur d'un \'el\'ement de type \textit{ints}.
+				En plus des types inductifs, \verifast{} permet aussi les fixpoints. Un fixpoint est une fonction avec au moins un argument de type inductif. Le corps du fixpoint doit \^etre un \textbf{switch} sur l'un de ses arguments inductifs. Pour s'assurer que les fixpoints sont bien d\'efinis, le corps d'un fixpoint $f$ peut utiliser un autre fixpoint $g$ seulement si $g$ appara\^it avant $f$ dans le programme ou que f est \'egal \`a g et que l'une des composantes d'un argument inductif de $f$ est utilis\'ee \`a la place de cet argument. Par exemple, le fixpoint ci-dessous indique la longueur d'un \'el\'ement de type \textit{ints}.
 			\begin{lstlisting}
 fixpoint int length(ints l){
  switch(l) {
@@ -575,32 +575,31 @@ fixpoint int length(ints l){
 			\end{lstlisting}
 			\subsubsection{Lemmes}
 			\verifast{} a en r\'ealit\'e une instruction suppl\'ementaire pour le ghost-code, en plus des \textit{open} et \textit{close}. En effet, il est possible d'appeler des lemmes. Un lemme est une fonction logique qui ne renvoie pas forcement un bool\'een. Comme un fixpoint, un lemme prend des argument, \`a une precondition et une postcondition. Le corps d'un lemme repr\'esente une preuve. Cette preuve prouve que la pr\'econdition implique la postcondition pour toutes les valeurs possibles des arguments. L'appel d'un lemme correspond donc \`a l'application d'un th\'eor\`eme.\par
-			Pour que la preuve soit valide, le corps doit satisfaire certaines restrictions. Dans un premier temps, le corps ne doit pas affect\'e l'\'etat concret, plus pr\'ecisement, il ne doit pas modifier de champs ou appel\'e des fonctions C. Deuxi\`ement, l'ex\'ecution du corps doit terminer. Pour assurer la terminaison, les boucles et les appels de lemmes sont limit\'es. \\
+			Pour que la preuve soit valide, le corps doit satisfaire certaines restrictions. Dans un premier temps, le corps ne doit pas affect\'e l'\'etat concret, plus pr\'ecisement, il ne doit pas modifier de champs ou appeler des fonctions C. Deuxi\`emement, l'ex\'ecution du corps doit terminer. Pour assurer la terminaison, les boucles et les appels de lemmes sont limit\'es. \\
 			Les boucles doivent avoir un variant. Un variant de boucle doit strictement d\'ecroitre  \`a chaque tour de boucle et doit \^etre d\'efini dans un ensemble bien fond\'e.\\
-			Un lemme $x$ peut appel\'e un lemme $y$ s'il est d\'efini avant dans le programme ou si l'appel est r\'ecursif. Si l'appel est r\'ecursif, alors l'une des restrictions suivantes doit \^etre respect\'ee :
+			Un lemme $x$ peut appeler un lemme $y$ s'il est d\'efini avant dans le programme ou si l'appel est r\'ecursif. Si l'appel est r\'ecursif, alors l'une des restrictions suivantes doit \^etre respect\'ee :
 			\begin{enumerate}
-			\item L'appel r\'ecursif r\'eduit la taille de la heap.,Plus pr\'ecisement, apr\'es la consommation des pr\'econditions d'un appel r\'ecursif, il doit rester un champ dans la heap.
+			\item L'appel r\'ecursif r\'eduit la taille de la heap. Plus pr\'ecisement, apr\`es la consommation des pr\'econditions d'un appel r\'ecursif, il doit rester un champ dans la heap.
 			\item L'appel r\'ecursif r\'eduit la type d'un argument inductif. Le corps du lemme est alors un \textbf{switch} sur un argument inductif et l'un des param\`etres de l'argument est utilis\'e \`a la place de l'argument inductif dans l'appel r\'ecursif.
 			\item L'appel r\'ecursif r\'eduit la profondeur de la premi\`ere conjonction de la pr\'econdition. Plus pr\'ecisement, le corps du lemme n'est pas un switch et la consommation du premier pr\'edicat dans la pr\'econdition de l'appel r\'ecursif est obtenu en ouvrant le premier pr\'edicat produit par la pr\'econdition du lemme.
 			\end{enumerate}
 				
 
 \chapter{Impl\'ementation}
-	L'objectif de l'impl\'ementation est d'int\'egrer les fonctions de la th\'eorie des tableaux dans \verifast{} pour qu'elles soient directement retransmis \`a Z3. Ces fonctions manipulent un type tableau qui \'etait absent dans la logique de \verifast{}. La premi\`ere \'etape fut donc d'ajouter un type primitif array dans la logique de sp\'ecification de \verifast{}.
+	L'objectif de l'impl\'ementation est d'int\'egrer les fonctions de la th\'eorie des tableaux dans \verifast{} pour qu'elles soient directement retransmis \`a Z3. Ces fonctions manipulent un type tableau qui \'etait absent dans la logique de \verifast{}. La premi\`ere \'etape fut donc d'ajouter un type primitif array dans la logique de sp\'ecification de \verifast{}. Ensuite, il \'etait n\'ecessaire d'ajouter un type array dans les communications avec Z3 et pour finir, ajouter les fonctions de la th\'eorie.
 	\section{Cr\'eation du type array}
-		\subsection{Syntaxe et s\'emantique}
-		
+		La logique multi-sorted de \verifast{} \'etait compos\'ee des types int, bool\'een, r\'eel et inductive. 
 		Soit $T_{A}$ le type d'un tableau, la syntaxe de $T_{A}$ dans \verifast{} est "array(i,e)", avec $i\in T_I$ et $e\in T_E$.
 		\subsection{R\`egle de typage}
 			\subsubsection{G\'en\'ericit\'e}
-			En logique, le domaine et le range du type tableau sont deux type g\'en\'erique, c'est \`a dire, ils peuvent \^etre de n'importe quel type. Un objectif \'etait donc d'impl\'ementer un type tableau tout aussi g\'en\'erique. Toutes les fonctions ont \'et\'e implement\'ees ainsi mais \verifast{} a pos\'e une limite. Il n'y a pas de fonction g\'en\'erique pour repr\'esenter les pointeurs d\'efinis. En effet, il y a seulement des fonctions "integer(int*,int)", "character(char*,char)", etc... qui repr\'esente des pointeurs d'entier, de char, etc. Il n'est donc pas possible actuellement de compl\'eter la biblioth\`eque des tableaux avec uniquement des lemmes g\'en\'erique. Il est, par exemple, impossible de dire qu'un tableau est bien d\'efini g\'en\'eriquement. La fonction array\_model, ci-dessous, indique qu'un tableau d'entier est bien d\'efini entre (a+b) et (a+e) si un entier est bien d\'efini en (a+b) et qu'un tableau est bien d\'efini entre (a+b+1) et (a+e).
+			En logique, le domaine et le co-domaine du type tableau sont deux types g\'en\'eriques, c'est \`a dire, ils peuvent \^etre de n'importe quel type. Un objectif \'etait donc d'impl\'ementer un type tableau tout aussi g\'en\'erique. Toutes les fonctions ont \'et\'e implement\'ees ainsi mais \verifast{} a pos\'e une limite. Il n'y a pas de fonction g\'en\'erique pour repr\'esenter les pointeurs. En effet, il y a seulement des fonctions "integer(int*,int)", "character(char*,char)", etc... qui repr\'esente des pointeurs de type pr\'ecis. Il n'est donc pas possible actuellement de compl\'eter la biblioth\`eque des tableaux avec uniquement des lemmes g\'en\'eriques. Il est, par exemple, impossible de dire qu'un tableau est bien d\'efini g\'en\'eriquement. La fonction array\_model, ci-dessous, indique qu'un tableau d'entiers est bien d\'efini entre $(a+b)$ et $(a+e)$ si un entier est bien d\'efini en $(a+b)$ et qu'un tableau est bien d\'efini entre $(a+b+1)$ et $(a+e)$.
 \begin{lstlisting}
-.predicate array_model (int* a, int b, int e, array(int,int) arr) =
-  (b >= e) ? true : (integer(a+b,?v) &*& select(arr, b) == v
-  &*& array_model(a, b+1, e, arr));
+predicate array_model (int* a, int b, int e, array(int,int) arr) =
+ (b >= e) ? true : (integer(a+b,?v) &*& select(arr, b) == v
+ &*& array_model(a, b+1, e, arr));
 \end{lstlisting}
 			\subsubsection{Limite du domaine}
-			S'il existe un type t de type : t $\rightarrow$ p, p \'etant un type quelconque, des termes tel que $(\lambda x. \neg(xx))(\lambda x.\neg(xx))$ 	deviennent typable alors qu'ils ne sont pas coh\'erent. Or, un tableau est comme fonction de type : domain $\rightarrow$ range. Je n'ai pas de preuve qu'avec les axiomes et les fonctions sur les tableaux le syst\`eme devient incoh\'erent, mais dans le doute, les tableaux de ce type ont \'et\'e interdit.
+			S'il existe un type t de type : t $\rightarrow$ p, p \'etant un type quelconque, des termes tels que $(\lambda x. \neg(xx))(\lambda x.\neg(xx))$ 	deviennent typables alors qu'ils ne sont pas coh\'erent. Or, un tableau peut \^etre repr\'esent\'e comme une fonction non-interpr\'et\'e de type : domain $\rightarrow$ co-domaine. Je n'ai pas de preuve, qu'avec les axiomes et les fonctions sur les tableaux, le syst\`eme devient incoh\'erent, mais dans le doute, les tableaux de ce type ont \'et\'e interdit.
 			\subsubsection{Type habit\'e}
 				Dans \verifast{}, tous les types doivent \^etre habit\'e, c'est \`a dire, tous les types doivent avoir au moins un \'el\'ement. En effet, il existe cet axiome dans \verifast{} :
 		\begin{lstlisting}
@@ -632,7 +631,7 @@ lemma void absurd()
 				Exemple : utilisation de l'in\'egalit\'e pour montrer l'\'egalit\'e. si x peut \^etre a, b ou c. x!= a et x!= b -> x == c.
 
 	\section{ProverArray}
-		La logique multi-sorted de \verifast{} \'etait compos\'e des types int, boolean, real et inductive. Le type inductive est un type g\'en\'erique, c'est \`a dire, il existe des fonctions de boxing/unboxing pour transformer un type vers le type inductive et inversement. \par
+		
 		Les sorts de la logique de \verifast{} sont les types qui pourront \^etre transmis au solver Z3. Or, pour utiliser les fonctions sur les tableaux, le type primitif array est n\'ecessaire. Une \'etape fut donc de cr\'eer un nouveau type primitif array qui pourra \^etre transmis \`a Z3.\par
 		\subsection{Int\^eret du type Inductive}
 			Le type inductive a un r\^ole tr\`es particulier dans \verifast{}. En plus de repr\'esenter les types g\'en\'eriques, le type inductive est un moyen de communiquer \`a la fois \`a des solvers multi-sorted et \`a des solvers one-sorted. En effet, \verifast{} utilise deux solvers qui sont Redux et Z3. Redux n'a pas de type alors que Z3 en a. Comme indiqu\'e en (2.1), il existe une r\'eduction de la logique multi-sorted vers la one-sorted. \verifast{} peut donc ais\'ement communiquer \`a Redux m\^eme s'il n'utilise pas directement la m\^eme logique. Pour transformer tous les sorts vers un seul sort, \verifast{} utilise des fonctions de boxing.

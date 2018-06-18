@@ -7,7 +7,8 @@
 \usepackage{syntax}
 \usepackage{relsize,exscale}
 \usepackage{stmaryrd}
-\usepackage{MnSymbol}
+\usepackage{amssymb,MnSymbol}
+
 
 \newcommand{\verifast}{VeriFast}
 \newcommand\sepimp{\mathrel{-\mkern-6mu*}}
@@ -19,6 +20,8 @@
 \lstset{alsoletter={&},morekeywords={predicate,array,true,false,lemma,&*&}}
 
 \newtheorem{definition}{D\'efinition}[section]
+\newtheorem{exemple}{Exemple}
+\newtheorem{lemme}{Lemme}
 
 \setcounter{tocdepth}{2}
 
@@ -40,26 +43,30 @@
 \chapter{Logique du premier ordre}
 	\section{Logique du premier ordre}
 		\subsection{Syntaxe}
-		On introduit la syntaxe de la logique du premier ordre (FOL) dans le contexte d'une paire $\sum = (\sum^s,\sum^f)$, que nous appelons la signature tel que :
+		On introduit la syntaxe de la logique du premier ordre (FOL) dans le contexte d'une paire $\sum = (\sum^s,\sum^f)$, que nous appelons la signature telle que :
 		\begin{itemize}
 		\item $\sum^s = \{ \sigma_{1}, \sigma_{2},...\}$ est un ensemble de symboles de type. On suppose l'existence d'un type location $Loc \in \sum^{s}$ et d'un type $Bool = \{ \top , \bot \}$, o\`u nous \'ecrivons $\top$ et $\bot$ pour les constantes, respectivement, true et false.
-		\item $\sum^f = \{ f, g, h,...\}$ est un ensemble de symbole de fonctions. Pour un symbole de fonction $f^{\sigma_{1}\sigma_{2}... \sigma_{n}\sigma}$, $n \geq 0$ est son arit\'e et $\sigma_{1}\sigma_{2}... \sigma_{n}\sigma$ est sa signature o\`u $\sigma_{1}\sigma_{2}... \sigma_{n} \in \sum^{s}$ sont les types des arguments et $\sigma$ est le type du r\'esultat. Un symbole de fonctions d'arit\'e 0 est un symbole de constante $c^{\sigma}$ de type $\sigma \in \sum^{s}$. Nous ne pr\'eciserons pas la signature du symbole de fonctions lorsque c'est inutile.
+		\item $\sum^f = \{ f, g, h,...\}$ est un ensemble de symboles de fonctions. Pour un symbole de fonction $f^{\sigma_{1}\sigma_{2}... \sigma_{n}\sigma}$, $n \geq 0$ est son arit\'e et $\sigma_{1}\sigma_{2}... \sigma_{n}\sigma$ est sa signature o\`u $\sigma_{1}\sigma_{2}... \sigma_{n} \in \sum^{s}$ sont les types des arguments et $\sigma$ est le type du r\'esultat. Un symbole de fonctions d'arit\'e 0 est un symbole de constante $c^{\sigma}$ de type $\sigma \in \sum^{s}$. Nous ne pr\'eciserons pas la signature du symbole de fonctions lorsque c'est inutile.
 		\end{itemize}
 
 	   Posons $Var = {x,y,z,...}$ un ensemble d\'enombrable de variable du premier ordre. Chaque variable $x^{\sigma} \in Var$ est associ\'e \`a un type $\sigma \in \sum^{s}$.
 	   
 \begin{definition} (Terme).
-Un terme $t$ de type $\sigma \in \sum^{s}$, not\'e $t^{\sigma}$, sur une signature $\sum$ est d\'efinie r\'ecrusivement par la grammaire :\\
+Un terme $t$ de type $\sigma \in \sum^{s}$, not\'e $t^{\sigma},$ sur une signature $\sum$ est d\'efinie r\'ecrusivement par la grammaire :\\
 $t^{\sigma} ::= x,$ ~~~~~~~~~~~~~~$x^{\sigma} \in Var$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (variable) \par
 $|$~~ $c,$ ~~~~~~~~~~~~~~$c^{\sigma} \in \sum^{f}$ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(constant) \par
 $|$~~$\langle t_{1},...,t_{n}\rangle,$~~~~ $t_{1}^{\sigma_{1}},...,t_{n}^{\sigma_{n}} terms, \sigma = \sigma_{1} \times ... \times \sigma_{n}$~~~~(tuple) \par
-$|$~~$f(t_{1},...,t_{n}),$~~~$f^{\sigma_{1} ...\sigma_{n} \sigma} \in \sum^{f}, t_{1}^{\sigma_{1}},...,t_{n}^{\sigma_{n}} ~terms$~~~~(function application)
+$|$~~$f(t_{1},...,t_{n}),$~~~$f^{\sigma_{1} ...\sigma_{n} \sigma} \in \sum^{f}, t_{1}^{\sigma_{1}},...,t_{n}^{\sigma_{n}} ~terms$~~~~(fonction application)
 \end{definition}
-	Tout symbole de constante ou variable de type $\sigma$ est un terme de type $\sigma$. Si $t_{1},...,t_{n}$ sont des termes de types $\sigma_{1},...,\sigma_{n}$ et $f^{\sigma_{1} ...\sigma_{n} \sigma} \in \sum^{f}$ alors $\langle t_{1},...,t_{n}\rangle$ est un terme de type $\sigma_{1} \times ... \times \sigma_{n}$ et $f(t_{1},...,t_{n})$ est un terme de type $\sigma$.\par
+
+
+
+
+	Tout symbole de constante ou variable de type $\sigma$ est un terme de type $\sigma$. Si $t_{1},...,t_{n}$ sont des termes de type $\sigma_{1},...,\sigma_{n}$ et $f^{\sigma_{1} ...\sigma_{n} \sigma} \in \sum^{f}$ alors $\langle t_{1},...,t_{n}\rangle$ est un terme de type $\sigma_{1} \times ... \times \sigma_{n}$ et $f(t_{1},...,t_{n})$ est un terme de type $\sigma$.\par
 
 Nous noterons $\tau_{\mathsmaller\sum}$ $(\textbf{x})$ l'ensemble de tous les termes construit utilisant les symboles de fonctions dans $\sum^{f}$ et les variables dans l'ensemble \textbf{x}. Nous \'ecrivons $\tau_{\mathsmaller\sum}$ pour l'ensemble $\tau_{\mathsmaller\sum}$ $(\emptyset)$ de termes ne contenant aucune variable.
 \begin{definition} 
-(Formule du premier ordre). Une formule du premier ordre une signature $\sum$ est d\'efinie r\'ecursivement par la grammaire :\\
+(Formule du premier ordre). Une formule du premier ordre sur une signature $\sum$ est d\'efinie r\'ecursivement par la grammaire :\\
 \\$\phi^{FOL} ::= \top$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(true)\par
 ~~~~~$|$~~$\bot$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(false)
 \par
@@ -71,7 +78,7 @@ Nous noterons $\tau_{\mathsmaller\sum}$ $(\textbf{x})$ l'ensemble de tous les te
 ~~~~~$|$~~$\exists x.\phi^{FOL},$~~~~~~~~~~~~$x\in FV(\phi^{FOL})$~~~~~~~~~~~~~~~(quantificateur existentiel)\par
 ~~~~~$|$~~$\forall x.\phi^{FOL},$~~~~~~~~~~~~$x\in FV(\phi^{FOL})$~~~~~~~~~~~~~~~(quantificateur universel)
 \end{definition}
-Les constantes $\top$ et $\bot$, des termes bool\'een, et l'\'egalit\'e entre deux termes de m\^eme type sont des formules du premier ordre. La n\'egation, conjonction, disjonction, les quantificateurs existentiel et universelle de la logique du premier ordre sont aussi des formules de la logique du premier ordre.\par
+Les constantes $\top$ et $\bot$, des termes bool\'eens, et l'\'egalit\'e entre deux termes de m\^eme type sont des formules du premier ordre. La n\'egation, conjonction, disjonction, les quantificateurs existentiels et universels de la logique du premier ordre sont aussi des formules de la logique du premier ordre.\par
 	Pour une formule $\phi$, nous noterons $FV(\phi)$ l'ensemble des variables n'apparaissant pas dans la port\'ee d'un quantificateur de $\phi$.
 
 \begin{definition}
@@ -82,20 +89,20 @@ Les constantes $\top$ et $\bot$, des termes bool\'een, et l'\'egalit\'e entre de
 \begin{definition}
 (Interpr\'etation). Une interpr\'etation $I$ pour $\sum$ associe chaque symbole de type $\sigma \in \sum^{s}$ \`a un ensemble non-vide $\sigma^{I}$, chaque symbole de fonction $f^{\sigma_{1},...,\sigma_{n}\sigma} \in \sum^{f}$ avec $n > 0$ \`a une fonction totale $f^{I} : \sigma_{1}^{I}\times ... \times \sigma_{n}^{I}$ et chaque symbole de constante $c^{\sigma} \in \sum^{f}$ \`a un \'el\'ement de $\sigma^{I}$.
 \end{definition}
-	Posons $I$ une interpr\'etation, $f^{\sigma_{1} ...\sigma_{n} \sigma}$ un symbole de fonction et $\alpha^{\sigma_{1}^{I},...,\sigma_{n}^{I}\sigma^{I}}$ une fonction. Nous \'ecrivons $I[f \leftarrow \alpha]$ pour une interpr\'etation tel que : \\(i) $I[f\leftarrow\alpha](\sigma) = I(\sigma)$, (ii) $I[f\leftarrow\alpha](f) = \alpha$, et (iii) $\nu[f\leftarrow\alpha](g) = g^{I}$ pour tout $g \in \sum^{f}$ avec $g\neq f$.
+	Posons $I$ une interpr\'etation, $f^{\sigma_{1} ...\sigma_{n} \sigma}$ un symbole de fonction et $\alpha^{\sigma_{1}^{I},...,\sigma_{n}^{I}\sigma^{I}}$ une fonction. Nous \'ecrivons $I[f \leftarrow \alpha]$ pour une interpr\'etation telle que : \\(i) $I[f\leftarrow\alpha](\sigma) = I(\sigma)$, (ii) $I[f\leftarrow\alpha](f) = \alpha$, et (iii) $\nu[f\leftarrow\alpha](g) = g^{I}$ pour tout $g \in \sum^{f}$ avec $g\neq f$.
 	
 \begin{definition}
 (Evaluation). Soit une interpr\'etation $I$, une \'evaluation $\nu$ chaque variable $x^{\sigma} \in Var$ \`a un \'el\'ement de $\sigma^{I}$.
 \end{definition}
-Notons $V_{I}$ l'ensemble des \'evaluation possible sous $I$.
-Posons $I$ une interpr\'etation, $\nu \in V_{I}$ une \'evaluation, $x^{\sigma} \in Var$ une variable et $\alpha \in \sigma^{I}$ une valeur. Nous noterons $\nu[x\leftarrow\alpha]$ pour une \'evaluation tel que: (i) $\nu[x\leftarrow\alpha](x) = \alpha$, et (ii) $\nu[x\leftarrow\alpha](y)=\nu(y)$ pour tout $y\in Var$ avec $y\neq x$.
+Notons $V_{I}$ l'ensemble des \'evaluations possibles sous $I$.
+Posons $I$ une interpr\'etation, $\nu \in V_{I}$ une \'evaluation, $x^{\sigma} \in Var$ une variable et $\alpha \in \sigma^{I}$ une valeur. Nous noterons $\nu[x\leftarrow\alpha]$ pour une \'evaluation telle que: (i) $\nu[x\leftarrow\alpha](x) = \alpha$, et (ii) $\nu[x\leftarrow\alpha](y)=\nu(y)$ pour tout $y\in Var$ avec $y\neq x$.
 
 \begin{definition}
-(Interpr\'etation d'un terme). L'interpr\'etation de t relative \`a $I$ et $\nu$ est obtenu en repla\c{c}ant chaque symbole de fonction $f$ apparaissant dans $t$ par son interpr\'etation $f^{I}$ et chaque variable $x$ apparaissant dans $t$ par son \'evaluation $\nu(x)$.
+(Interpr\'etation d'un terme). L'interpr\'etation de t relative \`a $I$ et $\nu$ est obtenue en repla\c{c}ant chaque symbole de fonction $f$ apparaissant dans $t$ par son interpr\'etation $f^{I}$ et chaque variable $x$ apparaissant dans $t$ par son \'evaluation $\nu(x)$.
 \end{definition}
-Maintenant que l'on sait comment interpr\'eter les termes avec une \'evaluation donn\'e, nous pouvons \'etendre la notion d'interpr\'etation aux formules du premier ordre.
+Maintenant que l'on sait comment interpr\'eter les termes avec une \'evaluation donn\'ee, nous pouvons \'etendre la notion d'interpr\'etation aux formules du premier ordre.
 \begin{definition}
-(S\'emantique d'une formule du premier ordre). Soit une interpr\'etation $I$ et une \'evaluation $\nu \in V_{I}$, nous \'ecrivons $I,\nu\models\phi$ si la formule du premier ordre $\phi$ est interpr\'et\'e par true sous $I$ et $\nu$. La relation est d\'efinie inductivement sur la structure de $\phi$ :\par
+(S\'emantique d'une formule du premier ordre). Soit une interpr\'etation $I$ et une \'evaluation $\nu \in V_{I}$, nous \'ecrivons $I,\nu\models\phi$ si la formule du premier ordre $\phi$ est interpr\'et\'ee par true sous $I$ et $\nu$. La relation est d\'efinie inductivement sur la structure de $\phi$ :\par
 $I,\nu\models\top$~~~~~~~~~~~~toujours vrai\par
 $I,\nu\models\bot$~~~~~~~~~~~~jamais vrai\par
 $I,\nu\models t$~~~~~~~~~~~~ ssi $t^{I}_{\nu}=\top,t^{Bool}$ term\par
@@ -110,30 +117,30 @@ $I,\nu\models\forall x.\psi$~~~~~~~~~ssi $I,\nu[x\leftarrow\alpha]\models\psi, x
 En utilisant leurs s\'emantiques, nous pouvons d\'efinir les notions de satisfaisabilit\'e  et d'implication des FOL formules sous une interpr\'etation $I$.
 
 \begin{definition}
-(Satisfaisable et valide). Une formule du premier ordre $\phi$ est satisfaisable dans l'interpr\'etation $I$ s'il existe une \'evaluation $\nu$ tel que $I,\nu\models\phi$ et insatisfaisable sinon. Si $I,\nu\models\phi$ pour tout $\nu$, alors $\phi$ est valide et $\neg\phi$ est insatisfaisable.
+(Satisfaisable et valide). Une formule du premier ordre $\phi$ est satisfaisable dans l'interpr\'etation $I$ s'il existe une \'evaluation $\nu$ telle que $I,\nu\models\phi$. Sinon, la formule est insatisfaisable. Si $I,\nu\models\phi$ pour tout $\nu$, alors $\phi$ est valide et $\neg\phi$ est insatisfaisable.
 \end{definition}
 
 \begin{definition}
-(Implication et \'equivalence). Soit deux formules du premier ordre $\phi_{1}$ et $\phi_{2}$, nous \'ecrivons $\phi_{1}\models^{I}\phi_{2}$ et posons que $\phi_{1}$ implique $\phi_{2}$ dans l'interpr\'etation de $I$ ssi $I,\nu\models\phi_{1}$ implique $I,\nu\models\phi_{2}$ pour tout \'evaluation $\nu$. Nous appelons $\phi_{1}$  et $\phi_{2}$  \'equivalent si $\phi_{1}\models^{I}\phi_{2}$ et $\phi_{2}\models^{I}\phi_{1}$.
+(Implication et \'equivalence). Soit deux formules du premier ordre $\phi_{1}$ et $\phi_{2}$, nous \'ecrivons $\phi_{1}\models^{I}\phi_{2}$ et posons que $\phi_{1}$ implique $\phi_{2}$ dans l'interpr\'etation de $I$ ssi $I,\nu\models\phi_{1}$ implique $I,\nu\models\phi_{2}$ pour toute \'evaluation $\nu$. Nous appelons $\phi_{1}$  et $\phi_{2}$  \'equivalent si $\phi_{1}\models^{I}\phi_{2}$ et $\phi_{2}\models^{I}\phi_{1}$.
 \end{definition}\par
 Nous encapsulerons toutes les notions se rapportant \`a FOL dans les th\'eories du premier ordre.
 
 \begin{definition}
-(Th\'eorie du premier ordre). Une th\'eorie du premier ordre est une paire $T=(\mathsmaller \sum,M)$ tel que $\mathsmaller \sum$ est une signature et $M$ est un ensemble non vide de paire ($I,\nu$), appel\'e un mod\`ele de $T$, o\`u $I$ est une interpr\'etation et $\nu\in V_{I}$ est une \'evaluation.
+(Th\'eorie du premier ordre). Une th\'eorie du premier ordre est une paire $T=(\mathsmaller \sum,M)$ telle que $\mathsmaller \sum$ est une signature et $M$ est un ensemble non vide de paire ($I,\nu$), appel\'e un mod\`ele de $T$, o\`u $I$ est une interpr\'etation et $\nu\in V_{I}$ est une \'evaluation.
 \end{definition}
 
-Une th\'eorie du premier ordre est coh\'erente s'il existe des formules non-d\'emontrables. Nous supposons que toutes les th\'eories, dont nous parleront, sont coh\'erentes. Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$, tout $\mathsmaller \sum$-terme t est aussi appel\'e un $T$-terme et tout $\mathsmaller \sum$-formule $\phi$ est aussi appel\'e une $T$-formule. Une paire ($T,\nu$)$\in M$ tel que $T,\nu\models\phi$ est un $T$-mod\`ele de $\phi$. Nous noterons l'ensemble de tout les $T$-mod\`ele de $\phi$ par $\phibra_{T} = \{(T,\nu)\in M | I,\nu\models\phi\}$.
+Une th\'eorie du premier ordre est coh\'erente s'il existe des formules non-d\'emontrables. Nous supposons que toutes les th\'eories, dont nous parlerons, sont coh\'erentes. Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$, tout $\mathsmaller \sum$-terme t est aussi appel\'e un $T$-terme et tout $\mathsmaller \sum$-formule $\phi$ est aussi appel\'e une $T$-formule. Une paire ($T,\nu$)$\in M$ telle que $T,\nu\models\phi$ est un $T$-mod\`ele de $\phi$. Nous noterons l'ensemble des $T$-mod\`eles de $\phi$ par $\phibra_{T} = \{(T,\nu)\in M | I,\nu\models\phi\}$.
 
 \begin{definition}
-($T$-satisfaisable et $T$-valide). Soit $T = (\mathsmaller\sum,M)$ une th\'eorie du premier ordre, une $T$-formule $\phi$ est $T$-satisfaisable si $\phibra_{T} \neq \emptyset$ sinon $T$-insatisfaisable. Si $\phi$ est $T$-satisfaisable si et seulement si $\psi$ est $T$-satisfaisable alors $\phi$ et $\psi$ sont \'equisatisfaisable dans T. Si $\phibra_{T} = M$ alors $\phi$ est $T$-valide et $\neg\phi$ est $T$-insatisfaisable.
+($T$-satisfaisable et $T$-valide). Soit $T = (\mathsmaller\sum,M)$ une th\'eorie du premier ordre, une $T$-formule $\phi$ est $T$-satisfaisable si $\phibra_{T} \neq \emptyset$ sinon $T$-insatisfaisable. Si $\phi$ est $T$-satisfaisable si et seulement si $\psi$ est $T$-satisfaisable alors $\phi$ et $\psi$ sont \'equisatisfaisables dans T. Si $\phibra_{T} = M$ alors $\phi$ est $T$-valide et $\neg\phi$ est $T$-insatisfaisable.
 \end{definition}
 
 \begin{definition}
-($T$-mplication et $T$-\'equivalence). Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$ et deux $T$-formule $\phi$ et $\psi$, nous \'ecrivons $\phi\models^{T}\psi$ et posons que $\phi$ $T$-implique $\psi$ si et seulement si $\phibra_{T}\subseteq \psibra_{T}$. Nous appelons $\phi$  et $\psi$  $T$-\'equivalent si $\phi\models^{T}\psi$ et $\psi\models^{T}\phi$.
+($T$-mplication et $T$-\'equivalence). Soit une th\'eorie du premier ordre $T = (\mathsmaller \sum,M)$ et deux $T$-formules $\phi$ et $\psi$, nous \'ecrivons $\phi\models^{T}\psi$ et posons que $\phi$ $T$-implique $\psi$ si et seulement si $\phibra_{T}\subseteq \psibra_{T}$. Nous appelons $\phi$  et $\psi$  $T$-\'equivalent si $\phi\models^{T}\psi$ et $\psi\models^{T}\phi$.
 \end{definition}\par
 	\section{Logique de s\'eparation}
 		\subsection{Syntaxe}
-	La syntaxe de la logique de logique de s\'eparation (SL) est construit sur la syntaxe de FOL, d\'efinie \`a la section 1.1.1. Nous consid\'erons une th\'eorie du premier ordre $T=(\mathsmaller\sum,M)$ tel que $\sum^{s}$ contiennent les types $Loc$ et $Data$ et $\sum^{f}$ contient une constante $nil^{Loc}$.
+	La syntaxe de la logique de logique de s\'eparation (SL) est construite sur la syntaxe de FOL, d\'efinie \`a la section 1.1.1. Nous consid\'erons une th\'eorie du premier ordre $T=(\mathsmaller\sum,M)$ telle que $\sum^{s}$ contient les types $Loc$ et $Data$ et $\sum^{f}$ contient une constante $nil^{Loc}$.
 	\begin{definition}
 	(Formule de la logique de s\'eparation). Une formule SL s'\'ecrit avec les m\^emes r\`egles qu'une formule FOL en ajoutant ces r\`egles :
 	\\$\phi^{SL} ::= \top$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(true)\par
@@ -151,12 +158,12 @@ Une th\'eorie du premier ordre est coh\'erente s'il existe des formules non-d\'e
 ~~~~~$|$~~$\exists x.\psi^{SL},$~~~~~~~~~~~~$x\in FV(\psi^{SL})$~~~~~~~~~~~~~~~(quantificateur existentiel)\par
 ~~~~~$|$~~$\forall x.\psi^{SL},$~~~~~~~~~~~~$x\in FV(\psi^{SL})$~~~~~~~~~~~~~~~(quantificateur universel)
 	\end{definition}
-	Les constantes $\top$ et $\bot$, des termes bool\'een, et l'\'egalit\'e entre deux termes de m\^eme type sont des formules SL($T$). La n\'egation, conjonction, disjonction, les quantificateurs existentiel et universelle sont aussi des formules SL($T$).
+	Les constantes $\top$ et $\bot$, des termes bool\'eens, et l'\'egalit\'e entre deux termes de m\^eme type sont des formules SL($T$). La n\'egation, conjonction, disjonction, les quantificateurs existentiels et universels sont aussi des formules SL($T$).
 	Les deux nouveaux atomes d\'ecrivant le vide et le singleton de la heap sont des formules SL($T$).\par
 	Si une SL($T$)-formule contient au moins une fois emp, $\mapsto$, $*$ ou $\sepimp$ alors c'est une formule \textit{spatial} sinon c'est une formule \textit{pure}.\par
-	La plupart des d\'efinition de data structure, tel que des listes ou des arbres, utilise un fragment restreint sans quantificateur appel\'e \textit{symbolic heaps}.
+	La plupart des d\'efinitions de data structure, telle que les listes ou les arbres, utilise un fragment restreint sans quantificateur appel\'e \textit{symbolic heaps}.
 \begin{definition}
-(Formule de symbolic heap). Une formule de \textit{symbolic heap} est une conjonction $\Pi\land\Theta$ entre une pure $(\Pi)$ et une spatiale $(\Theta)$ partie, d\'efinies ainsi :\\
+(Formule de symbolic heap). Une formule de \textit{symbolic heap} est une conjonction $\Pi\land\Theta$ entre une pure $(\Pi)$ et une spatiale $(\Theta)$ partie, d\'efinie ainsi :\\
 $\Pi ::= \top$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(true)\par
 $|$ $\bot$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(false)\par
 $|$ $t,$~~~~~~~~~~~~~$t^{Bool}$ $T$-terme~~~~~~~~~~~~(boolean variable)\par
@@ -170,11 +177,11 @@ $|$ $\Theta_{1}*\Theta_{2},$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(conjonction s\'epar
 
 	\subsection{S\'emantique}
 	\begin{definition}
-	(Heap).Soit une interpr\'etation $I$, la heap est une partie fini associant une location avec une data, $h : Loc^{I} \rightarrow_{fin} Data^{I}$. Nous utiliserons $Heaps^{I}$ pour repr\'esenter l'ensemble de toutes les heaps sous l'interpr\'etation de $I$.
+	(Heap).Soit une interpr\'etation $I$, la heap est une partie finie associant une location avec une data, $h : Loc^{I} \rightarrow_{fin} Data^{I}$. Nous utiliserons $Heaps^{I}$ pour repr\'esenter l'ensemble de toutes les heaps sous l'interpr\'etation de $I$.
 	\end{definition}
-	Deux heaps $h_{1}$ et $h_{2}$ sont disjointes si dom($h_{1}$)$\cap$dom($h_{2}$) $= \emptyset$ et nous l'\'ecrivons $h_{1}\#h_{2}$. L'union disjointes sera symbolis\'e par $h_{1}\cupdot h_{2}$ qui est ind\'efinie si $h_{1}$ et $h_{2}$ ne sont pas disjoints. Nous \'ecrivons $\bigcupdot H$ pour l'union disjointes des heaps dans l'ensemble $H \subseteq Heaps$.
+	Deux heaps $h_{1}$ et $h_{2}$ sont disjointes si dom($h_{1}$)$\cap$dom($h_{2}$) $= \emptyset$ et nous l'\'ecrivons $h_{1}\#h_{2}$. L'union disjointe sera symbolis\'ee par $h_{1}\cupdot h_{2}$ qui est ind\'efinie si $h_{1}$ et $h_{2}$ ne sont pas disjoints. Nous \'ecrivons $\bigcupdot H$ pour l'union disjointe des heaps dans l'ensemble $H \subseteq Heaps$.
 	\begin{definition}
-	(S\'emantique de formule SL). Soit une interpr\'etation $I$, une \'evaluation $\nu\in V_{I}$ et une heap $h\in Heaps$, nous \'ecrivons $I,\nu,h\models^{SL}\phi$ si une formule SL $\phi$ est interpr\'et\'e \`a true sous $I,\nu$ et $h$. Cette relation est d\'efinie par induction  dans la structure de $\phi$ :\par
+	(S\'emantique de formule SL). Soit une interpr\'etation $I$, une \'evaluation $\nu\in V_{I}$ et une heap $h\in Heaps$, nous \'ecrivons $I,\nu,h\models^{SL}\phi$ si une formule SL $\phi$ est interpr\'et\'ee \`a true sous $I,\nu$ et $h$. Cette relation est d\'efinie par induction  dans la structure de $\phi$ :\par
 	$I,\nu,h\models^{SL}\top$~~~~~~~~~~~toujours vrai\par
 $I,\nu,h\models^{SL}\bot$~~~~~~~~~~jamais vrai\par
 $I,\nu,h\models^{SL} t$~~~~~~~~~~ ssi $t^{I}_{\nu}=\top,t^{Bool}$ $T$-terme\par
@@ -189,27 +196,27 @@ $I,\nu,h\models^{SL}\phi_{1}\sepimp\phi_{2}$~~ssi $\forall h_{0}.h\#h_{0}$ et $I
 $I,\nu,h\models^{SL}\exists x.\psi$~~~~~ssi $I,\nu[x\leftarrow v],h\models^{SL}\psi, x^{\sigma}\in FV(\psi),$ \\pour certains $v\in\sigma^{I}$\par
 $I,\nu,h\models^{SL}\forall x.\psi$~~~~~~~ssi $I,\nu[x\leftarrow v],h\models^{SL}\psi, x^{\sigma}\in FV(\psi),$ pour tout $v\in\sigma^{I}$
 	\end{definition}
-	Un tripl\'e $(I,\nu,h)$ tel que $(I,\nu)\in M$ et $I,\nu,h\models^{SL}\phi$ est un SL($T$)-mod\`ele pour la SL($T$)-formule $\phi$. Nous noterons l'ensemble de tout les SL($T$)-mod\`ele de $\phi$ par $\phibra_{SL(T)} = \{(I,\nu,h)|(I,\nu)\in M,h\in Heaps^{I}$ et $I,\nu,h\models^{SL}\phi\}$. En utilisant ces notations et la s\'emantique au-dessus, nous d\'efinirons la satisfaisabilit\'e et l'implication de SL($T$)-formules.
+	Un tripl\'e $(I,\nu,h)$ tel que $(I,\nu)\in M$ et $I,\nu,h\models^{SL}\phi$ est un SL($T$)-mod\`ele pour la SL($T$)-formule $\phi$. Nous noterons l'ensemble des SL($T$)-mod\`eles de $\phi$ par $\phibra_{SL(T)} = \{(I,\nu,h)|(I,\nu)\in M,h\in Heaps^{I}$ et $I,\nu,h\models^{SL}\phi\}$. En utilisant ces notations et la s\'emantique au-dessus, nous d\'efinirons la satisfaisabilit\'e et l'implication de SL($T$)-formules.
 \begin{definition}
-(SL$(T)$-satisfaisable et SL$(T)$-valide). Soit un th\'eorie du premier ordre T = $(\smallsum,M)$, une SL$(T)$-formule $\phi$ est SL$(T)$-satisfaisable si $\phibra_{SL(T)}\neq\emptyset$ et SL$(T)$-insatisfaisable sinon. Si $\psi$ est SL$(T)$-satisfaisable si et seulement si $\phi$ est SL$(T)$-satisfaisable, alors $\phi$ et $\psi$ sont \textit{\'equisatisfaisable} dans SL$(T)$. Si $\phibra_{SL(T)}=M$ alors $\phi$ est $T$-valide et $\neg\phi$ est SL$(T)$-insatisfaisable.
+(SL$(T)$-satisfaisable et SL$(T)$-valide). Soit une th\'eorie du premier ordre T = $(\smallsum,M)$, une SL$(T)$-formule $\phi$ est SL$(T)$-satisfaisable si $\phibra_{SL(T)}\neq\emptyset$. Sinon, elle est SL$(T)$-insatisfaisable. Si $\psi$ est SL$(T)$-satisfaisable si et seulement si $\phi$ est SL$(T)$-satisfaisable, alors $\phi$ et $\psi$ sont \textit{\'equisatisfaisables} dans SL$(T)$. Si $\phibra_{SL(T)}=M$ alors $\phi$ est $T$-valide et $\neg\phi$ est SL$(T)$-insatisfaisable.
 \end{definition}
 
 \begin{definition}
-(SL$(T)$-implication et SL$(T)$-\'equivalence). SOoit une th\'eorie du premier ordre $T=(\smallsum,M)$ et deux SL$(T)$-formule $\phi$ et $\psi$, nous \'ecrivons $\phi\models^{SL}_{T}\psi$ et disons que $\phi$ SL$(T)$-implique $\psi$ si et seulement si $\phibra_{SL(T)}\subseteq\psibra_{SL(T)}$. Nous appelons $\phi$ et $psi$ $T$-\'equivalent quand  $\phi\models^{SL}_{T}\psi$ et $\psi\models^{SL}_{T}\phi$. 
+(SL$(T)$-implication et SL$(T)$-\'equivalence). Soit une th\'eorie du premier ordre $T=(\smallsum,M)$ et deux SL$(T)$-formules $\phi$ et $\psi$, nous \'ecrivons $\phi\models^{SL}_{T}\psi$ et disons que $\phi$ SL$(T)$-implique $\psi$ si et seulement si $\phibra_{SL(T)}\subseteq\psibra_{SL(T)}$. Nous appelons $\phi$ et $\psi$ $T$-\'equivalent quand  $\phi\models^{SL}_{T}\psi$ et $\psi\models^{SL}_{T}\phi$. 
 \end{definition}
 
 \begin{definition}
-(Satisfaisable et valide). Une formule SL $\phi$ est satisfaisable si il existe une \'evaluation $\nu$ et une heap $h$ tel que $\nu,h\models^{SL}\phi$ et \textit{insatisfaisable} sinon. Si $\nu,h\models^{SL}\phi$ pour tout $\nu$ et $h$, alors $\phi$ est valide et $\neg\phi$ est insatisfaisable.
+(Satisfaisable et valide). Une formule SL $\phi$ est satisfaisable s'il existe une \'evaluation $\nu$ et une heap $h$ telles que $\nu,h\models^{SL}\phi$. Sinon, elle est \textit{insatisfaisable}. Si $\nu,h\models^{SL}\phi$ pour tout $\nu$ et $h$, alors $\phi$ est valide et $\neg\phi$ est insatisfaisable.
 \end{definition}
 
 \begin{definition}
-(Implication et \'equivalence). Soit une formule SL $\phi$ et $\psi$, nous \'ecrivons $\phi\models^{SL}\psi$ et disons que $\phi$ implique $\psi$ si et seulement si $\nu,h\models^{SL}\phi$ implique $\nu,h\models^{SL}\psi$, pour tout \'evaluation $\nu$ et heap $h$. Nous appelons $\phi$ et $\psi$ \'equivelent quand $\phi\models^{SL}_{T}\psi$ et $\psi\models^{SL}_{T}\phi$. 
+(Implication et \'equivalence). Soit une formule SL $\phi$ et $\psi$, nous \'ecrivons $\phi\models^{SL}\psi$ et disons que $\phi$ implique $\psi$ si et seulement si $\nu,h\models^{SL}\phi$ implique $\nu,h\models^{SL}\psi$, pour toutes \'evaluations $\nu$ et heap $h$. Nous appelons $\phi$ et $\psi$ \'equivalent quand $\phi\models^{SL}_{T}\psi$ et $\psi\models^{SL}_{T}\phi$. 
 \end{definition}
  	\section{Proc\'edures de d\'ecision}
  	\begin{definition}
  	(Probl\`eme de d\'ecision). Le probl\`eme de d\'ecision pour un formule $\phi$ est de d\'eterminer si $\phi$ est valide.
  	\end{definition}
- 	Soit une th\'eorie $T$, il existe des proc\'edures de d\'ecision qui d\'etermine si une $T$-formule est valide.
+ 	Soit une th\'eorie $T$, il existe des proc\'edures de d\'ecision qui d\'eterminent si une $T$-formule est valide.
  	\begin{definition}
  	(Solidit\'e d'une proc\'edure). Une proc\'edure pour un probl\`eme de d\'ecision est solide si quand elle retourne \textit{Valide}, alors la formule en entr\'ee est valide.
  	\end{definition}
@@ -217,14 +224,14 @@ $I,\nu,h\models^{SL}\forall x.\psi$~~~~~~~ssi $I,\nu[x\leftarrow v],h\models^{SL
  		(Compl\'etude d'une proc\'edure). Une proc\'edure pour un probl\`eme de d\'ecision est complet si elle s'arr\^ete toujours et si elle est solide.
  	\end{definition}
  	\begin{definition}
- 	(Proc\'edure de d\'ecision). Soit $T$ une th\'eorie, une proc\'edure est appel\'e \textit{proc\'edure de d\'ecision pour $T$} si elle est compl\`ete pour toutes les formules de $T$. 
+ 	(Proc\'edure de d\'ecision). Soit $T$ une th\'eorie, une proc\'edure est appel\'ee \textit{proc\'edure de d\'ecision pour $T$} si elle est compl\`ete pour toutes les formules de $T$. 
  	\end{definition} 	
  	Un aspect important, pour prouver des programmes avec l'aide de la logique, est d'utiliser des th\'eories d\'ecidables.
 	\begin{definition}
 	(Th\'eorie d\'ecidable). Soit $T$ une th\'eorie logique du premier ordre, $T$ est d\'ecidable si et seulement s'il existe une proc\'edure de d\'ecision.
 	\end{definition}
-Beaucoup de th\'eories doivent \^etre syntaxiquement restreintes pour devenir d\'ecidable. On parle alors de fragment de la logique.		\		\subsection{Presburger}
-		L'arithm\'etique de Presburger est muni de la signature : $\smallsum^{f}=\{0,1,+,=\}$ et est accompagn\'ee des axiomes suivant :
+Beaucoup de th\'eories doivent \^etre syntaxiquement restreintes pour devenir d\'ecidables. On parle alors de fragment de la logique.		\				\subsection{Presburger}
+		L'arithm\'etique de Presburger est munie de la signature : $\smallsum^{f}=\{0,1,+,=\}$ et est accompagn\'ee des axiomes suivant :
 		\begin{enumerate}
 		\item $\forall x.$ $\neg(0=x+1)$
 		\item $\forall x,y.$ $x + 1=y+1\leftarrow x=y$
@@ -242,7 +249,7 @@ Beaucoup de th\'eories doivent \^etre syntaxiquement restreintes pour devenir d\
 		
 	\subsection{Th\'eorie des tableaux}	
 	Un tableau logique est une expression qui associe un index \`a un \'el\'ement. Nous notons le type de l'index $T_{I}$ et le type de l'\'el\'ement $T_{E}$. Le type du tableau est not\'e $T_{A}$, un raccourci de $T_{I}\rightarrow T_{E}$, i.e., l'ensemble des fonctions qui associe un \'el\'ement de $T_{I}$ \`a un \'el\'ement de $T_{E}$.\\
-	Posons $a\in T_{A}$ un tableau, il y a 4 fonctions \'el\'ementaire \`a la th\'eorie :
+	Posons $a\in T_{A}$ un tableau, il y a 4 fonctions \'el\'ementaires \`a la th\'eorie :
 	\begin{enumerate}
 	\item \textit{Select} : Soit $i\in T_{I}$, \textit{Select(a,i)} renvoie la valeur de l'\'el\'ement \`a l'index $i$, not\'e $a[i]$.
 	\item \textit{Store} :  Soit $i\in T_{I}$ et $e\in T_{E}$, \textit{Store(a,i,e)} renvoie un nouveau tableau avec les m\^emes valeurs que le tableau $a$ et la valeur $e$ \`a l'index $i$, not\'e $a\{i\leftarrow e\}$.
@@ -250,7 +257,7 @@ Beaucoup de th\'eories doivent \^etre syntaxiquement restreintes pour devenir d\
 	\item \textit{Extensionalit\'e} : Soit $a,b\in T_{A}$, \textit{array_ext}($a,b$) renvoie un index $i$ tel que $a[i] = b[i]\rightarrow a = b $
 	\end{enumerate}
 	Nous appelons les th\'eories utilis\'ees pour raisonner sur les indices et les \'el\'ements, \textit{index th\'eorie} et \textit{\'el\'ement th\'eorie}.\par
-La logique de l'index autorise les quantificateurs pour mod\'eliser des propri\'et\'es tel que "Il existe un \'el\'ement du tableau qui est \'egal \`a z\'ero" ou "tout \'el\'ement du tableau est sup\'erieur ou \'egal \`a z\'ero". Un exemple de th\'eorie adapt\'ee est l'arithm\'etique de Presburger.
+La logique de l'index autorise les quantificateurs pour mod\'eliser des propri\'et\'es telles que "Il existe un \'el\'ement du tableau qui est \'egal \`a z\'ero" ou "tout \'el\'ement du tableau est sup\'erieur ou \'egal \`a z\'ero". Un exemple de th\'eorie adapt\'ee est l'arithm\'etique de Presburger.
 	
 	\begin{definition}
 (Tableau logique). La syntaxe d'un tableau logique est d\'efinie par extension des r\`egles de syntaxe de la logique de l'index et la logique de l'\'el\'ement. Nous notons $form_{I}$/$term_{I}$ et $form_{E}$/$term_{E}$ les formules/termes de, respectivement, la logique de l'index et la logique de l'\'el\'ement :\par
@@ -260,48 +267,48 @@ $term_{E} :$ $term_{A}[term_{I}]$\par
 $term_{I} :$ $array\_ext(term_{A},term_{A})$
 
 \end{definition}
-	Nous pouvons observer que la grammaire n'autorise pas l'\'egalit\'e entre les tableaux. L'\'egalit\'e se fait avec la fonction d'extensionalit\'e, en supposant que l'\'egalit\'e est autoris\'e entre les \'el\'ements du tableaux.\par
+	Nous pouvons observer que la grammaire n'autorise pas l'\'egalit\'e entre les tableaux. L'\'egalit\'e se fait avec la fonction d'extensionalit\'e, en supposant que l'\'egalit\'e est autoris\'ee entre les \'el\'ements du tableaux.\par
 	L'axiome principal utilis\'e pour d\'efinir les fonctions \textit{select} et \textit{store} est l'axiome \textbf{read-over-write} :\\
 	$\forall a\in T_{A}.$ $\forall e\in T_{E}.$ $\forall i,j\in T_{I}.$ $i=j \rightarrow$ \textit{select(store($a,i,e$)$,j$) $ = e$
 			\\ $\land$ $i\neq j \rightarrow$ select(store($a,i,e$)$,j$) $=$ select($a,j$)}.\par
 	La th\'eorie des tableaux actuelle n'est pas d\'ecidable, m\^eme si la combinaison entre la logique de l'index et la logique de l'\'el\'ement est d\'ecidable. Il faut limiter la syntaxe de la th\'eorie pour la rendre d\'ecidable.
-	\subsubsection{Tableaux comme des fonctions non-interpr\'et\'es}
-	Consid\'erons le fragment de la logique qui n'autorise pas les quantificateur sur les tableaux. Un chemin \'evident est de r\'eduire chaque formule en une combinaison d'autres th\'eories qui tra\^ite les tableaux comme des fonctions non-interpr\'et\'es.\par
-	Les fonctions non-interpr\'et\'es sont utilis\'ees pour abstra\^ire, ou g\'en\'eralis\'e, des th\'eor\`emes. Contrairement aux autres symboles de fonctions, elles ne devraient pas \^etre interpr\'et\'es comme une partie de la formule. Dans la formule suivante, par exemple, $F$ et $G$ sont non-interpr\'et\'ees alors que le symbole de fonction binaire "+" est interpr\'et\'e comme la fonction addition :\par
+	\subsubsection{Tableaux comme des fonctions non-interpr\'et\'ees}
+	Consid\'erons le fragment de la logique qui n'autorise pas les quantificateurs sur les tableaux. Un chemin \'evident est de r\'eduire chaque formule en une combinaison d'autres th\'eories qui tra\^ite les tableaux comme des fonctions non-interpr\'et\'ees.\par
+	Les fonctions non-interpr\'et\'ees sont utilis\'ees pour abstra\^ire, ou g\'en\'eralis\'ee, des th\'eor\`emes. Contrairement aux autres symboles de fonctions, elles ne devraient pas \^etre interpr\'et\'ees comme une partie de la formule. Dans la formule suivante, par exemple, $F$ et $G$ sont non-interpr\'et\'ees alors que le symbole de fonction binaire "+" est interpr\'et\'e comme la fonction addition :\par
 $F(x) = F(G(y)) \lor x+1=y$\par
-Remplacer une fonction avec une fonction non-interpr\'et\'e est une technique courante pour simplifier le raisonnement.	En contre-partie, une formule valide peut devenir invalide. Pour que ce remplacement soit correct, il faut que les fonctions non-interpr\'et\'es suivent un axiome. Si on leur donne une entr\'ee identique, la sortie sera identique. C'est ce qu'on appelle une \textbf{coh\'erence fonctionnel} ou encore \textbf{congruence fonctionnelle}.\par
+Remplacer une fonction avec une fonction non-interpr\'et\'ee est une technique courante pour simplifier le raisonnement.	En contre-partie, une formule valide peut devenir invalide. Pour que ce remplacement soit correct, il faut que les fonctions non-interpr\'et\'ees suivent un axiome. Si on leur donne une entr\'ee identique, la sortie sera identique. C'est ce qu'on appelle une \textbf{coh\'erence fonctionnelle} ou encore \textbf{congruence fonctionnelle}.\par
 Quand le tableau est une fonction non-interpr\'et\'ee, l'index devient le seul argument de la fonction. La fonction \textit{Store} peut \^etre manipul\'e en rempla\c{c}ant chaque expression de la forme $a\{i\leftarrow e\}$ par une nouvelle variable $a'\in T_{A}$ et en ajoutant deux contraintes qui correspondent directement \`a l'axiome \textbf{read-over-write} :\par
 \begin{enumerate}
 \item $a'[i]=e$ pour la valeur qui est \'ecrite,
 \item $\forall j\neq i. a'[j]=a[j]$ pour les valeurs qui sont inchang\'ees.
 \end{enumerate}	
 	
-C'est appel\'e la r\'egle d'\'ecriture et est une transformation \'equivalente dans les formules des tableaux logiques.\par
-Maintenant, la logique des tableaux peut \^etre r\'eduite \`a la combinaison entre la logique de l'index et les fonctions non-interpr\'et\'es. La combinaison de l'arithm\'etique de Presburger et des fonctions non-interpr\'et\'es est ind\'ecidable. Or, dans un programme, les tableaux sont index\'es par des entiers. Il est donc int\'eressant conna\^itre la restriction n\'ecessaire de l'ensemble des formules.\par
+On l'appelle la r\'egle d'\'ecriture. Elle est une transformation \'equivalente dans les formules des tableaux logiques.\par
+Maintenant, la logique des tableaux peut \^etre r\'eduite \`a la combinaison entre la logique de l'index et les fonctions non-interpr\'et\'ees. La combinaison de l'arithm\'etique de Presburger et des fonctions non-interpr\'et\'ees est ind\'ecidable. Or, dans un programme, les tableaux sont index\'es par des entiers. Il est donc int\'eressant de conna\^itre la restriction n\'ecessaire de l'ensemble des formules.\par
 	
 	D\'efinissons maintenant une classe r\'eduite des formules de la logique des tableaux pour obtenir la d\'ecidabilit\'e. Nous consid\'erons les formules qui sont des combinaisons bool\'eennes de \textbf{propri\'et\'es de tableau}.
 	
 	\begin{definition}
-		(Propri\'et\'e de tableau). Une formule de la logique des tableaux est appel\'e \textbf{propri\'et\'e de tableau} si et seulement si elle est de la forme :\par
-$\forall i_{1},...,i_{k}\in T_{I}.\phi_{I}(i_{1},...,i_{k})\Longrightarrow\phi_{V}(i_{1},...,i_{k})$, et satisfait les conditions suiventes :
+		(Propri\'et\'e de tableau). Une formule de la logique des tableaux est appel\'ee \textbf{propri\'et\'e de tableau} si et seulement si elle est de la forme :\par
+$\forall i_{1},...,i_{k}\in T_{I}.\phi_{I}(i_{1},...,i_{k})\Longrightarrow\phi_{V}(i_{1},...,i_{k})$, et satisfait les conditions suivantes :
 \begin{enumerate}
-\item La fonctioon bool\'eennes, appel\'e \textbf{index guard}, doit suivre la grammaire suivante :\par
+\item La fonction bool\'eenne, appel\'ee \textbf{index guard}, doit suivre la grammaire suivante :\par
 $iguard : iguard\land iguard$ $|$ $iguard\lor iguard$ $|$ $iterm\leq iterm$ $|$ $iterm = iterm$\par
 $iterm :$ $i_{1}$ $|$ $...$ $|$ $i_{k}$ $|$ $term$\par
 $term :$ integer-constant $|$ integer-constant $\cdot$ index-identifier $|$ term+term\par
 Le "index-identifier" utilis\'e dans "term" ne doit pas \^etre l'un des $i_{1}...i_{k}$.
-\item L'index des variables $i_{1}...i_{k}$ ne peut \^etre utilis\'e que dans une expressions de la forme $a[i_{j}]$.
+\item L'index des variables $i_{1}...i_{k}$ ne peut \^etre utilis\'e que dans une expression de la forme $a[i_{j}]$.
 \end{enumerate}\par
-La fonction bool\'eennes $\phi_{V}$ est appel\'e \textbf{value constraint}.
+La fonction bool\'eennes $\phi_{V}$ est appel\'ee \textbf{value constraint}.
 	\end{definition}
-	Il existe un algorithme, que nous ne pr\'eciseront pas, acceptant le fragment des propri\'et\'es de tableau et le r\'eduisant \`a une formule \'equisatisfaisable qui utilise la th\'eorie des \'el\'ements et la th\'eorie des indexs.\par
+	Il existe un algorithme, que nous ne pr\'eciserons pas, acceptant le fragment des propri\'et\'es de tableau et le r\'eduisant \`a une formule \'equisatisfaisable qui utilise la th\'eorie des \'el\'ements et la th\'eorie des indexs.\par
 	Nous supposons que les op\'erations suivantes sont d\'efinies dans les th\'eories des indexs et des \'el\'ements, et que nous avons une proc\'edure de d\'ecision pour la combinaison de th\'eories: 
 	\begin{itemize}
 	\item Pour le type des indexs, nous supposons que l'arithm\'etique lin\'eaire sur les indices est permise.
-	\item Pour le type des \'el\'ements, nous supposons seulement que l'\'egalit\'e entre deux \'el\'ement est permise.
+	\item Pour le type des \'el\'ements, nous supposons seulement que l'\'egalit\'e entre deux \'el\'ements est permise.
 	\end{itemize}
 \par
- 		Nous repr\'esentons les multisets comme un tableau avec des \'el\'ement de type nat : $ type$ $nat = O$ $|$ $S(nat)$ et $type$ $multiset = array(index,nat)$. L'\'egalit\'e entre deux nat est bien d\'efini et donc la contrainte sur le type des \'el\'ements de la proc\'edure de d\'ecision pr\'ec\'edente est respect\'ee.
+ 		Nous repr\'esentons les multisets comme un tableau avec des \'el\'ements de type nat : $ type$ $nat = O$ $|$ $S(nat)$ donc $type$ $multiset = array(index,nat)$. L'\'egalit\'e entre deux nat est bien d\'efinie et donc la contrainte sur le type des \'el\'ements de la proc\'edure de d\'ecision pr\'ec\'edente est respect\'ee.
 
 	
  	\section{Combinaison de th\'eories d\'ecidables}
@@ -314,21 +321,21 @@ La fonction bool\'eennes $\phi_{V}$ est appel\'e \textbf{value constraint}.
 	\begin{definition}
 	(Probl\`eme de combinaison de th\'eorie). Soit $\phi$ une $(\smallsum_{1}\cup\smallsum_{2})$-formule. Le probl\`eme de combinaison de th\'eorie est de d\'ecider si $\phi$ est $T_{1}+T_{2}$-valide.
 	\end{definition}\par
-	La combinaison des th\'eories est, en g\'en\'eral, ind\'ecidable m\^eme si les th\'eories sont d\'ecidables. Ainsi, pour rendre les combinaisons d\'ecidables, il est n\'ecessaire de les restreindre.	La proc\'edure de Nelson-Oppen est une proc\'edure de d\'ecision pour la combinaison de th\'eories suivants des restrictions pr\'ecises. Nous n'allons pas aborder son fonctionnement mais seulement ces restrictions.
+	La combinaison des th\'eories est, en g\'en\'eral, ind\'ecidable m\^eme si les th\'eories sont d\'ecidables. Ainsi, pour rendre les combinaisons d\'ecidables, il est n\'ecessaire de les restreindre.	La proc\'edure de Nelson-Oppen est une proc\'edure de d\'ecision pour la combinaison de th\'eories suivantes des restrictions pr\'ecises. Nous n'allons pas aborder son fonctionnement mais seulement ces restrictions.
 	\begin{definition}
 		Pour que la proc\'edure de Nelson-Oppen soit applicable, les th\'eories $T_{1},...,T_{n}$ doivent suivre les restrictions suivantes :
 		\begin{enumerate}
 		\item $T_{1},...,T_{n}$ sont des th\'eories du premier ordre, sans quantificateur et avec l'\'egalit\'e.
 		\item Il y a une proc\'edure de d\'ecision pour chaque th\'eorie $T_{1},...,T_{n}$.
-		\item Les signatures sont disjointes, c'est \`a dire, $\forall 1\leq i<j\leq n,$ $\smallsum_{i}\cap\smallsum_{j}=\emptyset$.
-		\item $T_{1},...,T_{n}$ sont des th\'eories qui sont interpr\'et\'es sur un domaine infini.
+		\item Les signatures sont disjointes, c'est-\`a-dire, $\forall 1\leq i<j\leq n,$ $\smallsum_{i}\cap\smallsum_{j}=\emptyset$.
+		\item $T_{1},...,T_{n}$ sont des th\'eories qui sont interpr\'et\'ees sur un domaine infini.
 		\end{enumerate}
 	\end{definition}
 	Il existe des extensions de la proc\'edure de Nelson-Oppen pouvant surmonter chacune des restrictions. Les techniques de combinaison de d\'ecision sont essentielles \`a la construction des SMT solvers.
 
  	\section{SMT-solver}
-	 		Un SMT-solver permet de r\'esoudre des formules logique \`a l'aide de proc\'edure de d\'ecision. Nous allons discuter d'une m\'ethode g\'en\'eral sur laquelle se base la plupart des SMT-solvers.\\ \par Soit $T=(\smallsum,M)$ une th\'eorie du premier ordre sans quantificateur et $DP_{T}$ une proc\'edure pour le fragment des conjonctions de $T$ ($DP_{T}$ peut d\'ecider une conjonction de $T$-lit\'eral). La m\'ethode combine $DP_{T}$ avec un SAT-solver  de diverses mani\`eres afin de construire une proc\'edure de d\'ecision pour T. Cette approche a en pratique de gros avantages, car elle est tr\`es modulaire et tr\`es efficace. Les deux principaux outils de cette m\'ethode travaillent en collaboration : le SAT-solver choisit la valeur des litt\'eraux afin de satisfaire la structure bool\'eennes de la formule et $DP_{T}$ v\'erifie que le choix est coh\'erent dans $T$.\par
-	 		Soit un $T$-litt\'eral $l$, nous lui associons une variable bool\'eenne unique $e(l)$, que nous l'appelons l'\textbf{encodeur} bool\'een de ce litt\'eral. \'Etendons l'id\'ee aux formules, soit une $T$-formule $\phi$, $e(\phi)$ correspond \`a la formule bool\'eenne o\`u chaque litt\'eral a \'et\'e substitu\'e par son encodeur bool\'een. $e(\phi)$ est appel\'ee le \textbf{squelette propositionnel} de $\phi$. En utilisant ces notations, nous allons \'etudier un aper\c{c}u de cette m\'ethode.\par 
+	 		Un SMT-solver permet de r\'esoudre des formules logiques \`a l'aide de proc\'edure de d\'ecision. Nous allons discuter d'une m\'ethode g\'en\'eralle sur laquelle se base la plupart des SMT-solvers.\\ \par Soit $T=(\smallsum,M)$ une th\'eorie du premier ordre sans quantificateur et $DP_{T}$ une proc\'edure pour le fragment des conjonctions de $T$ ($DP_{T}$ peut d\'ecider une conjonction de $T$-lit\'eral). La m\'ethode combine $DP_{T}$ avec un SAT-solver  de diverses mani\`eres afin de construire une proc\'edure de d\'ecision pour T. Cette approche a en pratique de gros avantages, car elle est tr\`es modulaire et tr\`es efficace. Les deux principaux outils de cette m\'ethode travaillent en collaboration : le SAT-solver choisit la valeur des litt\'eraux afin de satisfaire la structure bool\'eennes de la formule et $DP_{T}$ v\'erifie que le choix est coh\'erent dans $T$.\par
+	 		Soit un $T$-litt\'eral $l$, nous lui associons une variable bool\'eenne unique $e(l)$, que nous appelons l'\textbf{encodeur} bool\'een de ce litt\'eral. \'Etendons l'id\'ee aux formules, soit une $T$-formule $\phi$, $e(\phi)$ correspond \`a la formule bool\'eenne o\`u chaque litt\'eral a \'et\'e substitu\'e par son encodeur bool\'een. $e(\phi)$ est appel\'ee le \textbf{squelette propositionnel} de $\phi$. En utilisant ces notations, nous allons \'etudier un aper\c{c}u de cette m\'ethode.\par 
 	 		Soit $T$ la th\'eorie de l'\'egalit\'e, une formule	$\phi :=$ $x=y$ $\land$ $((y=z\land x\neq z)\lor x=z)$.\\
 	 		Nous transformons cette formule en son squelette propositionnel,\par $e(\phi):= e(x=y)\land (e(y=z)\land e(x\neq z))\lor e(x=z)$.\\
 Soit $B$ une formule bool\'eenne, initialement $e(\phi)$. La seconde \'etape consiste \`a passer $B$ au SAT-solver. Supposons que le SAT-solver retourne l'affectation satisfaisante\par
@@ -366,12 +373,108 @@ est satisfaisable, ce qui prouve que $\phi$, la formule originelle, est satisfai
 
 \end{tikzpicture}
 \chapter{V\'erification d\'eductive avec \verifast{}}
-	\section{Hoare}
-	En pratique, une programme calcule soit la plus faible pr\'econdition n\'ecessaire pour que la postcondition soit respect\'e soit la plus forte postcondition. On les notera respectivement la plus $wp(P,A)$ et $sp(P, B)$. On aura donc \\$\forall B'$ tel que $\{B'\}P\{A\}$, $B' \rightarrow wp(P,A)$ et $\forall A'$ tel que $\{B\}P\{A'\}$, $sp(P,B) \rightarrow A'$. 
-	\section{V\'erification d\'eductive de programmes}
-		La v\'erification d\'eductive se base sur l'annotation des programmes. Le programme est annot\'e avec des formules logiques. Il y a les pr\'econditions (exigences sur les arguments de fonctions), les postconditions (garanties sur les r\'esultats de fonctions) et les invariants de boucle. Il restera \`a v\'erifier que pour chaque fonction, la fonction, accompagn\'ee de ces pr\'econditions, implique les postconditions et qu'\`a chaque appel de fonction, les pr\'econditions sont respect\'ees. Ces v\'erifications se feront \`a l'aide des SMT-solvers.
-		\subsection{Logique de s\'eparation}
-			swap(int*x, int*y)
+	\section{Programme}
+		\verifast{} permet la v\'erification des programmes C-like. La s\'emantique d'un programme peut \^etre donn\'ee par l'ensemble de ces ex\'ecutions. Une ex\'ecution est d\'efini par un nombre fini ou infini de configurations, chacune li\'ee \`a la prochaine ex\'ecution. Une configuration est un \'etat et une continuation. Un \'etat est un \textit{store} et une \textit{heap}. Le \textit{store} sp\'ecifie la valeur des variables du programme. La \textit{heap} sp\'ecifie la valeur des cellules de m\'emoire. La continuation sp\'ecifie ce qu'il va se passer apr\`es.\\
+	Dans un programme, \`a chaque instant, toutes les variables, pr\'ec\'edement d\'efinies, doivent avoir une valeur dans le \textit{store} et chaque espace m\'emoire doit \^etre r\'epr\'esent\'e dans la \textit{heap}.
+	\section{Annotation et ex\'ecution abstraite}
+		La v\'erification d\'eductive se base sur l'annotation des programmes. Chaque fonction est v\'erifi\'ee s\'epar\'ement, utilisant les contrats des autres fonctions et non leurs impl\'ementations. Le contrat d'une fonction consiste en une pr\'econdition et une postcondition. La pr\'econdition sp\'ecifie les attentes, concernant la heap et le store, au d\'ebut de la fonction. La postcondition sp\'ecifie les garanties offertes, concernant le store et la heap, \`a la sortie de la fonction. Les pr\'econditions et postconditions sont exprim\'ees sous forme d'\textit{assertions}. Une assertion est une formule SL. Appelons points-to assertion, l'assertion repr\'esentant la formule singleton heap (voir SL).
+		\begin{exemple}
+		Exemple : Soit une fonction r,
+		\begin{lstlisting}
+		int r(int a,int b)
+		 //@ requires a = b;
+		 //@ ensures result = 0;
+		{ return a-b;}
+		\end{lstlisting}
+		La pr\'econdition de r a besoin que la valeur de a soit la m\^eme que la valeur de b. La postcondition de r assure que la valeur retourn\'ee par le programme est 0, en supposant que la pr\'econdition est respect\'ee.
+		\end{exemple}
+	L'une des notions les plus importantes dans \verifast{} est les pr\'edicats. En effet, le contrat des fonctions doit pouvoir \^etre exprim\'e dans la heap de mani\`ere abstraite. Un pr\'edicat est simplement une fonction bool\'eenne. La d\'efinition d'un pr\'edicat est de la forme\par
+\textbf{predicate} $p(x_1,...,x_n):=a$\\
+o\`u $p$ est le nom du pr\'edicat, $x_1,...,x_n$ sont les noms des variables et $a$ une assertion. $x_1,...,x_n$ sont appel\'ees les param\`etres de $p$ et $a$ le corps de $p$. $n$ est l'arit\'e de $p$. Nous disons que p est un pr\'edicat n-aire.\par
+	En utilisant les pr\'edicats, une heap abstraite peut \^etre d\'eriv\'ee depuis une heap concr\`ete. Une heap abstraite ne contient pas de cellules de m\'emoire mais des instances de pr\'edicats. Une heap abstraite est obtenue depuis une heap concr\`ete en fermant des instances de pr\'edicats. La fermeture d'une instance de pr\'edicat remplace la partie de la heap d\'ecrite par le corps de l'instance du pr\'edicat par l'instance du pr\'edicat elle-m\^eme. Inversement, l'ouverture d'une instance de pr\'edicat remplace l'occurence du pr\'edicat avec un fragment de la heap correspond au corps du pr\'edicat. Nous disons qu'une heap abstraite fait abstraction d'une heap concr\`ete si la heap concr\`ete peut \^etre obtenue \`a travers un nombre fini d'op\'eration \textit{open}.\\ \par
+	
+	Nous allons aborder les notions de consommation et de production d'assertion. Nous verrons, apr\`es, les concepts d'ex\'ecution abstraites d'instructions annot\'ees, fonctions et de programmes. Nous finirons par la relation entre les ex\'ecution abstraites et concr\`etes.\\
+	\subsection{S\'emantique des assertions}
+	Les assertions sont interpr\'et\'ees par rapport \`a une heap abstraite. Nous d\'efinissons l'ensemble des \'el\'ements de la heap abstraite comme l'union des \'el\'ements points-to et des instances de pr\'edicat :\par
+	$AbsHeapElems$ $= \{l\mapsto v| l\in Addresses, v\in \mathbb{Z}\}\cup\{p(v_1,...v_n)|v_1,...,v_n\in\mathbb{Z}\}$\\
+	Nous disons qu'une heap abstraite est bien-form\'e si elle ne contient pas deux \'el\'ements points-to qui ont la m\^eme adresse.\\
+	Nous d\'efinissons un \'etat abstrait comme une paire d'un store et d'une heap abstraite.
+	
+		\subsubsection{Consommation d'assertions}
+			Nous d\'efinissons l'op\'eration de consommer une assertion. Consommer une assertion dans un \'etat abstrait revient \`a v\'erifier qu'il existe un fragment de heap qui match avec l'assertion et de supprimer l'assertion de la heap. La consommation effectue un pattern matching.\par
+	
+	Une points-to assertion et un pr\'edicat peuvent contenir des patterns de variables de la forme $?x$. Un pattern de variable match n'importe quelle valeur et associe la valeur \`a la variable.\\
+	D\'efinissons la fonction \textit{consume}, $consume(s,H,a,Q)$ indique que la consommation de l'assertion $a$ dans un \'etat abstrait $(s,H)$ r\'eussit, et le prochain \'etat satisfait la consommation de la postcondition $Q$, qui est une fonction des \'etats abstraits aux bool\'eens.\par
+	Pour la consommation des points-to et des pr\'edicats, la fonction $consume$ a deux fonctions auxiliaires, $match$_$pattern$ et $match$_$patterns$.\\ $match$_$pattern(s,v,\pi)$ tente de faire correspondre la valeur $v$ au pattern $\pi$ dans le store $s$. Si le match r\'eussit, la fonction retourne un singleton contenant le store r\'esultant, c'est-\`a-dire, le store $s$ apr\`es avoir associ\'e la valeur $v$ \`a $\pi$. Sinon, elle retourne l'ensemble vide.\\
+	Similairement, la fonction $match$_$patterns(s,\bar{v},\bar{\pi}$) tentent de faire correspondre une liste de valeur $\bar{v}$ et une liste de patterns $\bar{\pi}$. Si la match r\'eussit, la fonction retourne un singleton contenant le store r\'esultant, c'est-\`a-dire, le store $s$ apr\`es avoir associ\'e la liste de valeur $\bar{v}$ \`a la liste de patterns $\bar{\pi}$. Sinon, elle retourne l'ensemble vide.\par
+	
+	Nous avons les propri\'et\'es suivantes :	
+	
+	\begin{lemme}
+		(Affaiblissement de la postcondition de consommation). Si la consommation d'une assertion par rapport \`a une postcondition donn\'e r\'eussit, alors la consommation par rapport \`a une postcondition plus faible r\'eussit aussi.\par
+$\forall s,H,a,Q,Q'$ $consume(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Rightarrow Q'(s',H'))\Rightarrow consume(s,H,a,Q')$
+	\end{lemme}
+	
+	\begin{lemme}
+		(Encadrement de la consommation). Si la consommation d'une assertion r\'eussit, alors elle r\'eussit toujours si on ajoute des \'el\'ements \`a la heap abstraite, quand la postcondition stipule que la heap abstraite post-\'etat contient toujours ces \'el\'ements ajout\'es et qu'apr\`es la suppression des ces \'el\'ements ajout\'es, la postcondition d'origine est conserv\'ee.
+	\end{lemme}
+	Nous disons qu'un \'etat abstrait satisfait une assertion si la consommation de l'assertion dans l'\'etat abstrait r\'eussit et la heap abstraite r\'esultante r\'eussit.\\
+	
+	\begin{lemme}
+		(Consommation solide). Si la consommation d'une assertion r\'eussit dans un \'etat abstrait, alors la heap abstraite peut \^etre s\'epar\'e en un fragment qui satisfait l'assertion et un fragment qui satisfait la postcondition.
+	\end{lemme}
+	\subsubsection{Production d'une assertion}
+		L'op\'erateur de production d'assertion est l'inverse de celui de consommation: produire une assertion dans un \'etat abstrait donn\'e, \'etend la heap avec un fragment arbitraire de la heap satisfiant l'assertion.\\
+		Sp\'ecifiquement, la fonction $produce(s,H,a,Q)$ signifie que la postcondition $Q$ est valable  dans tous les \'etats obtenus par l'extension de l'\'etat abstrait (s, H) avec un fragment de heap qui satisfait l'assertion $a$.\par
+		Une fonction auxiliaire $produce$_$pattern(s,\pi,Q)$ signifie que la postcondition $Q$ est valable pour chaque pair $(s',v)$ telle que la valeur $v$ match avec le pattern $\pi$ dans le store $s$ et $s'$ est $s$ mis \`a jour avec le pattern appropri\'e.\par 
+		\begin{lemme}
+			(Affaiblissement de la postcondition de production). Si la production d'une assertion r\'eussit, alors la production r\'eussit aussi avec une postcondition plus faible.\par
+$\forall s,H,a,Q,Q'$ $produce(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Rightarrow Q'(s',H'))\Rightarrow produce(s,H,a,Q')$
+		\end{lemme}	
+		
+		\begin{lemme}
+		(Production Heap Inutile). Produire une assertion dans un \'etat abstrait donn\'e est \'equivalent \`a produire la m\^eme assertion dans une heap vide et d'ajouter la heap initiale \`a la heap post-\'etat.
+		\end{lemme}
+	
+		\begin{lemme}
+		(Production solide). Si un \'etat abstrait satisfait une assertion et que la production de cette assertion r\'eussit dans une heap vide, alors la postcondition de la production est valable dans la heap donn\'e.
+		\end{lemme}
+	\subsubsection{Abstraction de la heap}
+		Nous disons qu'une heap abstraite $H$ \textit{abstrait directement} une heap abstraite $H'$, not\'e $H \rhd H'$, si $H'$ peut \^etre obtenu en supprimant une instance de pr\'edicat $p(v_1,...,v_n)$ depuis H et en ajoutant quelques ensembles d'\'el\'ements de heap abstraite qui satisfont le corps de $p(v_1,...,v_n)$.\\
+		Nous disons qu'une heap abstraite $H$ \textit{abstrait} une heap abstrait $H'$, not\'e $H\rhd^* H'$, s'il existe un entier naturel $n$ tel que $H\rhd^n H'$.
+		Nous disons qu'une heap abstraite $H$ \textit{abstrait} une heap concr\`ete $h$, not\'e $H\rhd^* h$, si $H$ abstrait la heap abstraite contenant au moins une fois tous les \'el\'ements points-to.\\
+	\subsubsection{Ex\'ecution abstraite}
+		Nous d\'efinissons maintenant ce qu'est l'ex\'ecution abstraite d'une instruction, d'une fonction et d'un programme.\\
+		La fonction $valid(s,H,c,Q)$ repr\'esente une ex\'ecution abstraite  r\'eussite de $c$, dans un \'etat abstrait $(s,H)$, et que chaque post-\'etat satisfait la postcondition Q. Nous pouvons aussi dire que l'instruction $c$ est valide en ce qui concerne l'\'etat abstrait $(s,H)$ et la postcondition $Q$.
+		\begin{lemme}
+			(Affaiblissement de la postcondition pour une instruction valide).\\
+			Si une instruction est valide pour une postcondition, alors elle est valide pour une postcondition plus faible.
+			
+$\forall s,H,a,Q,Q'$ $valid(s,H,a,Q)\Rightarrow\\(\forall s', H'$ $Q(s',H')\Rightarrow Q'(s',H'))\Rightarrow valid(s,H,a,Q')$
+		\end{lemme}
+		
+		\begin{lemme}
+			(Encadrement d'une instruction valide).\\
+			Si une instruction est valide dans un \'etat abstrait et une postcondition, alors elle est valide si des \'el\'ements sont ajout\'es \`a la heap abstraite, que ces \'el\'ements sont toujours pr\'esent dans chaque post-\'etat, et la postcondition originale est toujours valable apr\`es avoir supprimer les \'el\'ements ajout\'es.
+		\end{lemme}
+		La fonction $valid$_$routine(def)$ stipule que l'ex\'ecution abstraite de la fonction d\'efinie par $def$ r\'eussit ou que cette fonction est valide. Nous disons qu'une ex\'ecution abstraite d'un programme r\'eussit, ou que le programme est valide, si l'ex\'ecution abstraite de chaque fonction r\'eussit, et que l'ex\'ecution de l'instruction \textit{main} r\'eussit dans un store initiale et une heap vide.\\
+		\subsubsection{Solidit\'e d'une ex\'ecution abstraite}
+		\`a faire\\ \\
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	\par et les invariants de boucle. Il restera \`a v\'erifier que pour chaque fonction, la fonction, accompagn\'ee de ces pr\'econditions, implique les postconditions et qu'\`a chaque appel de fonction, les pr\'econditions sont respect\'ees. Ces v\'erifications se feront \`a l'aide des SMT-solvers.
 	\section{Logique de sp\'ecification en \verifast{}}
 		La sp\'ecification d'un programme est indiqu\'e en commentaires \`a l'aide de formules logiques. Ces formules logiques peuvent \^etre dans des pr\'edicats (objets logiques) ou dans des lemmes (fonctions logiques).
 		\subsubsection{Predicats inductifs}
@@ -400,9 +503,11 @@ int mean(int x, int y)
 		\subsection{Decreases pour assurer la terminaison des boucles}
 
 \chapter{Impl\'ementation}
-	L'objectif de l'impl\'ementation est d'int\'egrer les fonctions de la th\'eorie des tableaux dans \verifast{} pour qu'elles soient directement retransmis \`a Z3. Ces fonctions manipulent un type tableau qui \'etait absent dans la logique de \verifast{}. La premi\`ere \'etape fut donc d'ajouter un type primitif array dans la logique de \verifast{}.
+	L'objectif de l'impl\'ementation est d'int\'egrer les fonctions de la th\'eorie des tableaux dans \verifast{} pour qu'elles soient directement retransmis \`a Z3. Ces fonctions manipulent un type tableau qui \'etait absent dans la logique de \verifast{}. La premi\`ere \'etape fut donc d'ajouter un type primitif array dans la logique de sp\'ecification de \verifast{}.
 	\section{Cr\'eation du type array}
-		La syntaxe du type array est "array(a,b)", a \'etant le domaine et b le range.
+		\subsection{Syntaxe et s\'emantique}
+		
+		Soit $T_{A}$ le type d'un tableau, la syntaxe de $T_{A}$ dans \verifast{} est "array(i,e)", avec $i\in T_I$ et $e\in T_E$.
 		\subsection{R\`egle de typage}
 			\subsubsection{G\'en\'ericit\'e}
 			En logique, le domaine et le range du type tableau sont deux type g\'en\'erique, c'est \`a dire, ils peuvent \^etre de n'importe quel type. Un objectif \'etait donc d'impl\'ementer un type tableau tout aussi g\'en\'erique. Toutes les fonctions ont \'et\'e implement\'ees ainsi mais \verifast{} a pos\'e une limite. Il n'y a pas de fonction g\'en\'erique pour repr\'esenter les pointeurs d\'efinis. En effet, il y a seulement des fonctions "integer(int*,int)", "character(char*,char)", etc... qui repr\'esente des pointeurs d'entier, de char, etc. Il n'est donc pas possible actuellement de compl\'eter la biblioth\`eque des tableaux avec uniquement des lemmes g\'en\'erique. Il est, par exemple, impossible de dire qu'un tableau est bien d\'efini g\'en\'eriquement. La fonction array\_model, ci-dessous, indique qu'un tableau d'entier est bien d\'efini entre (a+b) et (a+e) si un entier est bien d\'efini en (a+b) et qu'un tableau est bien d\'efini entre (a+b+1) et (a+e).

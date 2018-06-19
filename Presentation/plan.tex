@@ -8,7 +8,7 @@
 \usepackage{relsize,exscale}
 \usepackage{stmaryrd}
 \usepackage{amssymb,MnSymbol}
-
+\usepackage{appendix}
 
 \newcommand{\verifast}{VeriFast}
 \newcommand\sepimp{\mathrel{-\mkern-6mu*}}
@@ -377,7 +377,7 @@ est satisfaisable, ce qui prouve que $\phi$, la formule originelle, est satisfai
 		\verifast{} permet la v\'erification des programmes C et Java. La s\'emantique d'un programme peut \^etre donn\'ee par l'ensemble de ses ex\'ecutions. Une ex\'ecution est d\'efinie par un nombre fini ou infini de configurations, chacune li\'ee \`a la prochaine ex\'ecution. Une configuration est un \'etat et une continuation. Un \'etat est un \textit{store} et une \textit{heap}. Le \textit{store} sp\'ecifie la valeur des variables du programme. La \textit{heap} sp\'ecifie la valeur des cellules de m\'emoire. La continuation pr\'ecise ce qu'il va se passer apr\`es. Une continuation est soit \textit{une continuation d'instructions}, soit une \textit{return continuation}, soit une \textit{done continuation}.\\
 	Dans un programme, toutes les variables pr\'ec\'edement d\'efinies doivent toujours avoir une valeur dans le \textit{store} et chaque espace m\'emoire doit \^etre r\'epr\'esent\'e dans la \textit{heap}.
 	\section{Annotation et ex\'ecution abstraite}
-		La v\'erification d\'eductive se base sur l'annotation des programmes. Chaque fonction est v\'erifi\'ee s\'epar\'ement, en utilisant les contrats des autres fonctions et non leurs impl\'ementations. Le contrat d'une fonction consiste en une pr\'econdition et une postcondition. La pr\'econdition sp\'ecifie les attentes, concernant la heap et le store, au d\'ebut de la fonction. La postcondition sp\'ecifie les garanties offertes, concernant le store et la heap, \`a la sortie de la fonction. Les pr\'econditions et postconditions sont exprim\'ees sous forme d'\textit{assertions}. Une assertion est une formule SL. Appelons points-to assertion, l'assertion repr\'esentant la formule singleton heap (voir SL).
+		La v\'erification d\'eductive se base sur l'annotation des programmes. Chaque fonction est v\'erifi\'ee s\'epar\'ement, en utilisant les contrats des autres fonctions et non leurs impl\'ementations. Le contrat d'une fonction consiste en une pr\'econdition et une postcondition. La pr\'econdition sp\'ecifie les attentes, concernant la heap et le store, au d\'ebut de la fonction. La postcondition sp\'ecifie les garanties offertes, concernant le store et la heap, \`a la sortie de la fonction. Les pr\'econditions et postconditions sont exprim\'ees sous forme d'\textit{assertions}. Une assertion est une formule SL. Appelons points-to assertion, l'assertion repr\'esentant la formule singleton heap (voir SL).\\ \\
 		\begin{exemple}
 		Exemple : Soit une fonction r,
 		\begin{lstlisting}
@@ -683,6 +683,60 @@ Il est donc possible avec cette propri\'et\'e de prouver le faux en partant du v
 			
 
 	\section{Quicksort}
+		L'algorithme du Quicksort (voir annexe) doit \^etre l'un des algorithmes le plus connu et le plus utilis\'e. M\^eme si sa correction a \'et\'e d\'emontr\'ee de nombreuses fois, pour certifier un programme \verifast, tout le code doit \^etre prouv\'e avec \verifast. Il faut donc que les algorithmes les plus classiques soient de nouveau d\'emontr\'es. L'algorithme du Quicksort n'\'etait pas prouv\'e et \'etait un bon exemple pour illustrer l'int\'er\^et de la th\'eorie des tableaux.\par 
+		
+		J'ai d\'efini la sp\'ecification du Quicksort ainsi :\\
+		\textbf{Pr\'econdition :} le tableau est bien d\'efini entre (a+lo) et (a+hi).\\
+		\textbf{Postcondition :} le tableau est bien d\'efini entre (a+lo) et (a+hi), le multi-ensemble des \'el\'ements est inchang\'e et le tableau est tri\'e.\par 
+		L'algorithme du Quicksort utilise les fonctions $swap$ et $partition$.\\ La sp\'ecification de $swap$ a \'et\'e d\'efinie ainsi :\\
+		\textbf{Pr\'econdition :} le tableau est bien d\'efini entre (a+lo) et (a+hi).\\
+		\textbf{Postcondition :} le tableau est bien d\'efini entre (a+lo) et (a+hi) et les valeurs du tableau \`a la position i et j ont \'et\'e \'echang\'ees. \\
+La sp\'ecification de $partition$ a \'et\'e d\'efinie ainsi :\\
+		\textbf{Pr\'econdition :} le tableau est bien d\'efini entre (a+lo) et (a+hi).\\
+		\textbf{Postcondition :} le tableau est bien d\'efini entre (a+lo) et (a+hi), le multi-ensemble des \'el\'ements du tableau est inchang\'e, le pivot est \`a la position que retourne la fonction, tous les \'el\'ements avant le pivot dans le tableau sont plus petits que le pivot et tous les \'el\'ements apr\`es le pivot dans le tableau sont plus grands que le pivot.\par 
+		-Preuve Fonction partition ?\\
+		-Preuve fonction quicksort.\\
+		-Lemme majore+minore+sorted+sorted = sorted
+		
+		
+		
 \chapter{Conclusion}
+
 \tableofcontents
+
+\appendix
+\chapter*{Quicksort}
+\begin{lstlisting}
+void swap (int* a, int i, int j)
+{
+  int b = a[i];
+  a[i] = a[j];
+  a[j] = b;
+}
+
+int partition (int arr[], int low, int high)
+{
+  int pivot = a[hi];
+  int i = lo - 1;
+  int j;
+  for (j = lo; j < hi; j++) {
+    if (a[j] < pivot) {
+      i++;
+      if (i < j) swap(a, i, j);
+    }
+  }
+  i++;
+  if (i < hi) swap(a, i, hi);
+  return i;
+}
+
+void quicksort (int* a, int lo, int hi)
+{
+  if (lo > hi) return;
+  int p = partition(a, lo, hi);
+  quicksort(a, lo, p-1);
+  quicksort(a, p+1, hi);
+}
+
+		\end{lstlisting}
 \end{document}

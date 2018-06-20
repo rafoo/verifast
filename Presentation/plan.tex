@@ -683,7 +683,7 @@ Il est donc possible avec cette propri\'et\'e de prouver le faux en partant du v
 			
 
 	\section{Quicksort}
-		L'algorithme du Quicksort (voir annexe) doit \^etre l'un des algorithmes le plus connu et le plus utilis\'e. M\^eme si sa correction a \'et\'e d\'emontr\'ee de nombreuses fois, pour certifier un programme \verifast, tout le code doit \^etre prouv\'e avec \verifast. Il faut donc que les algorithmes les plus classiques soient de nouveau d\'emontr\'es. L'algorithme du Quicksort n'\'etait pas prouv\'e et \'etait un bon exemple pour illustrer l'int\'er\^et de la th\'eorie des tableaux.\par 
+		L'algorithme de tri Quicksort (voir annexe) doit \^etre l'un des algorithmes le plus connu et le plus utilis\'e. M\^eme si sa correction a \'et\'e d\'emontr\'ee de nombreuses fois. Certifier un programme \verifast{} revient \`a montrer que l'ensemble du code est correct avec \verifast. Il faut donc que les algorithmes les plus classiques soient de nouveau d\'emontr\'es. L'algorithme du Quicksort n'\'etait pas prouv\'e et \'etait un bon exemple pour illustrer l'int\'er\^et de la th\'eorie des tableaux.\par 
 		
 		J'ai d\'efini la sp\'ecification du Quicksort ainsi :\\
 		\textbf{Pr\'econdition :} le tableau est bien d\'efini entre (a+lo) et (a+hi).\\
@@ -694,10 +694,26 @@ Il est donc possible avec cette propri\'et\'e de prouver le faux en partant du v
 La sp\'ecification de $partition$ a \'et\'e d\'efinie ainsi :\\
 		\textbf{Pr\'econdition :} le tableau est bien d\'efini entre (a+lo) et (a+hi).\\
 		\textbf{Postcondition :} le tableau est bien d\'efini entre (a+lo) et (a+hi), le multi-ensemble des \'el\'ements du tableau est inchang\'e, le pivot est \`a la position que retourne la fonction, tous les \'el\'ements avant le pivot dans le tableau sont plus petits que le pivot et tous les \'el\'ements apr\`es le pivot dans le tableau sont plus grands que le pivot.\par 
-		-Preuve Fonction partition ?\\
-		-Preuve fonction quicksort.\\
-		-Lemme majore+minore+sorted+sorted = sorted
-		
+		La preuve de la fonction $partition$ se passe principalement dans la boucle. Les invariants de boucle importants sont que les \'elements entre $low$ et $i$ sont plus petits que le pivot, que les \'el\'ements entre $i+1$ et $j$ sont plus grands que le pivot et que le multi-ensemble reste le m\^eme.\\
+		Ainsi, \`a la fin de la boucle, il ne reste plus qu'\`a incr\'ementer $i$ placer le pivot \`a la position $i$ et la postcondition est respect\'ee. \par
+		La preuve de la fonction quicksort se repose sur deux cas, si le tableau est vide, c'est-\`a-dire, $lo > hi$. Alors le tableau vide est d\'ej\`a tri\'e et le multi-ensemble des \'el\'ements reste vide. Si le tableau n'est pas vide, on appelle la fonction $partition$ puis on rappelle $quicksort$ r\'ecursivement sur les deux morceaux du tableau. Le morceau o\`u tous les \'el\'ements sont plus petits que $a[p]$ et le morceau o\`u les \'el\'ements sont plus grands que $a[p]$.\par
+		Apr\`es l'appel \`a la fonction $partition$, les garanties de la postcondition de $partition$ sont que les \'el\'ements entre $lo$ et $p-1$ sont plus petits que $a[p]$, que les \'el\'ements entre $p+1$ et $hi$ sont plus grands que $a[p]$ et que le multi-ensemble des \'el\'ements n'a pas chang\'e. Il reste donc \`a rappeler l'algorithme du quicksort sur les deux parties du tableaux. Apr\`es les deux appels r\'ecursifs, les postconditions des deux appels \`a quicksort et \`a partition nous garantissent ceci :
+		\begin{enumerate}
+			\item Avant l'appel \`a quicksort, les \'el\'ements entre lo et p-1 sont plus petits que $a[p]$.
+			\item Avant l'appel \`a quicksort, les \'el\'ements entre p+1 et hi sont plus grands que $a[p]$.
+			\item Avant l'appel \`a quicksort, le multi-ensemble des \'el\'ements du tableau est la m\^eme qu'au d\'ebut.
+			\item Apr\`es l'appel \`a quicksort, le multi-ensemble des \'el\'ements entre lo et p-1 est le m\^eme qu'avant l'appel \`a quicksort.
+			\item Apr\`es l'appel \`a quicksort, le tableau est tri\'e entre lo et p-1.
+			\item Apr\`es l'appel \`a quicksort, le multi-ensemble des \'el\'ements entre p+1 et hi est le m\^eme qu'avant l'appel \`a quicksort.
+			\item Apr\`es l'appel \`a quicksort, le tableau est tri\'e entre p+1 et hi.\\ \\
+			Il faut maintenant combiner les propri\'et\'es pour avoir les post-conditions voulu.
+			\item En combinant (1) et (4), il est possible de montrer qu'apr\`es l'appel de quicksort, les \'el\'ements entre lo et p-1 sont plus petits que $a[p]$.
+			\item En combinant (2) et (6), il est possible de montrer qu'apr\`es l'appel de quicksort, les \'el\'ements entre p+1 et hi sont plus grands. que $a[p]$.
+			\item En combinant (4) (6) et la valeur du pivot, il est possible de montrer que le multi-ensemble des \'el\'ements du tableau avant les appels \`a quicksort est le m\^eme qu'apr\`es.
+			\item En appliquant la transitivit\'e de l'\'egalit\'e avec (3) et (10), il est possible de montrer que le multi-ensemble des \'el\'ements du tableau est le m\^eme au d\'ebut et apr\`es les appels r\'ecursifs.
+			\item En combinant (5) (7) (8) et (9), il est possible de montrer qu'apr\`es les appels r\'ecursifs, le tableau est bien tri\'e.
+		\end{enumerate}
+		Pour autoriser les appels r\'ecursifs, un lemme est utilis\'e . Ce lemme dit que si un tableau est bien d\'efini entre lo et hi et $lo <= p<=hi$, alors il existe un tableau bien d\'efini entre lo et p-1, un autre entre p+1 et hi et la case p est bien d\'efini. Ce d\'ecoupage permet aux appels r\'ecursif de respecter la pr\'econdition. Apr\`es les appels r\'ecursif, un lemme inverse permet de reformer un tableau entre lo et hi.
 		
 		
 \chapter{Conclusion}
@@ -709,12 +725,12 @@ La sp\'ecification de $partition$ a \'et\'e d\'efinie ainsi :\\
 \begin{lstlisting}
 void swap (int* a, int i, int j)
 {
-  int b = a[i];
-  a[i] = a[j];
-  a[j] = b;
+  int b = *(a+i);
+  *(a+i) = *(a+j);
+  *(a+j) = b;
 }
 
-int partition (int arr[], int low, int high)
+int partition (int* arr, int lo, int hi)
 {
   int pivot = a[hi];
   int i = lo - 1;

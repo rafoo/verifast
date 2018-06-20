@@ -1,3 +1,6 @@
+% Pour compiler:
+% $ pdflatex plan.tex && bibtex plan && pdflatex plan.tex && pdflatex plan.tex
+
 \documentclass[11pt,openany]{article}
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
@@ -140,7 +143,7 @@ Une th\'eorie du premier ordre est coh\'erente s'il existe des formules non-d\'e
 \end{definition}\par
 	\subsection{Logique de s\'eparation}
 		\subsubsection{Syntaxe}
-	La syntaxe de la logique de logique de s\'eparation (SL) est construite sur la syntaxe de FOL, d\'efinie \`a la subsection 1.1.1. Nous consid\'erons une th\'eorie du premier ordre $T=(\mathsmaller\sum,M)$ telle que $\sum^{s}$ contient les types $Loc$ et $Data$ et $\sum^{f}$ contient une constante $nil^{Loc}$.
+	La syntaxe de la logique de logique de s\'eparation (SL)\cite{OHearnRY01} est construite sur la syntaxe de FOL, d\'efinie \`a la subsection 1.1.1. Nous consid\'erons une th\'eorie du premier ordre $T=(\mathsmaller\sum,M)$ telle que $\sum^{s}$ contient les types $Loc$ et $Data$ et $\sum^{f}$ contient une constante $nil^{Loc}$.
 	\begin{definition}
 	(Formule de la logique de s\'eparation). Une formule SL s'\'ecrit avec les m\^emes r\`egles qu'une formule FOL en ajoutant ces r\`egles :
 	\\$\phi^{SL} ::= \top$~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~(true)\par
@@ -731,6 +734,9 @@ void swap (int* a, int i, int j)
 
 int partition (int* arr, int lo, int hi)
 {
+\bibliographystyle{abbrv}
+\bibliography{plan}
+
   int pivot = a[hi];
   int i = lo - 1;
   int j;
